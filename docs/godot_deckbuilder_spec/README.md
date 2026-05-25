@@ -1,0 +1,98 @@
+# Godot 덱빌딩 로그라이크 기획/개발 문서 패키지
+
+이 문서 묶음은 **Godot 4.x + GDScript + Codex 바이브코딩**으로 개발하기 위한 작업 기준서다.
+
+현재 게임은 다음 한 문장으로 정의한다.
+
+> **중세 판타지 세계에서 균형형 주인공이 동료를 영입하고 강화하며 3막을 돌파하는, 동료 시스템 중심의 싱글플레이 2D 로그라이크 덱빌딩 게임.**
+
+기획상의 핵심 약속은 다음과 같다.
+
+> **플레이어는 균형형 주인공의 덱을 다듬으며, 길 위에서 만난 동료와 장비를 조합해 매 런 다른 전술 부대를 완성한다.**
+
+## 사용 방법
+
+Codex에게 작업을 시킬 때는 먼저 이 폴더 전체를 프로젝트 루트 또는 `docs/design/`에 넣는다.
+
+권장 위치:
+
+```txt
+res://docs/design/
+  README.md
+  00_codex_rules.md
+  01_gdd_overview.md
+  02_systems_spec.md
+  03_godot_architecture.md
+  04_data_schemas.md
+  05_companion_roster.md
+  06_cards_equipment_balance.md
+  07_events_inn_shop_treasure.md
+  08_mvp_roadmap_and_codex_prompts.md
+  09_design_upgrade_research_and_balance.md
+```
+
+Codex에게 첫 작업을 지시할 때는 다음처럼 말한다.
+
+```txt
+이 프로젝트는 Godot 4.x + GDScript 기반 2D 로그라이크 덱빌딩 게임이다.
+res://docs/design/ 폴더의 Markdown 문서들을 먼저 읽어라.
+특히 00_codex_rules.md, 02_systems_spec.md, 03_godot_architecture.md, 09_design_upgrade_research_and_balance.md를 기준으로 구현해라.
+한 번에 전체 게임을 만들지 말고, 08_mvp_roadmap_and_codex_prompts.md의 Milestone 순서대로 실행 가능한 상태를 유지하며 진행해라.
+```
+
+## 문서 구성
+
+| 파일 | 용도 |
+|---|---|
+| `00_codex_rules.md` | Codex 작업 규칙, 금지 시스템, 구현 원칙 |
+| `01_gdd_overview.md` | 게임 전체 기획서 요약 |
+| `02_systems_spec.md` | 런, 전투, 동료, 보상, 장비 등 시스템 명세 |
+| `03_godot_architecture.md` | Godot 프로젝트 구조, 씬/스크립트/오토로드 설계 |
+| `04_data_schemas.md` | 카드, 동료, 장비, 이벤트, 저장 데이터 스키마 |
+| `05_companion_roster.md` | 동료 10명 초안, 패시브, 기본 공격력, 전용 카드 방향 |
+| `06_cards_equipment_balance.md` | 주인공 카드 40장 초안, 시작 덱, 장비, 주인공 강화 |
+| `07_events_inn_shop_treasure.md` | 이벤트, 여관, 상점, 보물/특수보상 명세 |
+| `08_mvp_roadmap_and_codex_prompts.md` | MVP 개발 순서와 Codex 프롬프트 템플릿 |
+| `09_design_upgrade_research_and_balance.md` | 외부 레퍼런스 분석, 재미 축, 런/전투/경제 수치 기준 |
+
+## 확정된 큰 방향
+
+- 플랫폼: PC + 모바일, 둘 다 가로 화면.
+- 과금: 인앱결제 없음. 게임 구매형.
+- 엔진: Godot 4.x.
+- 언어: GDScript 우선.
+- 장르: 싱글플레이 2D 로그라이크 덱빌딩.
+- 세계관: 중세 판타지. 세부 설정은 추후 확정.
+- 주인공: 균형형.
+- 고유 시스템: 동료 영입/강화 시스템.
+- 기본 전투: 에너지 4, 매턴 드로우 6, 파워 카드 유지.
+- 런 구조: 3막, Act당 12노드 + 보스 1종.
+- 주인공 카드: 총 40장. 공격 16, 스킬 16, 파워 8.
+- 동료: 총 10명, 런 중 최대 2명.
+- 유물/포션/저주/상태카드/카드 생성 없음.
+- 기획 기준: 동료는 빌드 문이자 캐릭터이며, 장비는 제한된 슬롯 퍼즐이다.
+- 밸런스 기준: 일반 전투 3~5턴, 엘리트 5~7턴, 보스 8~11턴을 1차 목표로 한다.
+
+## 금지된 원작식 시스템
+
+아래는 개발 중 Codex가 임의로 다시 추가하면 안 된다.
+
+```txt
+유물
+포션
+저주 카드
+상태 카드
+전투 중 카드 생성
+4막 / 진엔딩 키
+승천 난이도
+일일 도전
+커스텀 모드
+무한 모드
+점수 시스템
+통계 화면
+리더보드
+모드 지원
+시드 입력/공유 UI
+```
+
+내부 랜덤 재현을 위한 시드는 사용할 수 있지만, 유저가 직접 시드를 입력하거나 공유하는 기능은 만들지 않는다.
