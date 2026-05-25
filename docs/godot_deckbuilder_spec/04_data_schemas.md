@@ -145,7 +145,7 @@ upgraded_description_ko: 강화 표시 설명
     {"type": "companion_basic_attack_damage_add", "amount": 1}
   ],
   "description_ko": "모든 동료의 기본 공격 피해가 1 증가합니다.",
-  "price": 90
+  "price": 95
 }
 ```
 
@@ -432,16 +432,66 @@ add_status_card
   },
   "card_rewards": {
     "rarity_weights_by_act": {
-      "1": {"common": 65, "uncommon": 30, "rare": 5},
-      "2": {"common": 55, "uncommon": 35, "rare": 10},
-      "3": {"common": 45, "uncommon": 40, "rare": 15}
+      "1": {"common": 62, "uncommon": 35, "rare": 3},
+      "2": {"common": 55, "uncommon": 37, "rare": 8},
+      "3": {"common": 48, "uncommon": 40, "rare": 12}
     },
+    "shop_rarity_weights": {"common": 50, "uncommon": 38, "rare": 12},
+    "rare_pity": {
+      "initial_offset": -3,
+      "common_roll_bonus": 1,
+      "max_bonus": 10
+    },
+    "upgraded_reward_chance_by_act": {"1": 0, "2": 20, "3": 40},
     "skip_gold_by_act": {"1": 8, "2": 10, "3": 12}
   },
   "gold_rewards": {
     "normal_combat": [12, 20],
-    "elite_combat": [35, 55],
-    "boss_combat": [80, 110]
+    "elite_combat": [30, 45],
+    "boss_combat": [90, 105],
+    "event": [20, 85],
+    "treasure": [50, 110]
+  },
+  "shop_prices": {
+    "common_card": [45, 60],
+    "uncommon_card": [70, 95],
+    "rare_card": [135, 175],
+    "companion_card": [85, 140],
+    "common_equipment": [95, 130],
+    "uncommon_equipment": [150, 220],
+    "rare_equipment": [240, 330],
+    "remove_card_base": 75,
+    "remove_card_increment": 25,
+    "upgrade_normal_card": 90,
+    "upgrade_companion_card": 120
+  },
+  "inn_prices": {
+    "small_room": {"gold": 35, "heal_percent": 22},
+    "good_room": {"gold": 80, "heal_percent": 45},
+    "noble_room": {"gold": 125, "heal_percent": 70}
+  },
+  "difficulty_presets": {
+    "traveler": {
+      "starting_max_hp": 84,
+      "act1_normal_enemy_hp_multiplier": 0.9,
+      "act1_enemy_intent_add": -1,
+      "boss_hp_multiplier": 0.92,
+      "inn_price_multiplier": 0.9
+    },
+    "standard": {
+      "starting_max_hp": 76,
+      "enemy_hp_multiplier": 1.0,
+      "enemy_intent_add": 0,
+      "gold_reward_multiplier": 1.0,
+      "inn_price_multiplier": 1.0
+    },
+    "veteran": {
+      "starting_max_hp": 70,
+      "enemy_hp_multiplier": 1.08,
+      "act2_plus_enemy_intent_add": 1,
+      "event_treasure_gold_multiplier": 0.9,
+      "inn_price_multiplier": 1.1
+    }
   }
 }
 ```
