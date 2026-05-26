@@ -3,14 +3,17 @@ extends Control
 const CardDataScript := preload("res://scripts/data/card_data.gd")
 const CardInstanceScript := preload("res://scripts/state/card_instance.gd")
 const TurnManagerScript := preload("res://scripts/combat/turn_manager.gd")
+const BondSystemScript := preload("res://scripts/systems/bond_system.gd")
 
 var turn_manager = TurnManagerScript.new()
+var bond_system = BondSystemScript.new()
 var log_lines: Array[String] = []
 
 var player_label: Label
 var enemy_label: Label
 var intent_label: Label
 var pile_label: Label
+var companion_label: Label
 var hand_box: HBoxContainer
 var log_label: Label
 var claim_reward_button: Button
@@ -127,6 +130,11 @@ func _build_ui() -> void:
 	pile_label.add_theme_font_size_override("font_size", 16)
 	layout.add_child(pile_label)
 
+	companion_label = Label.new()
+	companion_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	companion_label.modulate = Color(0.78, 0.88, 0.82)
+	layout.add_child(companion_label)
+
 	hand_box = HBoxContainer.new()
 	hand_box.add_theme_constant_override("separation", 8)
 	layout.add_child(hand_box)
@@ -180,6 +188,7 @@ func _refresh() -> void:
 		RunState.deck.discard_pile.size(),
 		RunState.deck.exhaust_pile.size(),
 	]
+	_refresh_companions()
 	_refresh_hand()
 	claim_reward_button.visible = RunState.combat.outcome == "victory"
 	log_label.text = "\n".join(PackedStringArray(log_lines))
@@ -260,3 +269,17 @@ func _append_logs(messages: Array[String]) -> void:
 		log_lines.append(message)
 	while log_lines.size() > 12:
 		log_lines.pop_front()
+
+
+func _refresh_companions() -> void:
+	if RunState.party.companions.is_empty():
+		companion_label.text = "Companions: none"
+		return
+	var parts: Array[String] = []
+	for companion in RunState.party.companions:
+		parts.append("%s / %s / %s" % [
+			String(companion.get("name", "?")),
+			String(companion.get("oath_name", "No Oath")),
+			bond_system.describe_bonuses(companion),
+		])
+	companion_label.text = "Companions: " + " | ".join(PackedStringArray(parts))

@@ -8,6 +8,9 @@ var energy := 0
 var max_energy := 0
 var tactical_mark_bonus := 0
 var outcome := "inactive"
+var cards_played_this_turn := 0
+var enemy_attack_reduction := 0
+var oath_flags: Dictionary = {}
 var enemies: Array[Dictionary] = []
 
 
@@ -19,6 +22,9 @@ func reset() -> void:
 	max_energy = 0
 	tactical_mark_bonus = 0
 	outcome = "inactive"
+	cards_played_this_turn = 0
+	enemy_attack_reduction = 0
+	oath_flags.clear()
 	enemies.clear()
 
 
@@ -31,6 +37,9 @@ func to_dict() -> Dictionary:
 		"max_energy": max_energy,
 		"tactical_mark_bonus": tactical_mark_bonus,
 		"outcome": outcome,
+		"cards_played_this_turn": cards_played_this_turn,
+		"enemy_attack_reduction": enemy_attack_reduction,
+		"oath_flags": oath_flags.duplicate(true),
 		"enemies": enemies.duplicate(true),
 	}
 
@@ -43,6 +52,10 @@ func from_dict(data: Dictionary) -> void:
 	max_energy = int(data.get("max_energy", 0))
 	tactical_mark_bonus = int(data.get("tactical_mark_bonus", 0))
 	outcome = String(data.get("outcome", "inactive"))
+	cards_played_this_turn = int(data.get("cards_played_this_turn", 0))
+	enemy_attack_reduction = int(data.get("enemy_attack_reduction", 0))
+	var restored_flags: Variant = data.get("oath_flags", {})
+	oath_flags = restored_flags if typeof(restored_flags) == TYPE_DICTIONARY else {}
 	enemies = []
 	for enemy in data.get("enemies", []):
 		if typeof(enemy) == TYPE_DICTIONARY:

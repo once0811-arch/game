@@ -5,9 +5,15 @@ const CardDataScript := preload("res://scripts/data/card_data.gd")
 const CardInstanceScript := preload("res://scripts/state/card_instance.gd")
 const EnemyAIResolverScript := preload("res://scripts/combat/enemy_ai_resolver.gd")
 const CardEffectResolverScript := preload("res://scripts/combat/card_effect_resolver.gd")
+const CompanionCombatSystemScript := preload("res://scripts/combat/companion_combat_system.gd")
+const OathTacticResolverScript := preload("res://scripts/combat/oath_tactic_resolver.gd")
+const BondSystemScript := preload("res://scripts/systems/bond_system.gd")
 
 var enemy_ai = EnemyAIResolverScript.new()
 var card_effects = CardEffectResolverScript.new()
+var companion_combat = CompanionCombatSystemScript.new()
+var oath_resolver = OathTacticResolverScript.new()
+var bond_system = BondSystemScript.new()
 
 
 func start_debug_combat(enemy_id: String) -> Array[String]:
@@ -21,6 +27,7 @@ func start_debug_combat(enemy_id: String) -> Array[String]:
 	RunState.combat.turn_index = 1
 	RunState.combat.max_energy = int(DataRegistry.get_balance("combat.energy_per_turn", 4))
 	RunState.combat.energy = RunState.combat.max_energy
+	RunState.combat.cards_played_this_turn = 0
 
 	var enemy_data := DataRegistry.get_enemy(enemy_id)
 	if enemy_data.is_empty():
@@ -31,6 +38,8 @@ func start_debug_combat(enemy_id: String) -> Array[String]:
 	var drawn: Array[Dictionary] = RunState.deck.draw_cards(int(DataRegistry.get_balance("combat.draw_per_turn", 6)))
 	logs.append("Combat started: %s." % enemy_data.get("name", enemy_id))
 	logs.append("Drew %d cards." % drawn.size())
+	logs.append_array(oath_resolver.on_combat_start())
+	logs.append_array(companion_combat.apply_bond_start_bonuses())
 	return logs
 
 
@@ -49,8 +58,10 @@ func play_card(hand_index: int, target_index: int = 0) -> Array[String]:
 
 	RunState.combat.energy -= cost
 	RunState.deck.play_card(hand_index)
+	RunState.combat.cards_played_this_turn += 1
 	logs.append("Played %s." % CardDataScript.card_name(card))
 	logs.append_array(card_effects.resolve(card, target_index))
+	logs.append_array(oath_resolver.on_card_play(card, target_index))
 	_update_outcome(logs)
 	return logs
 
@@ -61,6 +72,10 @@ func end_player_turn() -> Array[String]:
 		return logs
 	var discarded := RunState.deck.discard_hand()
 	logs.append("Ended turn. Discarded %d cards." % discarded)
+	logs.append_array(companion_combat.execute_end_turn_attacks())
+	_update_outcome(logs)
+	if RunState.combat.outcome != "active":
+		return logs
 	logs.append_array(enemy_ai.execute_enemy_turn())
 	_update_outcome(logs)
 	if RunState.combat.outcome == "active":
@@ -72,8 +87,10 @@ func _start_player_turn(logs: Array[String]) -> void:
 	RunState.combat.turn_index += 1
 	RunState.combat.player_block = 0
 	RunState.combat.energy = RunState.combat.max_energy
+	RunState.combat.cards_played_this_turn = 0
 	var drawn: Array[Dictionary] = RunState.deck.draw_cards(int(DataRegistry.get_balance("combat.draw_per_turn", 6)))
 	logs.append("Turn %d started. Drew %d cards." % [RunState.combat.turn_index, drawn.size()])
+	logs.append_array(companion_combat.apply_bond_start_bonuses())
 
 
 func _update_outcome(logs: Array[String]) -> void:
@@ -85,6 +102,8 @@ func _update_outcome(logs: Array[String]) -> void:
 		RunState.combat.outcome = "victory"
 		RunState.combat.in_combat = false
 		logs.append("Victory.")
+		var node_type := MapState.get_selected_node_type() if MapState.has_selected_node() else "debug_combat"
+		logs.append_array(bond_system.award_for_victory(node_type))
 	elif RunState.current_hp <= 0:
 		RunState.combat.outcome = "defeat"
 		RunState.combat.in_combat = false

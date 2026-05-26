@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "phase": 5,
+  "phase": 6,
   "run": {
     "starting_act": 1,
     "starting_depth": 0,

@@ -28,10 +28,13 @@ func execute_enemy_turn() -> Array[String]:
 		var intent: Dictionary = enemy.get("intent", {})
 		match String(intent.get("type", "attack")):
 			"attack":
-				var damage := int(intent.get("damage", 0))
-				var blocked = min(RunState.combat.player_block, damage)
+				var damage: int = max(int(intent.get("damage", 0)) - RunState.combat.enemy_attack_reduction, 0)
+				if RunState.combat.enemy_attack_reduction > 0:
+					logs.append("Oath protection reduced the attack by %d." % RunState.combat.enemy_attack_reduction)
+					RunState.combat.enemy_attack_reduction = 0
+				var blocked: int = min(RunState.combat.player_block, damage)
 				RunState.combat.player_block -= blocked
-				var final_damage = max(damage - blocked, 0)
+				var final_damage: int = max(damage - blocked, 0)
 				RunState.current_hp = max(RunState.current_hp - final_damage, 0)
 				logs.append("%s used %s for %d damage." % [enemy.get("name", "Enemy"), intent.get("label", "Attack"), final_damage])
 			"block":
