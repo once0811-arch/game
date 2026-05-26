@@ -169,7 +169,7 @@ upgraded_description_ko: 강화 표시 설명
 }
 ```
 
-`bond_score`는 0~100 범위다. 30/60/100 보너스는 점수 기준으로 자동 적용하며, 서약 전술은 런 중 변경하거나 업그레이드하지 않는다.
+`bond_score`는 0~100 범위다. 30/60/100 보너스는 점수 기준으로 자동 적용하며, 서약 전술은 런 중 변경하거나 업그레이드하지 않는다. 세계관상 서약 전술은 동료와 증표에 맺은 전투 조항이지만, 기본 전투 데이터에는 계약 실패/검은 지문 패널티를 넣지 않는다. 검은 지문은 이벤트, 동료 후보, UI 연출용 소재로 사용한다.
 
 ## 5. EquipmentData
 
@@ -322,8 +322,8 @@ companion_foreshadow
 
 ```json
 {
-  "id": "act1_bandit_grunt",
-  "name_ko": "산적 졸개",
+  "id": "act1_mutated_mercenary_grunt",
+  "name_ko": "변이 용병 졸개",
   "max_hp": 32,
   "block": 0,
   "intent_patterns": [
@@ -340,8 +340,8 @@ companion_foreshadow
 
 ```json
 {
-  "id": "boss_act1_oathbreaker_captain",
-  "name_ko": "무너진 성문의 탈영대장",
+  "id": "boss_act1_blackprint_captain",
+  "name_ko": "검은 지문을 가진 용병대장",
   "act": 1,
   "max_hp": 210,
   "design_goal_ko": "동료 영입 전 덱 품질과 전술 표식의 필요성을 시험합니다.",
