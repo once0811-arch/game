@@ -8,6 +8,7 @@ var current_depth := 0
 var selected_node_id := ""
 var selected_enemy_id := ""
 var selected_enemy_ids: Array[String] = []
+var selected_enemy_waves: Array = []
 
 
 func start_act1() -> void:
@@ -22,6 +23,7 @@ func start_act(act_number: int) -> void:
 	selected_node_id = ""
 	selected_enemy_id = ""
 	selected_enemy_ids.clear()
+	selected_enemy_waves.clear()
 
 
 func ensure_act1() -> void:
@@ -64,8 +66,9 @@ func choose_node(node_id: String) -> bool:
 		if get_node_state(node) != "available":
 			return false
 		selected_node_id = node_id
-		selected_enemy_id = String(node.get("enemy_id", ""))
-		selected_enemy_ids = _read_enemy_ids(node)
+		selected_enemy_waves = _read_enemy_waves(node)
+		selected_enemy_ids = _flatten_enemy_waves(selected_enemy_waves)
+		selected_enemy_id = selected_enemy_ids[0] if not selected_enemy_ids.is_empty() else String(node.get("enemy_id", ""))
 		return true
 	return false
 
@@ -84,6 +87,7 @@ func complete_selected_node() -> void:
 	selected_node_id = ""
 	selected_enemy_id = ""
 	selected_enemy_ids.clear()
+	selected_enemy_waves.clear()
 
 
 func has_selected_node() -> bool:
@@ -106,6 +110,16 @@ func get_selected_enemy_ids(default_enemy_id: String) -> Array[String]:
 	return selected_enemy_ids.duplicate()
 
 
+func get_selected_enemy_waves(default_enemy_id: String) -> Array:
+	if selected_enemy_waves.is_empty():
+		var ids := get_selected_enemy_ids(default_enemy_id)
+		var fallback_waves: Array = []
+		if not ids.is_empty():
+			fallback_waves.append(ids)
+		return fallback_waves
+	return _duplicate_enemy_waves(selected_enemy_waves)
+
+
 func get_selected_node_type() -> String:
 	for node in nodes:
 		if String(node.get("id", "")) == selected_node_id:
@@ -121,6 +135,7 @@ func to_snapshot() -> Dictionary:
 		"selected_node_id": selected_node_id,
 		"selected_enemy_id": selected_enemy_id,
 		"selected_enemy_ids": selected_enemy_ids.duplicate(),
+		"selected_enemy_waves": selected_enemy_waves.duplicate(true),
 	}
 
 
@@ -141,10 +156,83 @@ func from_snapshot(snapshot: Dictionary) -> void:
 		var id_text := String(enemy_id)
 		if not id_text.is_empty():
 			selected_enemy_ids.append(id_text)
+	selected_enemy_waves.clear()
+	for wave in snapshot.get("selected_enemy_waves", []):
+		if typeof(wave) != TYPE_ARRAY:
+			continue
+		var ids: Array[String] = []
+		for enemy_id in wave:
+			var id_text := String(enemy_id)
+			if not id_text.is_empty():
+				ids.append(id_text)
+		if not ids.is_empty():
+			selected_enemy_waves.append(ids)
 	if selected_enemy_ids.is_empty() and not selected_enemy_id.is_empty():
 		selected_enemy_ids.append(selected_enemy_id)
+	if selected_enemy_waves.is_empty() and not selected_enemy_ids.is_empty():
+		selected_enemy_waves.append(selected_enemy_ids.duplicate())
 	if nodes.is_empty():
 		start_act(RunState.act)
+
+
+func _read_enemy_waves(node: Dictionary) -> Array:
+	var waves: Array = []
+	if node.has("waves"):
+		for raw_wave in node.get("waves", []):
+			var ids := _read_wave_enemy_ids(raw_wave)
+			if not ids.is_empty():
+				waves.append(ids)
+	if waves.is_empty():
+		var ids := _read_enemy_ids(node)
+		if not ids.is_empty():
+			waves.append(ids)
+	return waves
+
+
+func _read_wave_enemy_ids(raw_wave: Variant) -> Array[String]:
+	var ids: Array[String] = []
+	if typeof(raw_wave) == TYPE_DICTIONARY:
+		for enemy_id in raw_wave.get("enemy_ids", []):
+			var id_text := String(enemy_id)
+			if not id_text.is_empty():
+				ids.append(id_text)
+		if ids.is_empty():
+			var single_id := String(raw_wave.get("enemy_id", ""))
+			if not single_id.is_empty():
+				ids.append(single_id)
+	elif typeof(raw_wave) == TYPE_ARRAY:
+		for enemy_id in raw_wave:
+			var id_text := String(enemy_id)
+			if not id_text.is_empty():
+				ids.append(id_text)
+	return ids
+
+
+func _flatten_enemy_waves(waves: Array) -> Array[String]:
+	var ids: Array[String] = []
+	for wave in waves:
+		if typeof(wave) != TYPE_ARRAY:
+			continue
+		for enemy_id in wave:
+			var id_text := String(enemy_id)
+			if not id_text.is_empty():
+				ids.append(id_text)
+	return ids
+
+
+func _duplicate_enemy_waves(waves: Array) -> Array:
+	var duplicate: Array = []
+	for wave in waves:
+		if typeof(wave) != TYPE_ARRAY:
+			continue
+		var ids: Array[String] = []
+		for enemy_id in wave:
+			var id_text := String(enemy_id)
+			if not id_text.is_empty():
+				ids.append(id_text)
+		if not ids.is_empty():
+			duplicate.append(ids)
+	return duplicate
 
 
 func _read_enemy_ids(node: Dictionary) -> Array[String]:

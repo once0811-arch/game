@@ -12,17 +12,18 @@
 
 ## Summary
 
-| Policy | Enemy profile | Runs | A1 Boss | A2 Boss | A3 Reach | Win | Inn in/out | Boss HP A1/A2/A3 | Avg deck | Avg HP | Avg gold | Avg bond | Picked | Skipped | Upgraded | Removed | Gear | Oath triggers |
-| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| novice | current | 500 | 71.2% | 21.6% | 21.4% | 6.0% | 50/75% | 48/51/55% | 23.4 | 1.5 | 160.5 | 35.0 | 9.6 | 1.4 | 1.1 | 1.3 | 0.5 | 32.6 |
-| balanced | current | 500 | 98.6% | 76.4% | 76.4% | 39.2% | 33/67% | 75/67/54% | 24.3 | 9.5 | 199.6 | 80.8 | 7.8 | 12.9 | 1.5 | 2.6 | 0.2 | 98.8 |
-| safe | current | 500 | 99.6% | 96.2% | 96.2% | 69.6% | 49/90% | 72/89/88% | 19.2 | 28.5 | 488.5 | 91.3 | 5.2 | 10.4 | 2.6 | 0.1 | 2.6 | 82.9 |
-| greedy | current | 500 | 94.2% | 49.4% | 49.0% | 20.6% | 22/71% | 71/54/53% | 24.5 | 4.5 | 614.7 | 65.5 | 10.4 | 9.7 | 1.1 | 0.3 | 0.1 | 84.8 |
+| Policy | Enemy profile | Runs | A1 Boss | A2 Boss | A3 Reach | Win | Inn in/out | Boss HP A1/A2/A3 | Waves 1/2/3 | Avg deck | Avg HP | Avg gold | Avg bond | Picked | Skipped | Upgraded | Removed | Gear | Oath triggers |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| novice | current | 300 | 75.3% | 25.3% | 25.0% | 7.0% | 51/76% | 50/52/55% | 3414/554/122 | 23.9 | 2.1 | 169.3 | 39.1 | 10.0 | 1.7 | 1.3 | 1.4 | 0.5 | 35.5 |
+| balanced | current | 300 | 99.7% | 89.7% | 89.7% | 54.0% | 35/71% | 82/70/57% | 6390/931/412 | 24.7 | 13.7 | 267.2 | 90.8 | 8.0 | 14.9 | 1.7 | 2.7 | 0.2 | 115.2 |
+| safe | current | 300 | 100.0% | 98.7% | 98.7% | 84.3% | 51/91% | 74/89/88% | 4526/945/429 | 19.3 | 31.6 | 559.3 | 95.8 | 5.3 | 11.3 | 2.6 | 0.0 | 2.5 | 85.8 |
+| greedy | current | 300 | 97.0% | 65.0% | 64.7% | 32.0% | 23/73% | 76/55/54% | 6198/971/453 | 24.7 | 6.1 | 742.4 | 77.7 | 10.6 | 12.2 | 1.1 | 0.2 | 0.1 | 97.2 |
 
 ## Key Findings
 
-- 신규 플레이어에 가까운 novice 자동 정책은 Act 1 보스 71.2%, Act 2 보스 21.6%, 최종 승리 6.0%다. 사람의 실수와 학습 비용은 더 크므로, 이 값은 신규 목표의 상한선으로 본다.
-- 현재 구현 데이터는 경로 성향에 따라 크게 갈린다. balanced 39.2%, safe 69.6%, greedy 20.6%다.
+- 신규 플레이어에 가까운 novice 자동 정책은 Act 1 보스 75.3%, Act 2 보스 25.3%, 최종 승리 7.0%다. 사람의 실수와 학습 비용은 더 크므로, 이 값은 신규 목표의 상한선으로 본다.
+- 현재 구현 데이터는 경로 성향에 따라 크게 갈린다. balanced 54.0%, safe 84.3%, greedy 32.0%다.
+- 웨이브 노드는 1웨이브보다 긴 턴 수를 만들지만 즉시 동시 공격 압박은 낮춘다. 2웨이브는 리듬 변화, 3웨이브는 기억나는 세트피스로 보고 빈도를 먼저 관리한다.
 - 이번 패치는 보스 HP만 올리는 방향을 피하고, 일반/엘리트의 공격 의도와 회복 경제를 조정해 길 위에서 체력이 점진적으로 깎이는 곡선을 만든다.
 - safe 정책은 체력을 보존하지만 덱 품질과 최종 화력이 약해지도록 두고, greedy 정책은 강한 덱을 만들 수 있지만 여관 진입 체력이 낮아지는 구조로 본다.
 
@@ -43,57 +44,69 @@ Steam achievements show many lifetime players eventually beat at least one chara
 
 | Segment | Count | Avg turns | P90 turns | Avg HP loss | P90 HP loss | Defeat |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Act 1 | 4185 | 3.77 | 5 | 7.6 | 15 | 3.4% |
-| Act 2 | 1692 | 3.79 | 6 | 8.1 | 19 | 14.1% |
-| Act 3 | 527 | 4.70 | 7 | 9.3 | 20 | 14.2% |
-| boss | 630 | 5.33 | 7 | 15.0 | 27 | 21.6% |
-| combat | 4325 | 3.53 | 5 | 6.9 | 15 | 6.4% |
-| elite | 949 | 3.88 | 5 | 7.4 | 14 | 4.7% |
-| midboss | 500 | 4.67 | 6 | 8.2 | 14 | 0.2% |
+| Act 1 | 2529 | 3.78 | 5 | 7.2 | 15 | 2.9% |
+| Act 2 | 1109 | 4.04 | 7 | 7.4 | 18 | 13.1% |
+| Act 3 | 452 | 5.00 | 8 | 8.7 | 18 | 11.5% |
+| boss | 417 | 5.43 | 7 | 15.8 | 28 | 22.5% |
+| combat | 2731 | 3.71 | 6 | 6.1 | 13 | 5.4% |
+| elite | 642 | 3.90 | 5 | 7.5 | 14 | 4.5% |
+| midboss | 300 | 4.63 | 6 | 8.0 | 14 | 0.0% |
+| 1-wave | 3414 | 3.69 | 5 | 7.6 | 17 | 6.5% |
+| 2-wave | 554 | 4.97 | 6 | 5.7 | 11 | 4.3% |
+| 3-wave | 122 | 7.67 | 10 | 9.5 | 18 | 21.3% |
 
-Top deaths: A1D12 Gate Warlord 91, A2D8 Red Receipt 42, A2D12 Oathless Regent 39, A2D2 Broken Milestone 36, win 30
+Top deaths: A1D12 Gate Warlord 54, A2D8 Red Receipt 42, A2D12 Oathless Regent 26, win 21, A2D10 Causeway Toll 18
 
 ### balanced / current
 
 | Segment | Count | Avg turns | P90 turns | Avg HP loss | P90 HP loss | Defeat |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Act 1 | 4962 | 4.46 | 6 | 2.9 | 10 | 0.1% |
-| Act 2 | 3733 | 4.21 | 7 | 5.8 | 17 | 2.9% |
-| Act 3 | 2999 | 4.95 | 7 | 7.2 | 21 | 6.1% |
-| boss | 1179 | 6.55 | 8 | 14.4 | 31 | 9.2% |
-| combat | 7409 | 4.14 | 6 | 4.0 | 12 | 2.6% |
-| elite | 2606 | 4.52 | 6 | 3.8 | 12 | 0.0% |
-| midboss | 500 | 5.15 | 6 | 2.7 | 9 | 0.0% |
+| Act 1 | 2979 | 4.41 | 6 | 2.3 | 8 | 0.0% |
+| Act 2 | 2413 | 4.37 | 7 | 4.8 | 15 | 1.2% |
+| Act 3 | 2341 | 5.27 | 9 | 6.2 | 18 | 4.4% |
+| boss | 824 | 6.53 | 8 | 16.0 | 34 | 11.2% |
+| combat | 4716 | 4.35 | 7 | 2.4 | 7 | 0.9% |
+| elite | 1893 | 4.53 | 6 | 4.1 | 12 | 0.0% |
+| midboss | 300 | 5.15 | 6 | 2.6 | 9 | 0.0% |
+| 1-wave | 6390 | 4.24 | 6 | 4.6 | 14 | 1.9% |
+| 2-wave | 931 | 5.58 | 7 | 1.8 | 6 | 0.3% |
+| 3-wave | 412 | 9.03 | 11 | 4.2 | 11 | 2.7% |
 
-Top deaths: win 196, A3D12 Unbound Core 93, A3D10 Core Approach 50, A2D8 Red Receipt 39, A2D10 Causeway Toll 32
+Top deaths: win 162, A3D12 Unbound Core 86, A2D8 Red Receipt 15, A2D12 Oathless Regent 7, A2D10 Causeway Toll 5
 
 ### safe / current
 
 | Segment | Count | Avg turns | P90 turns | Avg HP loss | P90 HP loss | Defeat |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Act 1 | 3888 | 3.94 | 6 | 3.0 | 10 | 0.1% |
-| Act 2 | 2593 | 4.88 | 6 | 9.5 | 23 | 0.7% |
-| Act 3 | 2808 | 5.21 | 7 | 9.7 | 26 | 4.7% |
-| boss | 1356 | 6.10 | 7 | 18.1 | 40 | 2.1% |
-| combat | 5233 | 4.34 | 7 | 5.4 | 17 | 2.3% |
-| elite | 2200 | 4.18 | 5 | 4.0 | 12 | 0.0% |
-| midboss | 500 | 4.80 | 5 | 3.9 | 9 | 0.0% |
+| Act 1 | 2324 | 3.93 | 6 | 2.9 | 9 | 0.0% |
+| Act 2 | 1690 | 5.18 | 7 | 7.6 | 23 | 0.2% |
+| Act 3 | 1886 | 5.42 | 8 | 9.0 | 25 | 2.3% |
+| boss | 864 | 6.09 | 7 | 19.6 | 43 | 1.7% |
+| combat | 3302 | 4.66 | 7 | 3.5 | 11 | 1.0% |
+| elite | 1434 | 4.18 | 5 | 4.8 | 14 | 0.0% |
+| midboss | 300 | 4.81 | 5 | 3.6 | 9 | 0.0% |
+| 1-wave | 4526 | 4.27 | 6 | 6.8 | 20 | 0.4% |
+| 2-wave | 945 | 5.54 | 6 | 3.3 | 10 | 1.9% |
+| 3-wave | 429 | 8.21 | 10 | 6.2 | 16 | 3.0% |
 
-Top deaths: win 348, A3D10 Core Approach 47, A3D2 Folded Gallery 38, A3D12 Unbound Core 21, A3D9 Core Echo 18
+Top deaths: win 253, A3D12 Unbound Core 13, A3D10 Core Approach 9, A3D9 Core Echo 9, A3D2 Folded Gallery 8
 
 ### greedy / current
 
 | Segment | Count | Avg turns | P90 turns | Avg HP loss | P90 HP loss | Defeat |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Act 1 | 5497 | 4.09 | 6 | 3.1 | 10 | 0.5% |
-| Act 2 | 3815 | 4.23 | 6 | 7.5 | 21 | 5.7% |
-| Act 3 | 1971 | 4.73 | 7 | 7.1 | 19 | 7.2% |
-| boss | 923 | 6.21 | 8 | 13.9 | 28 | 10.9% |
-| combat | 7823 | 3.94 | 6 | 4.6 | 14 | 3.6% |
-| elite | 2037 | 4.37 | 5 | 4.3 | 12 | 0.0% |
-| midboss | 500 | 5.01 | 6 | 3.6 | 10 | 0.0% |
+| Act 1 | 3300 | 4.08 | 6 | 2.7 | 9 | 0.3% |
+| Act 2 | 2653 | 4.46 | 7 | 6.5 | 19 | 3.5% |
+| Act 3 | 1669 | 5.01 | 9 | 6.8 | 19 | 5.5% |
+| boss | 669 | 6.16 | 7 | 16.8 | 34 | 12.7% |
+| combat | 5184 | 4.17 | 7 | 3.5 | 10 | 2.1% |
+| elite | 1469 | 4.37 | 5 | 5.0 | 14 | 0.0% |
+| midboss | 300 | 5.00 | 6 | 3.7 | 10 | 0.0% |
+| 1-wave | 6198 | 4.02 | 6 | 5.3 | 16 | 2.3% |
+| 2-wave | 971 | 5.19 | 6 | 2.6 | 8 | 2.0% |
+| 3-wave | 453 | 8.27 | 10 | 4.7 | 13 | 6.6% |
 
-Top deaths: win 103, A2D8 Red Receipt 59, A2D10 Causeway Toll 58, A3D10 Core Approach 45, A3D12 Unbound Core 40
+Top deaths: win 96, A3D12 Unbound Core 51, A2D8 Red Receipt 41, A2D12 Oathless Regent 28, A2D10 Causeway Toll 18
 
 
 ## Card Balance Signals
@@ -104,61 +117,61 @@ Top deaths: win 103, A2D8 Red Receipt 59, A2D10 Causeway Toll 58, A3D10 Core App
 
 | Card | Type | Cost | Offered | Picked/Bought | Pick rate | Played | Output/play |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Oath Focus | power | 1 | 539 | 498 | 92.4% | 4534 | 14.4 |
-| Marked Riposte | skill | 1 | 2666 | 1267 | 47.5% | 15172 | 9.6 |
-| Sweeping Order | attack | 3 | 1340 | 572 | 42.7% | 5626 | 14.0 |
-| Quick Step | skill | 1 | 2643 | 815 | 30.8% | 12625 | 10.0 |
-| Desperate Stand | skill | 3 | 534 | 141 | 26.4% | 2432 | 21.0 |
-| Heavy Cut | attack | 2 | 2659 | 675 | 25.4% | 6474 | 16.0 |
-| Wide Swing | attack | 2 | 2664 | 672 | 25.2% | 6385 | 10.2 |
-| Breakthrough | attack | 3 | 1336 | 308 | 23.1% | 1721 | 18.8 |
-| Road Cleave | attack | 3 | 2525 | 540 | 21.4% | 5812 | 18.8 |
-| Contract Mark | skill | 1 | 2641 | 347 | 13.1% | 2139 | 10.7 |
+| Oath Focus | power | 1 | 382 | 362 | 94.8% | 3812 | 14.6 |
+| Marked Riposte | skill | 1 | 1711 | 785 | 45.9% | 10211 | 9.9 |
+| Sweeping Order | attack | 3 | 899 | 334 | 37.2% | 3896 | 14.1 |
+| Desperate Stand | skill | 3 | 355 | 98 | 27.6% | 1756 | 20.9 |
+| Quick Step | skill | 1 | 1802 | 497 | 27.6% | 8459 | 10.0 |
+| Wide Swing | attack | 2 | 1736 | 415 | 23.9% | 4353 | 10.1 |
+| Heavy Cut | attack | 2 | 1815 | 414 | 22.8% | 4563 | 16.6 |
+| Road Cleave | attack | 3 | 1712 | 342 | 20.0% | 4190 | 19.3 |
+| Breakthrough | attack | 3 | 943 | 187 | 19.8% | 1238 | 20.0 |
+| Contract Mark | skill | 1 | 1766 | 223 | 12.6% | 1644 | 11.0 |
 
 ### Low Pick
 
 | Card | Type | Cost | Offered | Picked/Bought | Pick rate | Played | Output/play |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Blood Price | skill | 0 | 1359 | 6 | 0.4% | 84 | 10.0 |
-| Clean Cut | attack | 1 | 2720 | 55 | 2.0% | 443 | 12.3 |
-| Field Medicine | skill | 2 | 1347 | 46 | 3.4% | 656 | 13.1 |
-| Shield Line | skill | 2 | 1419 | 80 | 5.6% | 1164 | 14.0 |
-| Brace | skill | 2 | 2669 | 152 | 5.7% | 1241 | 13.1 |
-| Risk Advance | skill | 0 | 1362 | 152 | 11.2% | 1601 | 7.8 |
-| Last Light | skill | 3 | 546 | 61 | 11.2% | 1083 | 16.1 |
-| Contract Mark | skill | 1 | 2641 | 347 | 13.1% | 2139 | 10.7 |
-| Road Cleave | attack | 3 | 2525 | 540 | 21.4% | 5812 | 18.8 |
-| Breakthrough | attack | 3 | 1336 | 308 | 23.1% | 1721 | 18.8 |
+| Blood Price | skill | 0 | 892 | 5 | 0.6% | 56 | 10.0 |
+| Clean Cut | attack | 1 | 1812 | 29 | 1.6% | 247 | 12.5 |
+| Field Medicine | skill | 2 | 897 | 31 | 3.5% | 439 | 13.1 |
+| Shield Line | skill | 2 | 888 | 41 | 4.6% | 673 | 14.0 |
+| Brace | skill | 2 | 1725 | 90 | 5.2% | 766 | 13.1 |
+| Last Light | skill | 3 | 363 | 33 | 9.1% | 591 | 15.8 |
+| Risk Advance | skill | 0 | 903 | 101 | 11.2% | 1320 | 8.3 |
+| Contract Mark | skill | 1 | 1766 | 223 | 12.6% | 1644 | 11.0 |
+| Breakthrough | attack | 3 | 943 | 187 | 19.8% | 1238 | 20.0 |
+| Road Cleave | attack | 3 | 1712 | 342 | 20.0% | 4190 | 19.3 |
 
 ### High Output
 
 | Card | Type | Cost | Offered | Picked/Bought | Pick rate | Played | Output/play |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Debt Cleave | attack | 3 | 0 | 252 | 0.0% | 3214 | 21.2 |
-| Desperate Stand | skill | 3 | 534 | 141 | 26.4% | 2432 | 21.0 |
-| Road Cleave | attack | 3 | 2525 | 540 | 21.4% | 5812 | 18.8 |
-| Breakthrough | attack | 3 | 1336 | 308 | 23.1% | 1721 | 18.8 |
-| Spear Finish | attack | 3 | 0 | 93 | 0.0% | 926 | 18.4 |
-| Last Light | skill | 3 | 546 | 61 | 11.2% | 1083 | 16.1 |
-| Broadhead | attack | 2 | 0 | 137 | 0.0% | 885 | 16.0 |
-| Iron Bulwark | skill | 3 | 0 | 23 | 0.0% | 321 | 16.0 |
-| Pinning Thrust | attack | 2 | 0 | 232 | 0.0% | 1493 | 16.0 |
-| Heavy Cut | attack | 2 | 2659 | 675 | 25.4% | 6474 | 16.0 |
+| Debt Cleave | attack | 3 | 0 | 154 | 0.0% | 2450 | 21.9 |
+| Desperate Stand | skill | 3 | 355 | 98 | 27.6% | 1756 | 20.9 |
+| Breakthrough | attack | 3 | 943 | 187 | 19.8% | 1238 | 20.0 |
+| Road Cleave | attack | 3 | 1712 | 342 | 20.0% | 4190 | 19.3 |
+| Spear Finish | attack | 3 | 0 | 54 | 0.0% | 679 | 18.9 |
+| Bad Omen | skill | 2 | 0 | 26 | 0.0% | 197 | 17.5 |
+| Back Cut | attack | 2 | 0 | 113 | 0.0% | 824 | 16.8 |
+| Heavy Cut | attack | 2 | 1815 | 414 | 22.8% | 4563 | 16.6 |
+| Pinning Thrust | attack | 2 | 0 | 136 | 0.0% | 1052 | 16.6 |
+| Broadhead | attack | 2 | 0 | 81 | 0.0% | 635 | 16.3 |
 
 ### Low Output
 
 | Card | Type | Cost | Offered | Picked/Bought | Pick rate | Played | Output/play |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Guard | skill | 1 | 0 | 0 | 0.0% | 26786 | 5.0 |
-| Tactical Prep | skill | 0 | 0 | 0 | 0.0% | 17735 | 7.5 |
-| Knife Feint | skill | 0 | 0 | 131 | 0.0% | 2145 | 7.5 |
-| Risk Advance | skill | 0 | 1362 | 152 | 11.2% | 1601 | 7.8 |
-| Smoke Pocket | skill | 1 | 0 | 78 | 0.0% | 656 | 8.0 |
-| Bell Break | attack | 2 | 0 | 74 | 0.0% | 412 | 9.1 |
-| Strike | attack | 1 | 0 | 0 | 0.0% | 26233 | 9.5 |
-| Marked Riposte | skill | 1 | 2666 | 1267 | 47.5% | 15172 | 9.6 |
-| Red Banner | skill | 1 | 0 | 196 | 0.0% | 2268 | 9.6 |
-| Snare Line | skill | 1 | 0 | 137 | 0.0% | 1297 | 9.7 |
+| Guard | skill | 1 | 0 | 0 | 0.0% | 16555 | 5.0 |
+| Tactical Prep | skill | 0 | 0 | 0 | 0.0% | 11520 | 7.6 |
+| Knife Feint | skill | 0 | 0 | 85 | 0.0% | 1629 | 8.0 |
+| Smoke Pocket | skill | 1 | 0 | 49 | 0.0% | 436 | 8.0 |
+| Risk Advance | skill | 0 | 903 | 101 | 11.2% | 1320 | 8.3 |
+| Bell Break | attack | 2 | 0 | 46 | 0.0% | 287 | 9.1 |
+| Strike | attack | 1 | 0 | 0 | 0.0% | 16383 | 9.8 |
+| Marked Riposte | skill | 1 | 1711 | 785 | 45.9% | 10211 | 9.9 |
+| Red Banner | skill | 1 | 0 | 114 | 0.0% | 1574 | 9.9 |
+| Snare Line | skill | 1 | 0 | 81 | 0.0% | 833 | 10.0 |
 
 ## Reading
 

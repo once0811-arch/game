@@ -7,7 +7,10 @@
     {"depth": 1, "lane": 2, "type": "combat", "label": "Core Echo", "enemy_id": "enemy_act3_core_echo"},
 
     {"depth": 2, "lane": 0, "type": "inn", "label": "Last Fire"},
-    {"depth": 2, "lane": 1, "type": "combat", "label": "Folded Gallery", "enemy_ids": ["enemy_act3_nameless_limb", "enemy_act3_core_echo"]},
+    {"depth": 2, "lane": 1, "type": "combat", "label": "Folded Gallery", "waves": [
+      {"enemy_ids": ["enemy_act3_frayed_witness"]},
+      {"enemy_ids": ["enemy_act3_core_echo"]}
+    ]},
     {"depth": 2, "lane": 2, "type": "shop", "label": "Impossible Trader"},
 
     {"depth": 3, "lane": 0, "type": "combat", "label": "Core Echo", "enemy_id": "enemy_act3_core_echo"},
@@ -16,7 +19,10 @@
 
     {"depth": 4, "lane": 0, "type": "elite", "label": "Door That Walks", "enemy_id": "elite_act3_door_that_walks"},
     {"depth": 4, "lane": 1, "type": "inn", "label": "Cold Hearth"},
-    {"depth": 4, "lane": 2, "type": "combat", "label": "Echo Choir", "enemy_ids": ["enemy_act3_core_echo", "enemy_act3_core_echo"]},
+    {"depth": 4, "lane": 2, "type": "combat", "label": "Echo Choir", "waves": [
+      {"enemy_ids": ["enemy_act3_core_echo"]},
+      {"enemy_ids": ["enemy_act3_angle_choir"]}
+    ]},
 
     {"depth": 5, "lane": 0, "type": "event", "label": "Room That Remembers"},
     {"depth": 5, "lane": 1, "type": "elite", "label": "Walking Gate", "enemy_id": "elite_act3_door_that_walks"},
@@ -26,7 +32,11 @@
     {"depth": 6, "lane": 1, "type": "event", "label": "Unwritten Contract"},
     {"depth": 6, "lane": 2, "type": "inn", "label": "Last Fire"},
 
-    {"depth": 7, "lane": 0, "type": "combat", "label": "Room Vein", "enemy_ids": ["enemy_act3_nameless_limb", "enemy_act3_core_echo"]},
+    {"depth": 7, "lane": 0, "type": "combat", "label": "Room Vein", "waves": [
+      {"enemy_ids": ["enemy_act3_nameless_limb"]},
+      {"enemy_ids": ["enemy_act3_frayed_witness"]},
+      {"enemy_ids": ["enemy_act3_core_echo"]}
+    ]},
     {"depth": 7, "lane": 1, "type": "elite", "label": "Door That Walks", "enemy_id": "elite_act3_door_that_walks"},
     {"depth": 7, "lane": 2, "type": "event", "label": "Black Star Map"},
 
@@ -35,11 +45,18 @@
     {"depth": 8, "lane": 2, "type": "inn", "label": "Cold Hearth"},
 
     {"depth": 9, "lane": 0, "type": "elite", "label": "Walking Gate", "enemy_id": "elite_act3_door_that_walks"},
-    {"depth": 9, "lane": 1, "type": "combat", "label": "Core Echo", "enemy_ids": ["enemy_act3_core_echo", "enemy_act3_nameless_limb"]},
+    {"depth": 9, "lane": 1, "type": "combat", "label": "Core Echo", "waves": [
+      {"enemy_ids": ["enemy_act3_core_echo"]},
+      {"enemy_ids": ["enemy_act3_nameless_limb"]}
+    ]},
     {"depth": 9, "lane": 2, "type": "event", "label": "Room That Remembers"},
 
     {"depth": 10, "lane": 0, "type": "event", "label": "Last Testimony"},
-    {"depth": 10, "lane": 1, "type": "combat", "label": "Core Approach", "enemy_ids": ["enemy_act3_nameless_limb", "enemy_act3_nameless_limb"]},
+    {"depth": 10, "lane": 1, "type": "combat", "label": "Core Approach", "waves": [
+      {"enemy_ids": ["enemy_act3_angle_choir"]},
+      {"enemy_ids": ["enemy_act3_nameless_limb"]},
+      {"enemy_ids": ["enemy_act3_nameless_limb"]}
+    ]},
     {"depth": 10, "lane": 2, "type": "shop", "label": "Impossible Trader"},
 
     {"depth": 11, "lane": 0, "type": "inn", "label": "Final Fire"},

@@ -25,6 +25,28 @@
       ]
     },
     {
+      "id": "enemy_act3_frayed_witness",
+      "name": "Frayed Witness",
+      "max_hp": 76,
+      "asset_id": "enemy_act1_mutated_scholar_idle",
+      "intents": [
+        {"type": "healing_down", "label": "Memory Rot", "percent": 50, "turns": 2},
+        {"type": "attack", "label": "Point Beyond", "damage": 16},
+        {"type": "block", "label": "Fold Testimony", "block": 14}
+      ]
+    },
+    {
+      "id": "enemy_act3_angle_choir",
+      "name": "Angle Choir",
+      "max_hp": 82,
+      "asset_id": "enemy_act1_rooted_scavenger_idle",
+      "intents": [
+        {"type": "block", "label": "Impossible Harmony", "block": 16},
+        {"type": "attack", "label": "Many-Throat Cut", "damage": 18},
+        {"type": "attack", "label": "Off-Beam", "damage": 15}
+      ]
+    },
+    {
       "id": "elite_act3_door_that_walks",
       "name": "Door That Walks",
       "max_hp": 130,

@@ -14,6 +14,13 @@ var healing_reduction_percent := 0
 var healing_reduction_turns := 0
 var oath_flags: Dictionary = {}
 var enemies: Array[Dictionary] = []
+var enemy_waves: Array = []
+var wave_index := 0
+var wave_count := 1
+var wave_hp_lost: Array[int] = []
+var wave_turns: Array[int] = []
+var wave_start_hp := 0
+var wave_start_turn := 1
 
 
 func reset() -> void:
@@ -30,6 +37,13 @@ func reset() -> void:
 	healing_reduction_turns = 0
 	oath_flags.clear()
 	enemies.clear()
+	enemy_waves.clear()
+	wave_index = 0
+	wave_count = 1
+	wave_hp_lost.clear()
+	wave_turns.clear()
+	wave_start_hp = 0
+	wave_start_turn = 1
 
 
 func to_dict() -> Dictionary:
@@ -47,6 +61,13 @@ func to_dict() -> Dictionary:
 		"healing_reduction_turns": healing_reduction_turns,
 		"oath_flags": oath_flags.duplicate(true),
 		"enemies": enemies.duplicate(true),
+		"enemy_waves": enemy_waves.duplicate(true),
+		"wave_index": wave_index,
+		"wave_count": wave_count,
+		"wave_hp_lost": wave_hp_lost.duplicate(),
+		"wave_turns": wave_turns.duplicate(),
+		"wave_start_hp": wave_start_hp,
+		"wave_start_turn": wave_start_turn,
 	}
 
 
@@ -68,3 +89,23 @@ func from_dict(data: Dictionary) -> void:
 	for enemy in data.get("enemies", []):
 		if typeof(enemy) == TYPE_DICTIONARY:
 			enemies.append(enemy)
+	enemy_waves = []
+	for wave in data.get("enemy_waves", []):
+		if typeof(wave) == TYPE_ARRAY:
+			var ids: Array[String] = []
+			for enemy_id in wave:
+				var id_text := String(enemy_id)
+				if not id_text.is_empty():
+					ids.append(id_text)
+			if not ids.is_empty():
+				enemy_waves.append(ids)
+	wave_index = int(data.get("wave_index", 0))
+	wave_count = maxi(1, int(data.get("wave_count", maxi(enemy_waves.size(), 1))))
+	wave_hp_lost.clear()
+	for value in data.get("wave_hp_lost", []):
+		wave_hp_lost.append(int(value))
+	wave_turns.clear()
+	for value in data.get("wave_turns", []):
+		wave_turns.append(int(value))
+	wave_start_hp = int(data.get("wave_start_hp", 0))
+	wave_start_turn = int(data.get("wave_start_turn", 1))

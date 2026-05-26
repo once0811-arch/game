@@ -367,10 +367,34 @@ class BalanceSimulator:
             state.stats["kyle_payouts"] += 1
 
     def _enemy_ids_for_node(self, node: dict[str, Any]) -> list[str]:
+        waves = self._enemy_waves_for_node(node)
+        if waves:
+            return [enemy_id for wave in waves for enemy_id in wave]
         if "enemy_ids" in node:
             return [str(enemy_id) for enemy_id in node.get("enemy_ids", [])]
         enemy_id = str(node.get("enemy_id", ""))
         return [enemy_id] if enemy_id else []
+
+    def _enemy_waves_for_node(self, node: dict[str, Any]) -> list[list[str]]:
+        waves: list[list[str]] = []
+        for raw_wave in node.get("waves", []):
+            ids: list[str] = []
+            if isinstance(raw_wave, dict):
+                ids = [str(enemy_id) for enemy_id in raw_wave.get("enemy_ids", []) if str(enemy_id)]
+                if not ids and str(raw_wave.get("enemy_id", "")):
+                    ids = [str(raw_wave.get("enemy_id", ""))]
+            elif isinstance(raw_wave, list):
+                ids = [str(enemy_id) for enemy_id in raw_wave if str(enemy_id)]
+            if ids:
+                waves.append(ids)
+        if waves:
+            return waves
+        ids = []
+        if "enemy_ids" in node:
+            ids = [str(enemy_id) for enemy_id in node.get("enemy_ids", []) if str(enemy_id)]
+        elif str(node.get("enemy_id", "")):
+            ids = [str(node.get("enemy_id", ""))]
+        return [ids] if ids else []
 
     def _node_target_key(self, node: dict[str, Any]) -> tuple[int, str] | None:
         act = int(node.get("act", 1))
@@ -402,23 +426,20 @@ class BalanceSimulator:
         return hp_scale, attack_scale
 
     def _simulate_combat(self, state: RunState, node: dict[str, Any], policy: str, enemy_profile: str) -> dict[str, Any]:
-        enemy_ids = self._enemy_ids_for_node(node)
+        enemy_waves = self._enemy_waves_for_node(node)
+        enemy_ids = [enemy_id for wave in enemy_waves for enemy_id in wave]
         hp_scale, attack_scale = self._enemy_scales(node, enemy_profile, enemy_ids)
-        enemies = []
-        for enemy_id in enemy_ids:
-            data = self.enemies.get(enemy_id)
-            if not data:
-                continue
-            enemies.append({
-                "id": enemy_id,
-                "name": data.get("name", enemy_id),
-                "max_hp": int(math.ceil(int(data.get("max_hp", 1)) * hp_scale)),
-                "hp": int(math.ceil(int(data.get("max_hp", 1)) * hp_scale)),
-                "block": 0,
-                "mark": 0,
-                "intents": data.get("intents", []) or [{"type": "attack", "damage": 5, "label": "Attack"}],
-                "intent_index": 0,
-            })
+        wave_index = 0
+        enemies = self._spawn_sim_enemy_wave(enemy_waves[wave_index] if enemy_waves else [], hp_scale)
+        wave_hp_lost: list[int] = []
+        wave_turns: list[int] = []
+        wave_start_hp = state.hp
+        wave_start_turn = 1
+        wave_count = max(1, len(enemy_waves))
+        state.stats[f"combat_wave_count_{wave_count}"] += 1
+        state.stats["combat_waves_started"] += 1
+        if wave_count > 1:
+            state.stats["combat_multi_wave_nodes"] += 1
         combat = {
             "hp": state.hp,
             "max_hp": state.max_hp,
@@ -441,7 +462,7 @@ class BalanceSimulator:
         self._apply_combat_start_oaths(state, combat, draw_pile, discard_pile, hand)
         start_hp = state.hp
         total_cards_played = 0
-        for turn in range(1, 41):
+        for turn in range(1, 61):
             combat["turn"] = turn
             combat["energy"] = int(self.balance.get("combat", {}).get("energy_per_turn", 4))
             combat["cards_played_this_turn"] = 0
@@ -449,17 +470,28 @@ class BalanceSimulator:
                 combat["block"] = self._bond_start_block(state)
             played = self._play_player_turn(state, combat, enemies, draw_pile, discard_pile, hand, policy)
             total_cards_played += played
-            if not self._alive_indices(enemies):
-                state.hp = combat["hp"]
-                return self._combat_result(state, node, "victory", turn, start_hp, total_cards_played, hp_scale, attack_scale)
             self._companion_attacks(state, combat, enemies)
             if not self._alive_indices(enemies):
-                state.hp = combat["hp"]
-                return self._combat_result(state, node, "victory", turn, start_hp, total_cards_played, hp_scale, attack_scale)
+                wave_hp_lost.append(max(0, wave_start_hp - int(combat["hp"])))
+                wave_turns.append(max(1, turn - wave_start_turn + 1))
+                if wave_index + 1 >= wave_count:
+                    state.hp = combat["hp"]
+                    return self._combat_result(state, node, "victory", turn, start_hp, total_cards_played, hp_scale, attack_scale, wave_count, wave_hp_lost, wave_turns)
+                wave_index += 1
+                enemies = self._spawn_sim_enemy_wave(enemy_waves[wave_index], hp_scale)
+                wave_start_hp = int(combat["hp"])
+                wave_start_turn = turn + 1
+                state.stats["combat_waves_started"] += 1
+                discard_pile.extend(hand)
+                hand.clear()
+                self._draw_cards(state, draw_pile, discard_pile, hand, 6)
+                continue
             self._enemy_turn(state, combat, enemies)
             if combat["hp"] <= 0:
                 state.hp = 0
-                return self._combat_result(state, node, "defeat", turn, start_hp, total_cards_played, hp_scale, attack_scale)
+                wave_hp_lost.append(max(0, wave_start_hp))
+                wave_turns.append(max(1, turn - wave_start_turn + 1))
+                return self._combat_result(state, node, "defeat", turn, start_hp, total_cards_played, hp_scale, attack_scale, wave_count, wave_hp_lost, wave_turns)
             if combat["healing_down_turns"] > 0:
                 combat["healing_down_turns"] -= 1
                 if combat["healing_down_turns"] <= 0:
@@ -468,9 +500,29 @@ class BalanceSimulator:
             hand.clear()
             self._draw_cards(state, draw_pile, discard_pile, hand, 6)
         state.hp = combat["hp"]
-        return self._combat_result(state, node, "timeout", 40, start_hp, total_cards_played, hp_scale, attack_scale)
+        wave_hp_lost.append(max(0, wave_start_hp - int(combat["hp"])))
+        wave_turns.append(max(1, int(combat["turn"]) - wave_start_turn + 1))
+        return self._combat_result(state, node, "timeout", 60, start_hp, total_cards_played, hp_scale, attack_scale, wave_count, wave_hp_lost, wave_turns)
 
-    def _combat_result(self, state: RunState, node: dict[str, Any], outcome: str, turns: int, start_hp: int, cards_played: int, hp_scale: float, attack_scale: float) -> dict[str, Any]:
+    def _spawn_sim_enemy_wave(self, enemy_ids: list[str], hp_scale: float) -> list[dict[str, Any]]:
+        enemies = []
+        for enemy_id in enemy_ids:
+            data = self.enemies.get(enemy_id)
+            if not data:
+                continue
+            enemies.append({
+                "id": enemy_id,
+                "name": data.get("name", enemy_id),
+                "max_hp": int(math.ceil(int(data.get("max_hp", 1)) * hp_scale)),
+                "hp": int(math.ceil(int(data.get("max_hp", 1)) * hp_scale)),
+                "block": 0,
+                "mark": 0,
+                "intents": data.get("intents", []) or [{"type": "attack", "damage": 5, "label": "Attack"}],
+                "intent_index": 0,
+            })
+        return enemies
+
+    def _combat_result(self, state: RunState, node: dict[str, Any], outcome: str, turns: int, start_hp: int, cards_played: int, hp_scale: float, attack_scale: float, wave_count: int, wave_hp_lost: list[int], wave_turns: list[int]) -> dict[str, Any]:
         result = {
             "outcome": outcome,
             "defeat": outcome != "victory",
@@ -483,6 +535,9 @@ class BalanceSimulator:
             "depth": int(node.get("depth", 0)),
             "node_type": str(node.get("type", "")),
             "node_label": str(node.get("label", "")),
+            "wave_count": wave_count,
+            "wave_hp_lost": wave_hp_lost[:],
+            "wave_turns": wave_turns[:],
         }
         state.combat_summaries.append(result)
         state.stats["combats"] += 1
@@ -1405,9 +1460,11 @@ class AggregateStats:
         combats = self.combat_rows
         by_node_type: dict[str, list[dict[str, Any]]] = defaultdict(list)
         by_act: dict[int, list[dict[str, Any]]] = defaultdict(list)
+        by_wave_count: dict[int, list[dict[str, Any]]] = defaultdict(list)
         for row in combats:
             by_node_type[str(row.get("node_type", ""))].append(row)
             by_act[int(row.get("act", 0))].append(row)
+            by_wave_count[int(row.get("wave_count", 1))].append(row)
         return {
             "policy": self.policy,
             "enemy_profile": self.enemy_profile,
@@ -1431,6 +1488,7 @@ class AggregateStats:
             "route_hp": self._route_hp_summary(self.node_rows),
             "combat_by_type": {kind: self._combat_summary(rows) for kind, rows in by_node_type.items()},
             "combat_by_act": {str(act): self._combat_summary(rows) for act, rows in by_act.items()},
+            "combat_by_wave_count": {str(count): self._combat_summary(rows) for count, rows in by_wave_count.items()},
             "card_stats": {card_id: dict(counter) for card_id, counter in sorted(self.card_stats.items())},
         }
 
@@ -1443,6 +1501,7 @@ class AggregateStats:
             "avg_hp_loss": mean([float(row.get("hp_lost", 0)) for row in rows]),
             "p90_hp_loss": percentile([float(row.get("hp_lost", 0)) for row in rows], 0.9),
             "defeat_rate": sum(1 for row in rows if row.get("outcome") != "victory") / max(1, len(rows)),
+            "avg_wave_count": mean([float(row.get("wave_count", 1)) for row in rows]),
         }
 
     @staticmethod
@@ -1521,8 +1580,8 @@ def write_report(sim: BalanceSimulator, reports: list[dict[str, Any]], output_js
         "",
         "## Summary",
         "",
-        "| Policy | Enemy profile | Runs | A1 Boss | A2 Boss | A3 Reach | Win | Inn in/out | Boss HP A1/A2/A3 | Avg deck | Avg HP | Avg gold | Avg bond | Picked | Skipped | Upgraded | Removed | Gear | Oath triggers |",
-        "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+        "| Policy | Enemy profile | Runs | A1 Boss | A2 Boss | A3 Reach | Win | Inn in/out | Boss HP A1/A2/A3 | Waves 1/2/3 | Avg deck | Avg HP | Avg gold | Avg bond | Picked | Skipped | Upgraded | Removed | Gear | Oath triggers |",
+        "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ]
     for report in reports:
         boss_clear = report.get("boss_clear_rate", {})
@@ -1531,10 +1590,12 @@ def write_report(sim: BalanceSimulator, reports: list[dict[str, Any]], output_js
         boss_hp = route_hp.get("avg_boss_hp_ratio_before_by_act", {})
         inn_ratio = f"{float(route_hp.get('avg_inn_hp_ratio_before', 0))*100:.0f}/{float(route_hp.get('avg_inn_hp_ratio_after', 0))*100:.0f}%"
         boss_ratio = f"{float(boss_hp.get('1', 0))*100:.0f}/{float(boss_hp.get('2', 0))*100:.0f}/{float(boss_hp.get('3', 0))*100:.0f}%"
+        wave_counts = report.get("combat_by_wave_count", {})
+        wave_mix = "/".join(str(int(wave_counts.get(str(count), {}).get("count", 0))) for count in (1, 2, 3))
         lines.append(
             f"| {report['policy']} | {report['enemy_profile']} | {report['runs']} | "
             f"{float(boss_clear.get('1', 0))*100:.1f}% | {float(boss_clear.get('2', 0))*100:.1f}% | {float(act_reach.get('3', 0))*100:.1f}% | {report['win_rate']*100:.1f}% | {inn_ratio} | {boss_ratio} | "
-            f"{report['avg_final_deck_size']:.1f} | {report['avg_final_hp']:.1f} | {report['avg_final_gold']:.1f} | {report['avg_final_bond']:.1f} | "
+            f"{wave_mix} | {report['avg_final_deck_size']:.1f} | {report['avg_final_hp']:.1f} | {report['avg_final_gold']:.1f} | {report['avg_final_bond']:.1f} | "
             f"{report['avg_cards_picked']:.1f} | {report['avg_cards_skipped']:.1f} | {report['avg_cards_upgraded']:.1f} | {report['avg_cards_removed']:.1f} | "
             f"{report['avg_equipment_gained']:.1f} | {report['avg_oath_triggers']:.1f} |"
         )
@@ -1561,6 +1622,8 @@ def write_report(sim: BalanceSimulator, reports: list[dict[str, Any]], output_js
         lines.append(f"- 문서 목표 HP 중간값을 전부 적용하면 balanced {spec_balanced.get('win_rate', 0)*100:.1f}%, safe {spec_safe.get('win_rate', 0)*100:.1f}%가 된다. 문서 목표는 최종 목표선으로는 쓸 수 있지만, 현재 구현에 즉시 일괄 적용하면 너무 가파르다.")
     if spec_attack_balanced:
         lines.append(f"- 문서 목표 HP에 공격력 +10%까지 얹은 압박 테스트는 balanced {spec_attack_balanced.get('win_rate', 0)*100:.1f}%다. 이 수치는 상위 난이도나 후반 튜닝 검증용이지 기본 난이도 기준으로 쓰면 안 된다.")
+    if any(report.get("combat_by_wave_count", {}).get("2") or report.get("combat_by_wave_count", {}).get("3") for report in reports):
+        lines.append("- 웨이브 노드는 1웨이브보다 긴 턴 수를 만들지만 즉시 동시 공격 압박은 낮춘다. 2웨이브는 리듬 변화, 3웨이브는 기억나는 세트피스로 보고 빈도를 먼저 관리한다.")
     lines.extend([
         "- 이번 패치는 보스 HP만 올리는 방향을 피하고, 일반/엘리트의 공격 의도와 회복 경제를 조정해 길 위에서 체력이 점진적으로 깎이는 곡선을 만든다.",
         "- safe 정책은 체력을 보존하지만 덱 품질과 최종 화력이 약해지도록 두고, greedy 정책은 강한 덱을 만들 수 있지만 여관 진입 체력이 낮아지는 구조로 본다.",
@@ -1591,6 +1654,8 @@ def write_report(sim: BalanceSimulator, reports: list[dict[str, Any]], output_js
             lines.append(f"| Act {label} | {summary['count']} | {summary['avg_turns']:.2f} | {summary['p90_turns']:.0f} | {summary['avg_hp_loss']:.1f} | {summary['p90_hp_loss']:.0f} | {summary['defeat_rate']*100:.1f}% |")
         for label, summary in sorted(report.get("combat_by_type", {}).items()):
             lines.append(f"| {label} | {summary['count']} | {summary['avg_turns']:.2f} | {summary['p90_turns']:.0f} | {summary['avg_hp_loss']:.1f} | {summary['p90_hp_loss']:.0f} | {summary['defeat_rate']*100:.1f}% |")
+        for label, summary in sorted(report.get("combat_by_wave_count", {}).items()):
+            lines.append(f"| {label}-wave | {summary['count']} | {summary['avg_turns']:.2f} | {summary['p90_turns']:.0f} | {summary['avg_hp_loss']:.1f} | {summary['p90_hp_loss']:.0f} | {summary['defeat_rate']*100:.1f}% |")
         lines.append("")
         lines.append("Top deaths: " + ", ".join([f"{name} {count}" for name, count in report.get("top_deaths", [])[:5]]))
         lines.append("")

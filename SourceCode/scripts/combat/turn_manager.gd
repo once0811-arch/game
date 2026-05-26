@@ -15,6 +15,7 @@ var card_effects = CardEffectResolverScript.new()
 var companion_combat = CompanionCombatSystemScript.new()
 var oath_resolver = OathTacticResolverScript.new()
 var bond_system = BondSystemScript.new()
+var last_update_advanced_wave := false
 
 
 func start_combat(enemy_id: String) -> Array[String]:
@@ -30,22 +31,28 @@ func start_combat(enemy_id: String) -> Array[String]:
 	RunState.combat.energy = RunState.combat.max_energy
 	RunState.combat.cards_played_this_turn = 0
 
-	var enemy_ids := MapState.get_selected_enemy_ids(enemy_id)
-	RunState.combat.enemies.clear()
-	var enemy_names: Array[String] = []
-	for selected_id in enemy_ids:
-		var enemy_data := DataRegistry.get_enemy(selected_id)
-		if enemy_data.is_empty():
-			logs.append("Missing enemy data: %s" % selected_id)
-			continue
-		RunState.combat.enemies.append(enemy_ai.create_enemy(enemy_data))
-		enemy_names.append(String(enemy_data.get("name", selected_id)))
+	var enemy_waves: Array = MapState.get_selected_enemy_waves(enemy_id)
+	if enemy_waves.is_empty():
+		logs.append("Missing enemy wave data.")
+		return logs
+	RunState.combat.enemy_waves = _duplicate_enemy_waves(enemy_waves)
+	RunState.combat.wave_index = 0
+	RunState.combat.wave_count = maxi(RunState.combat.enemy_waves.size(), 1)
+	RunState.combat.wave_hp_lost.clear()
+	RunState.combat.wave_turns.clear()
+	var first_wave_ids := _enemy_ids_for_wave(0)
+	var enemy_names := _spawn_enemy_wave(first_wave_ids, logs)
 	if RunState.combat.enemies.is_empty():
 		return logs
 	var node_type := MapState.get_selected_node_type() if MapState.has_selected_node() else "combat_fallback"
-	RunTelemetry.begin_combat(enemy_ids[0], node_type)
+	RunTelemetry.begin_combat(first_wave_ids[0], node_type, RunState.combat.wave_count, _flatten_enemy_waves(RunState.combat.enemy_waves))
+	RunTelemetry.record_combat_wave(1, RunState.combat.wave_count, first_wave_ids)
 	var drawn: Array[Dictionary] = RunState.deck.draw_cards(int(DataRegistry.get_balance("combat.draw_per_turn", 6)))
-	logs.append("Combat started: %s." % ", ".join(PackedStringArray(enemy_names)))
+	_start_wave_record()
+	if RunState.combat.wave_count > 1:
+		logs.append("Combat started: Wave 1/%d - %s." % [RunState.combat.wave_count, ", ".join(PackedStringArray(enemy_names))])
+	else:
+		logs.append("Combat started: %s." % ", ".join(PackedStringArray(enemy_names)))
 	logs.append("Drew %d cards." % drawn.size())
 	_apply_equipment_start_bonuses(logs)
 	logs.append_array(oath_resolver.on_combat_start())
@@ -88,6 +95,9 @@ func end_player_turn() -> Array[String]:
 	_update_outcome(logs)
 	if RunState.combat.outcome != "active":
 		return logs
+	if last_update_advanced_wave:
+		_start_player_turn(logs)
+		return logs
 	logs.append_array(enemy_ai.execute_enemy_turn())
 	_update_outcome(logs)
 	if RunState.combat.outcome == "active":
@@ -111,11 +121,16 @@ func _start_player_turn(logs: Array[String]) -> void:
 
 
 func _update_outcome(logs: Array[String]) -> void:
+	last_update_advanced_wave = false
 	var any_alive := false
 	for enemy in RunState.combat.enemies:
 		if int(enemy.get("hp", 0)) > 0:
 			any_alive = true
 	if not any_alive:
+		if _advance_wave(logs):
+			last_update_advanced_wave = true
+			return
+		_close_current_wave_record()
 		RunState.combat.outcome = "victory"
 		RunState.combat.in_combat = false
 		logs.append("Victory.")
@@ -128,10 +143,99 @@ func _update_outcome(logs: Array[String]) -> void:
 		logs.append_array(bond_system.award_for_victory(node_type))
 		RunTelemetry.end_combat("victory", RunState.combat.turn_index)
 	elif RunState.current_hp <= 0:
+		_close_current_wave_record()
 		RunState.combat.outcome = "defeat"
 		RunState.combat.in_combat = false
 		logs.append("Defeat.")
 		RunTelemetry.end_combat("defeat", RunState.combat.turn_index)
+
+
+func _advance_wave(logs: Array[String]) -> bool:
+	var next_wave_index: int = RunState.combat.wave_index + 1
+	if next_wave_index >= RunState.combat.wave_count:
+		return false
+	_close_current_wave_record()
+	RunState.combat.wave_index = next_wave_index
+	var enemy_ids := _enemy_ids_for_wave(next_wave_index)
+	var enemy_names := _spawn_enemy_wave(enemy_ids, logs)
+	if RunState.combat.enemies.is_empty():
+		return false
+	_start_wave_record()
+	RunTelemetry.record_combat_wave(next_wave_index + 1, RunState.combat.wave_count, enemy_ids)
+	logs.append("Wave %d/%d arrived: %s." % [
+		next_wave_index + 1,
+		RunState.combat.wave_count,
+		", ".join(PackedStringArray(enemy_names)),
+	])
+	return true
+
+
+func _spawn_enemy_wave(enemy_ids: Array, logs: Array[String]) -> Array[String]:
+	RunState.combat.enemies.clear()
+	var enemy_names: Array[String] = []
+	for selected_id in enemy_ids:
+		var enemy_id := String(selected_id)
+		var enemy_data := DataRegistry.get_enemy(enemy_id)
+		if enemy_data.is_empty():
+			logs.append("Missing enemy data: %s" % enemy_id)
+			continue
+		RunState.combat.enemies.append(enemy_ai.create_enemy(enemy_data))
+		enemy_names.append(String(enemy_data.get("name", enemy_id)))
+	return enemy_names
+
+
+func _enemy_ids_for_wave(wave_index: int) -> Array[String]:
+	var ids: Array[String] = []
+	if wave_index < 0 or wave_index >= RunState.combat.enemy_waves.size():
+		return ids
+	var raw_wave: Variant = RunState.combat.enemy_waves[wave_index]
+	if typeof(raw_wave) != TYPE_ARRAY:
+		return ids
+	for enemy_id in raw_wave:
+		var id_text := String(enemy_id)
+		if not id_text.is_empty():
+			ids.append(id_text)
+	return ids
+
+
+func _duplicate_enemy_waves(waves: Array) -> Array:
+	var duplicate: Array = []
+	for wave in waves:
+		if typeof(wave) != TYPE_ARRAY:
+			continue
+		var ids: Array[String] = []
+		for enemy_id in wave:
+			var id_text := String(enemy_id)
+			if not id_text.is_empty():
+				ids.append(id_text)
+		if not ids.is_empty():
+			duplicate.append(ids)
+	return duplicate
+
+
+func _flatten_enemy_waves(waves: Array) -> Array[String]:
+	var ids: Array[String] = []
+	for wave in waves:
+		if typeof(wave) != TYPE_ARRAY:
+			continue
+		for enemy_id in wave:
+			var id_text := String(enemy_id)
+			if not id_text.is_empty():
+				ids.append(id_text)
+	return ids
+
+
+func _start_wave_record() -> void:
+	RunState.combat.wave_start_hp = RunState.current_hp
+	RunState.combat.wave_start_turn = maxi(RunState.combat.turn_index, 1)
+
+
+func _close_current_wave_record() -> void:
+	var expected_size: int = RunState.combat.wave_index + 1
+	if RunState.combat.wave_hp_lost.size() >= expected_size:
+		return
+	RunState.combat.wave_hp_lost.append(maxi(RunState.combat.wave_start_hp - RunState.current_hp, 0))
+	RunState.combat.wave_turns.append(maxi(RunState.combat.turn_index - RunState.combat.wave_start_turn + 1, 1))
 
 
 func _apply_equipment_start_bonuses(logs: Array[String]) -> void:

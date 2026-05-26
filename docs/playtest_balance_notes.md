@@ -94,7 +94,7 @@ These are starting targets, not final truth:
 - The current playable card pool is 20 protagonist cards and 30 companion cards. It is still smaller than the final 40 protagonist / 80 companion target, so early balance should judge pacing and system clarity before judging final build variety.
 - Act 1 now has a Healing Down enemy pattern through Mutated Scholar. Verify that it pressures Maren/Isol healing without making healing cards feel like trap picks.
 - Combat now has visible oath/bond/wager/victory feedback. Verify that the toast timing helps rather than covering important card or enemy information.
-- Multi-wave combat is not implemented yet. When added, the danger is not a single overtuned wave but too many 2-3 wave nodes on one route.
+- Multi-wave combat is now implemented for selected normal nodes. The current danger is no longer a missing system, but 2-3 wave nodes becoming too frequent or too low-pressure after the simultaneous-attack burst is removed.
 - Enemy total HP targets were raised by about 6%; do not also raise multi-wave frequency in the same tuning patch without telemetry.
 - The core route fun is attrition: HP should be gradually shaved down by normal and elite nodes, then stabilized by reaching an inn, event, shop, or upgrade at the right time. Prefer modest enemy attack pressure and recovery economy tuning over blunt HP inflation.
 
@@ -159,6 +159,33 @@ Raised enemy attack intent more than HP so the main pressure is route attrition.
 Reduced safe-route free value through lower skip gold, weaker event gold, pricier gear/services, and less generous inns.
 Lowered bond gain pace so 100 bond is a strong investment outcome rather than a default Act 3 state.
 Reduced dominant high-cost attacks and improved mark/draw/utility cards so deckbuilding is less one-note.
+```
+
+## Multi-Wave Patch - 2026-05-27
+
+Command:
+
+```txt
+python3 tools/balance_run_simulator.py --runs 300 --policies novice,balanced,safe,greedy --enemy-profiles current
+```
+
+Result after implementing selected 2-3 wave nodes:
+
+| Policy | Act 1 boss | Act 2 boss | Act 3 reach | Win | Read |
+| --- | ---: | ---: | ---: | ---: | --- |
+| novice | 75.3% | 25.3% | 25.0% | 7.0% | Inside the early-player target; 3-wave nodes are dangerous enough to notice. |
+| balanced | 99.7% | 89.7% | 89.7% | 54.0% | Upper edge of the automatic sanity band, so future content should add pressure carefully. |
+| safe | 100.0% | 98.7% | 98.7% | 84.3% | Safe routing remains viable but still inside the target ceiling. |
+| greedy | 97.0% | 65.0% | 64.7% | 32.0% | Risky pathing is dangerous but not a trap. |
+
+Implementation read:
+
+```txt
+Act 1 keeps 3-wave combat banned and only uses two selected 2-wave normal nodes.
+Act 2 adds one 3-wave set-piece normal node with nearby safe branches.
+Act 3 adds two 3-wave normal set pieces and several 2-wave rhythm changes.
+Telemetry now records wave starts, wave count, HP lost by wave, and turns by wave.
+The simulator reads EncounterData.waves and reports combat pressure by wave count.
 ```
 
 ## Phase 9 Validation

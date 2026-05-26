@@ -25,6 +25,28 @@
       ]
     },
     {
+      "id": "enemy_act2_receipt_hound",
+      "name": "Receipt Hound",
+      "max_hp": 48,
+      "asset_id": "enemy_act1_twisted_wolf_idle",
+      "intents": [
+        {"type": "attack", "label": "Sniff Debt", "damage": 10},
+        {"type": "attack", "label": "Snap Seal", "damage": 13},
+        {"type": "block", "label": "Guard the Ledger", "block": 7}
+      ]
+    },
+    {
+      "id": "enemy_act2_seal_bearer",
+      "name": "Seal Bearer",
+      "max_hp": 58,
+      "asset_id": "enemy_act1_mutated_merchant_idle",
+      "intents": [
+        {"type": "block", "label": "Raise the Plate", "block": 11},
+        {"type": "healing_down", "label": "Stamped Cure", "percent": 50, "turns": 2},
+        {"type": "attack", "label": "Metal Verdict", "damage": 12}
+      ]
+    },
+    {
       "id": "elite_act2_unsealed_caravan",
       "name": "Unsealed Caravan",
       "max_hp": 104,

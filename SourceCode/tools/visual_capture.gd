@@ -86,8 +86,10 @@ func _prepare_state(mode: String) -> void:
 	if not bool(run_state.get("is_run_active")):
 		run_state.call("start_new_run")
 	map_state.call("ensure_current_act")
-	if mode in ["combat_companion", "combat_card_preview", "combat_enemy_preview"]:
+	if mode in ["combat_companion", "combat_card_preview", "combat_enemy_preview", "combat_wave_preview", "combat_wave_advance_preview"]:
 		_recruit_demo_companion("rowan", "rowan_spear_line", ["c_rowan_pin", "c_rowan_banner"])
+		if mode in ["combat_wave_preview", "combat_wave_advance_preview"]:
+			_prepare_wave_preview()
 	elif mode == "upgrade_companion_preview":
 		_recruit_demo_companion("rowan", "rowan_spear_line", ["c_rowan_pin", "c_rowan_banner"])
 		_prepare_upgrade_preview()
@@ -114,6 +116,8 @@ func _perform_preview_action(scene: Node, mode: String) -> void:
 			await _preview_combat_targeting(scene)
 		"combat_enemy_preview":
 			await _preview_enemy_turn(scene)
+		"combat_wave_advance_preview":
+			await _preview_wave_advance(scene)
 		"shop_purchase_preview":
 			await _preview_shop_purchase(scene)
 		"shop_service_preview":
@@ -171,6 +175,27 @@ func _preview_enemy_turn(scene: Node) -> void:
 		return
 	scene.call("_on_end_turn_pressed")
 	await create_timer(0.10).timeout
+
+
+func _preview_wave_advance(scene: Node) -> void:
+	var run_state := root.get_node_or_null("/root/RunState")
+	if run_state == null or not scene.has_method("_play_card_at_target"):
+		return
+	if run_state.get("combat").enemies.is_empty():
+		return
+	var enemy: Dictionary = run_state.get("combat").enemies[0]
+	enemy["hp"] = 1
+	run_state.get("combat").enemies[0] = enemy
+	if scene.has_method("_refresh"):
+		scene.call("_refresh")
+	var hand = run_state.get("deck").hand
+	for i in range(hand.size()):
+		if scene.has_method("_is_card_playable") and not bool(scene.call("_is_card_playable", i)):
+			continue
+		if scene.has_method("_card_requires_target") and bool(scene.call("_card_requires_target", i)):
+			scene.call("_play_card_at_target", i, 0)
+			await create_timer(0.20).timeout
+			return
 
 
 func _preview_shop_purchase(scene: Node) -> void:
@@ -300,6 +325,18 @@ func _prepare_upgrade_preview() -> void:
 		party.companions[i] = companion
 	if upgrade_state != null:
 		upgrade_state.call("begin_upgrade", "act2_boss")
+
+
+func _prepare_wave_preview() -> void:
+	var map_state := root.get_node_or_null("/root/MapState")
+	if map_state == null:
+		return
+	map_state.set("selected_enemy_id", "enemy_act2_receipt_hound")
+	map_state.set("selected_enemy_ids", ["enemy_act2_receipt_hound", "enemy_act2_heal_censor_scholar"])
+	map_state.set("selected_enemy_waves", [
+		["enemy_act2_receipt_hound"],
+		["enemy_act2_heal_censor_scholar"],
+	])
 
 
 func _dump_control_tree(node: Node, depth: int) -> void:

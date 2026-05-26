@@ -382,7 +382,12 @@ func _refresh() -> void:
 		]
 	selected_target_index = _clamp_target_index(selected_target_index)
 	_refresh_enemy()
-	pile_label.text = "Turn %d    Draw %d" % [
+	var wave_text := "Wave %d/%d    " % [
+		RunState.combat.wave_index + 1,
+		RunState.combat.wave_count,
+	] if RunState.combat.wave_count > 1 else ""
+	pile_label.text = "%sTurn %d    Draw %d" % [
+		wave_text,
 		RunState.combat.turn_index,
 		RunState.deck.draw_pile.size(),
 	]
@@ -628,6 +633,8 @@ func _play_card_at_target(hand_index: int, target_index: int) -> void:
 	var card := DataRegistry.get_card(CardInstanceScript.get_card_id(instance)).duplicate(true)
 	var source_position := _card_center_for_hand_index(hand_index)
 	var effect_kind := _card_effect_kind(card)
+	var destination := _feedback_destination(target_index, effect_kind)
+	var enemy_destinations := _current_enemy_centers()
 	selected_target_index = target_index
 	selected_card_index = -1
 	hovered_enemy_index = -1
@@ -635,7 +642,7 @@ func _play_card_at_target(hand_index: int, target_index: int) -> void:
 	var messages := turn_manager.play_card(hand_index, target_index)
 	_append_logs(messages)
 	_refresh()
-	_play_card_feedback.call_deferred(card, source_position, target_index, effect_kind, messages)
+	_play_card_feedback.call_deferred(card, source_position, target_index, effect_kind, messages, destination, enemy_destinations)
 
 
 func _on_end_turn_pressed() -> void:
@@ -754,6 +761,13 @@ func _target_feedback_position(target_index: int) -> Vector2:
 	return get_global_mouse_position()
 
 
+func _current_enemy_centers() -> Array[Vector2]:
+	var centers: Array[Vector2] = []
+	for i in range(enemy_controls.size()):
+		centers.append(_enemy_center(i))
+	return centers
+
+
 func _clamp_target_index(target_index: int) -> int:
 	if RunState.combat.enemies.is_empty():
 		return 0
@@ -854,19 +868,21 @@ func _show_invalid_action(text: String) -> void:
 		combat_prompt_label.add_theme_color_override("font_color", UIStyleScript.RED)
 
 
-func _play_card_feedback(card: Dictionary, source_position: Vector2, target_index: int, effect_kind: String, messages: Array[String]) -> void:
-	var destination := _feedback_destination(target_index, effect_kind)
+func _play_card_feedback(card: Dictionary, source_position: Vector2, target_index: int, effect_kind: String, messages: Array[String], destination: Vector2, enemy_destinations: Array[Vector2]) -> void:
 	_animate_player_action(effect_kind, destination)
 	_animate_played_card(card, source_position, destination, effect_kind)
 	await get_tree().create_timer(0.18).timeout
 	match effect_kind:
 		"damage_all":
-			for i in range(enemy_controls.size()):
-				_spawn_projectile(source_position, _enemy_center(i), effect_kind)
-				_animate_target_hit(i, effect_kind)
+			for enemy_destination in enemy_destinations:
+				_spawn_projectile(source_position, enemy_destination, effect_kind)
+				_spawn_impact(enemy_destination, effect_kind)
 		"damage", "mark":
 			_spawn_projectile(source_position, destination, effect_kind)
-			_animate_target_hit(target_index, effect_kind)
+			if target_index >= 0 and target_index < enemy_controls.size() and _enemy_center(target_index).distance_to(destination) < 36.0:
+				_animate_target_hit(target_index, effect_kind)
+			else:
+				_spawn_impact(destination, effect_kind)
 		"block", "heal":
 			_spawn_impact(destination, effect_kind)
 			_animate_player_buff(effect_kind)

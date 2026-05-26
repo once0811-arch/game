@@ -581,7 +581,11 @@ func _describe_node(node: Dictionary) -> String:
 	]
 	var enemy_names := _node_enemy_names(node)
 	if not enemy_names.is_empty():
-		parts.append("Enemies: %s" % ", ".join(PackedStringArray(enemy_names)))
+		var wave_count := _node_enemy_waves(node).size()
+		if wave_count > 1:
+			parts.append("%d waves: %s" % [wave_count, " / ".join(PackedStringArray(_node_wave_names(node)))])
+		else:
+			parts.append("Enemies: %s" % ", ".join(PackedStringArray(enemy_names)))
 	if node_type in ["elite", "midboss", "boss"]:
 		parts.append("High risk, better gold and bond gain.")
 	elif node_type == "inn":
@@ -598,20 +602,78 @@ func _describe_node(node: Dictionary) -> String:
 
 
 func _node_enemy_names(node: Dictionary) -> Array[String]:
+	var waves := _node_enemy_waves(node)
 	var ids: Array[String] = []
-	for enemy_id in node.get("enemy_ids", []):
-		var id_text := String(enemy_id)
-		if not id_text.is_empty():
-			ids.append(id_text)
-	if ids.is_empty():
-		var single_id := String(node.get("enemy_id", ""))
-		if not single_id.is_empty():
-			ids.append(single_id)
+	for wave in waves:
+		if typeof(wave) != TYPE_ARRAY:
+			continue
+		for enemy_id in wave:
+			var id_text := String(enemy_id)
+			if not id_text.is_empty():
+				ids.append(id_text)
 	var names: Array[String] = []
 	for enemy_id in ids:
 		var enemy := DataRegistry.get_enemy(enemy_id)
 		names.append(String(enemy.get("name", enemy_id)))
 	return names
+
+
+func _node_wave_names(node: Dictionary) -> Array[String]:
+	var result: Array[String] = []
+	for wave in _node_enemy_waves(node):
+		if typeof(wave) != TYPE_ARRAY:
+			continue
+		var names: Array[String] = []
+		for enemy_id in wave:
+			var id_text := String(enemy_id)
+			if id_text.is_empty():
+				continue
+			var enemy := DataRegistry.get_enemy(id_text)
+			names.append(String(enemy.get("name", id_text)))
+		if not names.is_empty():
+			result.append(", ".join(PackedStringArray(names)))
+	return result
+
+
+func _node_enemy_waves(node: Dictionary) -> Array:
+	var waves: Array = []
+	if node.has("waves"):
+		for raw_wave in node.get("waves", []):
+			var ids := _wave_enemy_ids(raw_wave)
+			if not ids.is_empty():
+				waves.append(ids)
+	if waves.is_empty():
+		var ids: Array[String] = []
+		for enemy_id in node.get("enemy_ids", []):
+			var id_text := String(enemy_id)
+			if not id_text.is_empty():
+				ids.append(id_text)
+		if ids.is_empty():
+			var single_id := String(node.get("enemy_id", ""))
+			if not single_id.is_empty():
+				ids.append(single_id)
+		if not ids.is_empty():
+			waves.append(ids)
+	return waves
+
+
+func _wave_enemy_ids(raw_wave: Variant) -> Array[String]:
+	var ids: Array[String] = []
+	if typeof(raw_wave) == TYPE_DICTIONARY:
+		for enemy_id in raw_wave.get("enemy_ids", []):
+			var id_text := String(enemy_id)
+			if not id_text.is_empty():
+				ids.append(id_text)
+		if ids.is_empty():
+			var single_id := String(raw_wave.get("enemy_id", ""))
+			if not single_id.is_empty():
+				ids.append(single_id)
+	elif typeof(raw_wave) == TYPE_ARRAY:
+		for enemy_id in raw_wave:
+			var id_text := String(enemy_id)
+			if not id_text.is_empty():
+				ids.append(id_text)
+	return ids
 
 
 func _node_variant(node_type: String, state: String) -> String:

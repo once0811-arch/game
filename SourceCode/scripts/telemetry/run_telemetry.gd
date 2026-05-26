@@ -16,6 +16,8 @@ func reset_for_new_run(seed: int) -> void:
 		"combats_started": 0,
 		"combats_won": 0,
 		"combats_lost": 0,
+		"combat_waves_started": 0,
+		"combat_multi_wave_nodes": 0,
 		"cards_played": 0,
 		"card_rewards_picked": 0,
 		"card_rewards_skipped": 0,
@@ -52,18 +54,34 @@ func record_event(event_type: String, payload: Dictionary = {}) -> void:
 	events.append(entry)
 
 
-func begin_combat(enemy_id: String, node_type: String) -> void:
+func begin_combat(enemy_id: String, node_type: String, wave_count: int = 1, enemy_ids: Array = []) -> void:
 	_ensure_started()
 	active_combat = {
 		"enemy_id": enemy_id,
+		"enemy_ids": enemy_ids.duplicate(),
 		"node_type": node_type,
 		"act": RunState.act,
 		"depth": RunState.depth,
 		"start_hp": RunState.current_hp,
 		"cards_played": 0,
+		"wave_count": maxi(wave_count, 1),
+		"wave_hp_lost": [],
+		"wave_turns": [],
 	}
 	counters["combats_started"] = int(counters.get("combats_started", 0)) + 1
+	if wave_count > 1:
+		counters["combat_multi_wave_nodes"] = int(counters.get("combat_multi_wave_nodes", 0)) + 1
 	record_event("combat_start", active_combat)
+
+
+func record_combat_wave(wave_index: int, wave_count: int, enemy_ids: Array) -> void:
+	_ensure_started()
+	counters["combat_waves_started"] = int(counters.get("combat_waves_started", 0)) + 1
+	record_event("combat_wave", {
+		"combat_wave_index": wave_index,
+		"combat_wave_count": maxi(wave_count, 1),
+		"enemy_ids": enemy_ids.duplicate(),
+	})
 
 
 func record_card_play(card_id: String) -> void:
@@ -79,13 +97,16 @@ func end_combat(outcome: String, turns: int) -> void:
 	if active_combat.is_empty():
 		return
 	var start_hp: int = int(active_combat.get("start_hp", RunState.current_hp))
-	var hp_lost: int = max(start_hp - RunState.current_hp, 0)
+	var hp_lost: int = maxi(start_hp - RunState.current_hp, 0)
 	var payload: Dictionary = active_combat.duplicate(true)
 	payload["outcome"] = outcome
 	payload["turns"] = turns
 	payload["hp_lost"] = hp_lost
 	payload["end_hp"] = RunState.current_hp
 	payload["average_bond"] = get_average_bond()
+	payload["wave_count"] = RunState.combat.wave_count
+	payload["wave_hp_lost"] = RunState.combat.wave_hp_lost.duplicate()
+	payload["wave_turns"] = RunState.combat.wave_turns.duplicate()
 	if outcome == "victory":
 		counters["combats_won"] = int(counters.get("combats_won", 0)) + 1
 	else:
