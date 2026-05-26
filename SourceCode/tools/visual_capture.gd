@@ -103,6 +103,8 @@ func _prepare_state(mode: String) -> void:
 
 func _perform_preview_action(scene: Node, mode: String) -> void:
 	match mode:
+		"main_settings":
+			await _preview_main_settings(scene)
 		"combat_card_preview":
 			await _preview_combat_card(scene)
 		"combat_enemy_preview":
@@ -130,6 +132,13 @@ func _preview_combat_card(scene: Node) -> void:
 			scene.call("_play_card_at_target", i, -1)
 			await create_timer(0.12).timeout
 			return
+
+
+func _preview_main_settings(scene: Node) -> void:
+	if not scene.has_method("_on_settings_pressed"):
+		return
+	scene.call("_on_settings_pressed")
+	await create_timer(0.10).timeout
 
 
 func _preview_enemy_turn(scene: Node) -> void:

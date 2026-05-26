@@ -101,6 +101,8 @@ static func style_button(button: Button, variant: String = "default") -> void:
 	var font := _ui_font()
 	if font != null:
 		button.add_theme_font_override("font", font)
+	else:
+		button.remove_theme_font_override("font")
 	button.add_theme_constant_override("outline_size", 3)
 	button.add_theme_color_override("font_outline_color", Color(0.02, 0.018, 0.015, 0.82))
 	button.add_theme_stylebox_override("normal", _button_style(variant, false, false))
@@ -225,6 +227,18 @@ static func _asset_box_style(variant: String, highlighted: bool, disabled: bool)
 
 
 static func _ui_font() -> Font:
+	if _use_locale_fallback_font():
+		return null
 	if ResourceLoader.exists(KENNEY_FONT):
 		return load(KENNEY_FONT)
 	return null
+
+
+static func _use_locale_fallback_font() -> bool:
+	var tree := Engine.get_main_loop() as SceneTree
+	if tree == null:
+		return false
+	var settings := tree.root.get_node_or_null("/root/SettingsState")
+	if settings == null:
+		return false
+	return String(settings.get("language_code")) == "ko"
