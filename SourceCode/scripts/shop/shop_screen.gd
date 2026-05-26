@@ -3,6 +3,7 @@ extends Control
 const ShopGeneratorScript := preload("res://scripts/systems/shop_generator.gd")
 const EventResolverScript := preload("res://scripts/systems/event_resolver.gd")
 const UIStyleScript := preload("res://scripts/ui/ui_style.gd")
+const CardDataScript := preload("res://scripts/data/card_data.gd")
 
 var shop_generator = ShopGeneratorScript.new()
 var event_resolver = EventResolverScript.new()
@@ -11,6 +12,12 @@ var gold_label: Label
 var product_grid: GridContainer
 var status_label: Label
 var feedback_layer: Control
+var service_overlay: ColorRect
+var service_title_label: Label
+var service_body_label: Label
+var service_card_grid: GridContainer
+var pending_service_product_index := -1
+var pending_service_source_position := Vector2.ZERO
 
 
 func _ready() -> void:
@@ -64,6 +71,8 @@ func _build_ui() -> void:
 
 	status_label = UIStyleScript.label("", 16, UIStyleScript.MUTED)
 	layout.add_child(status_label)
+
+	_build_service_overlay()
 
 
 func _refresh() -> void:
@@ -137,6 +146,9 @@ func _on_product_pressed(index: int) -> void:
 		status_label.text = "Not enough gold."
 		_spawn_shop_feedback("Not enough gold", source_position, UIStyleScript.RED)
 		return
+	if String(product.get("type", "")) == "service" and _service_requires_picker(String(product.get("service", ""))):
+		_begin_service_picker(index, source_position)
+		return
 	RunState.gold -= price
 	var logs: Array[String] = []
 	match String(product.get("type", "")):
@@ -178,6 +190,202 @@ func _apply_service(service: String) -> Array[String]:
 			return event_resolver.apply_effects([{"type": "copy_card"}])
 		_:
 			return ["No service."]
+
+
+func _build_service_overlay() -> void:
+	service_overlay = ColorRect.new()
+	service_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	service_overlay.color = Color(0, 0, 0, 0.58)
+	service_overlay.visible = false
+	service_overlay.z_index = 120
+	add_child(service_overlay)
+
+	var layout := VBoxContainer.new()
+	layout.add_theme_constant_override("separation", 12)
+	var panel := UIStyleScript.panel(layout, Vector2(900, 560), true)
+	panel.anchor_left = 0.5
+	panel.anchor_top = 0.5
+	panel.anchor_right = 0.5
+	panel.anchor_bottom = 0.5
+	panel.offset_left = -450
+	panel.offset_top = -280
+	panel.offset_right = 450
+	panel.offset_bottom = 280
+	service_overlay.add_child(panel)
+
+	service_title_label = UIStyleScript.label("", 30, UIStyleScript.GOLD)
+	layout.add_child(service_title_label)
+
+	service_body_label = UIStyleScript.label("", 16, UIStyleScript.MUTED)
+	layout.add_child(service_body_label)
+
+	var scroll := ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(0, 390)
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	layout.add_child(scroll)
+
+	service_card_grid = GridContainer.new()
+	service_card_grid.columns = 4
+	service_card_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	service_card_grid.add_theme_constant_override("h_separation", 10)
+	service_card_grid.add_theme_constant_override("v_separation", 10)
+	scroll.add_child(service_card_grid)
+
+	var actions := HBoxContainer.new()
+	actions.alignment = BoxContainer.ALIGNMENT_END
+	actions.add_theme_constant_override("separation", 10)
+	layout.add_child(actions)
+
+	var cancel := Button.new()
+	cancel.text = "Cancel"
+	cancel.custom_minimum_size = Vector2(130, 42)
+	UIStyleScript.style_button(cancel)
+	cancel.pressed.connect(_close_service_picker)
+	actions.add_child(cancel)
+
+
+func _service_requires_picker(service: String) -> bool:
+	return service in ["remove", "upgrade", "transform", "copy"]
+
+
+func _begin_service_picker(product_index: int, source_position: Vector2) -> void:
+	pending_service_product_index = product_index
+	pending_service_source_position = source_position
+	var product: Dictionary = stock[product_index]
+	var service := String(product.get("service", ""))
+	var entries := _service_entries(service)
+	UIStyleScript.clear(service_card_grid)
+	service_title_label.text = String(product.get("title", "Service"))
+	service_body_label.text = _service_picker_hint(service, int(product.get("price", 0)))
+	if entries.is_empty():
+		service_body_label.text = "No valid card for this service."
+		_spawn_shop_feedback("No valid target", source_position, UIStyleScript.RED)
+		return
+	for entry in entries:
+		service_card_grid.add_child(_make_service_card_button(entry))
+	service_overlay.visible = true
+
+
+func _service_entries(service: String) -> Array[Dictionary]:
+	var entries := RunState.deck.get_card_entries(false)
+	var filtered: Array[Dictionary] = []
+	for entry in entries:
+		var card := DataRegistry.get_card(String(entry.get("card_id", "")))
+		if card.is_empty():
+			continue
+		if service == "upgrade" and bool(entry.get("upgraded", false)):
+			continue
+		filtered.append(entry)
+	return filtered
+
+
+func _make_service_card_button(entry: Dictionary) -> Button:
+	var card := DataRegistry.get_card(String(entry.get("card_id", "")))
+	var button := Button.new()
+	button.custom_minimum_size = Vector2(196, 132)
+	var upgraded := "+" if bool(entry.get("upgraded", false)) else ""
+	button.text = "%s%s\n%s | Cost %d\n%s" % [
+		CardDataScript.card_name(card),
+		upgraded,
+		CardDataScript.card_type(card).capitalize(),
+		CardDataScript.card_cost(card),
+		CardDataScript.card_rules_text(card),
+	]
+	button.icon = DataRegistry.get_temp_asset_texture(String(card.get("asset_id", "")))
+	UIStyleScript.style_card_button(button, "primary")
+	button.pressed.connect(_on_service_card_pressed.bind(int(entry.get("instance_id", 0))))
+	return button
+
+
+func _on_service_card_pressed(instance_id: int) -> void:
+	if pending_service_product_index < 0 or pending_service_product_index >= stock.size():
+		_close_service_picker()
+		return
+	var product: Dictionary = stock[pending_service_product_index]
+	var price := int(product.get("price", 0))
+	if RunState.gold < price:
+		_close_service_picker()
+		_spawn_shop_feedback("Not enough gold", pending_service_source_position, UIStyleScript.RED)
+		return
+	var logs := _apply_service_to_instance(String(product.get("service", "")), instance_id)
+	if logs.is_empty():
+		logs.append("No effect.")
+	if logs[0].begins_with("No "):
+		status_label.text = "\n".join(PackedStringArray(logs))
+		_spawn_shop_feedback(logs[0], pending_service_source_position, UIStyleScript.RED)
+		_close_service_picker()
+		return
+	RunState.gold -= price
+	RunTelemetry.record_shop_purchase(String(product.get("type", "")), String(product.get("id", "")), price)
+	product["purchased"] = true
+	stock[pending_service_product_index] = product
+	status_label.text = "\n".join(PackedStringArray(logs))
+	_close_service_picker()
+	_refresh()
+	_spawn_purchase_feedback(String(product.get("title", "Service")), pending_service_source_position)
+
+
+func _apply_service_to_instance(service: String, instance_id: int) -> Array[String]:
+	match service:
+		"remove":
+			var removed := RunState.deck.remove_instance(instance_id)
+			if removed.is_empty():
+				return ["No card removed."]
+			RunState.equipment.card_remove_count += 1
+			return ["Removed %s." % CardDataScript.card_name(DataRegistry.get_card(removed))]
+		"upgrade":
+			var upgraded := RunState.deck.upgrade_instance(instance_id)
+			if upgraded.is_empty():
+				return ["No card upgraded."]
+			return ["Upgraded %s." % CardDataScript.card_name(DataRegistry.get_card(upgraded))]
+		"transform":
+			var replacement := _random_reward_card_id()
+			var transformed := RunState.deck.transform_instance(instance_id, replacement)
+			if transformed.is_empty() or replacement.is_empty():
+				return ["No card transformed."]
+			return ["Transformed %s into %s." % [
+				CardDataScript.card_name(DataRegistry.get_card(transformed)),
+				CardDataScript.card_name(DataRegistry.get_card(replacement)),
+			]]
+		"copy":
+			var copied := RunState.deck.copy_instance_to_discard(instance_id)
+			if copied.is_empty():
+				return ["No card copied."]
+			return ["Copied %s." % CardDataScript.card_name(DataRegistry.get_card(copied))]
+		_:
+			return ["No service."]
+
+
+func _random_reward_card_id() -> String:
+	var pool: Array[Dictionary] = []
+	for card in DataRegistry.get_all_cards():
+		if CardDataScript.is_reward_eligible(card):
+			pool.append(card)
+	if pool.is_empty():
+		return ""
+	var card: Dictionary = RngService.pick(pool, {})
+	return String(card.get("id", ""))
+
+
+func _service_picker_hint(service: String, price: int) -> String:
+	match service:
+		"remove":
+			return "Pay %d gold after choosing a card to remove from the deck." % price
+		"upgrade":
+			return "Pay %d gold after choosing a card to upgrade." % price
+		"transform":
+			return "Pay %d gold after choosing a card to transform into a reward-pool card." % price
+		"copy":
+			return "Pay %d gold after choosing a card to copy into discard." % price
+		_:
+			return "Choose a card."
+
+
+func _close_service_picker() -> void:
+	service_overlay.visible = false
+	pending_service_product_index = -1
+	pending_service_source_position = Vector2.ZERO
 
 
 func _on_leave_pressed() -> void:

@@ -133,6 +133,69 @@ func get_total_cards() -> int:
 	return draw_pile.size() + hand.size() + discard_pile.size() + exhaust_pile.size()
 
 
+func get_card_entries(include_exhaust: bool = false) -> Array[Dictionary]:
+	var entries: Array[Dictionary] = []
+	_append_card_entries(entries, "draw", draw_pile)
+	_append_card_entries(entries, "hand", hand)
+	_append_card_entries(entries, "discard", discard_pile)
+	if include_exhaust:
+		_append_card_entries(entries, "exhaust", exhaust_pile)
+	return entries
+
+
+func remove_instance(instance_id: int) -> String:
+	var location := _find_instance_location(instance_id)
+	if location.is_empty():
+		return ""
+	var pile: Array[Dictionary] = location["pile"]
+	var index := int(location["index"])
+	var instance: Dictionary = pile[index]
+	pile.remove_at(index)
+	return CardInstanceScript.get_card_id(instance)
+
+
+func upgrade_instance(instance_id: int) -> String:
+	var location := _find_instance_location(instance_id)
+	if location.is_empty():
+		return ""
+	var pile: Array[Dictionary] = location["pile"]
+	var index := int(location["index"])
+	var instance: Dictionary = pile[index]
+	if bool(instance.get("upgraded", false)):
+		return ""
+	instance["upgraded"] = true
+	pile[index] = instance
+	return CardInstanceScript.get_card_id(instance)
+
+
+func transform_instance(instance_id: int, replacement_id: String) -> String:
+	if replacement_id.is_empty():
+		return ""
+	var location := _find_instance_location(instance_id)
+	if location.is_empty():
+		return ""
+	var pile: Array[Dictionary] = location["pile"]
+	var index := int(location["index"])
+	var instance: Dictionary = pile[index]
+	var removed_id := CardInstanceScript.get_card_id(instance)
+	instance["card_id"] = replacement_id
+	instance["upgraded"] = false
+	pile[index] = instance
+	return removed_id
+
+
+func copy_instance_to_discard(instance_id: int) -> String:
+	var location := _find_instance_location(instance_id)
+	if location.is_empty():
+		return ""
+	var pile: Array[Dictionary] = location["pile"]
+	var source: Dictionary = pile[int(location["index"])]
+	var copy := _create_instance(CardInstanceScript.get_card_id(source))
+	copy["upgraded"] = bool(source.get("upgraded", false))
+	discard_pile.append(copy)
+	return CardInstanceScript.get_card_id(source)
+
+
 func has_card_id(card_id: String) -> bool:
 	return _pile_has_card(draw_pile, card_id) or _pile_has_card(hand, card_id) or _pile_has_card(discard_pile, card_id) or _pile_has_card(exhaust_pile, card_id)
 
@@ -179,6 +242,38 @@ func _shuffle_array(values: Array[Dictionary]) -> void:
 		var temp := values[i]
 		values[i] = values[j]
 		values[j] = temp
+
+
+func _append_card_entries(entries: Array[Dictionary], pile_name: String, pile: Array[Dictionary]) -> void:
+	for i in range(pile.size()):
+		var instance: Dictionary = pile[i]
+		entries.append({
+			"pile": pile_name,
+			"index": i,
+			"instance_id": CardInstanceScript.get_card_instance_id(instance),
+			"card_id": CardInstanceScript.get_card_id(instance),
+			"upgraded": bool(instance.get("upgraded", false)),
+		})
+
+
+func _find_instance_location(instance_id: int) -> Dictionary:
+	var location := _find_instance_in_pile(draw_pile, instance_id)
+	if not location.is_empty():
+		return location
+	location = _find_instance_in_pile(hand, instance_id)
+	if not location.is_empty():
+		return location
+	location = _find_instance_in_pile(discard_pile, instance_id)
+	if not location.is_empty():
+		return location
+	return _find_instance_in_pile(exhaust_pile, instance_id)
+
+
+func _find_instance_in_pile(pile: Array[Dictionary], instance_id: int) -> Dictionary:
+	for i in range(pile.size()):
+		if CardInstanceScript.get_card_instance_id(pile[i]) == instance_id:
+			return {"pile": pile, "index": i}
+	return {}
 
 
 func _remove_from_pile(pile: Array[Dictionary], card_ids: Array) -> String:

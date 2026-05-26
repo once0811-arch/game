@@ -113,6 +113,12 @@ func _perform_preview_action(scene: Node, mode: String) -> void:
 			await _preview_enemy_turn(scene)
 		"shop_purchase_preview":
 			await _preview_shop_purchase(scene)
+		"shop_service_preview":
+			await _preview_shop_service(scene)
+		"shop_service_apply_preview":
+			await _preview_shop_service_apply(scene)
+		"reward_claim_preview":
+			await _preview_reward_claim(scene)
 		"inn_room_preview":
 			await _preview_inn_room(scene)
 
@@ -180,6 +186,34 @@ func _preview_shop_purchase(scene: Node) -> void:
 	await create_timer(0.10).timeout
 
 
+func _preview_shop_service(scene: Node) -> void:
+	if not scene.has_method("_on_product_pressed"):
+		return
+	var run_state := root.get_node_or_null("/root/RunState")
+	if run_state != null:
+		run_state.set("gold", 300)
+	var products = scene.get("stock")
+	if typeof(products) == TYPE_ARRAY:
+		for i in range(products.size()):
+			var product = products[i]
+			if typeof(product) == TYPE_DICTIONARY and String(product.get("type", "")) == "service":
+				scene.call("_on_product_pressed", i)
+				await create_timer(0.10).timeout
+				return
+
+
+func _preview_shop_service_apply(scene: Node) -> void:
+	await _preview_shop_service(scene)
+	var run_state := root.get_node_or_null("/root/RunState")
+	if run_state == null or not scene.has_method("_on_service_card_pressed"):
+		return
+	var entries = run_state.get("deck").get_card_entries(false)
+	if typeof(entries) == TYPE_ARRAY and not entries.is_empty():
+		var entry: Dictionary = entries[0]
+		scene.call("_on_service_card_pressed", int(entry.get("instance_id", 0)))
+		await create_timer(0.12).timeout
+
+
 func _preview_inn_room(scene: Node) -> void:
 	if not scene.has_method("_on_room_pressed"):
 		return
@@ -193,6 +227,13 @@ func _preview_inn_room(scene: Node) -> void:
 				index = i
 				break
 	scene.call("_on_room_pressed", index)
+	await create_timer(0.10).timeout
+
+
+func _preview_reward_claim(scene: Node) -> void:
+	if not scene.has_method("_on_reward_pressed"):
+		return
+	scene.call("_on_reward_pressed", 0)
 	await create_timer(0.10).timeout
 
 
