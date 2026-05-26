@@ -59,7 +59,7 @@ res://docs/design/ 폴더의 Markdown 문서들을 먼저 읽어라.
 | `08_mvp_roadmap_and_codex_prompts.md` | MVP 개발 순서와 Codex 프롬프트 템플릿 |
 | `09_design_upgrade_research_and_balance.md` | 외부 레퍼런스 분석, 재미 축, 런/전투/경제 수치 기준 |
 
-별도 아트 문서는 `../art_director_game_design_brief.md`와 `../art_director_worldbuilding_brief.md`를 기준으로 한다. `art_director_game_design_brief.md`는 아트디렉터가 전체 시스템 흐름까지 이해할 수 있도록 게임 루프, 전투 루프, 런 정체성, 보상/경제 구조를 함께 요약한다. 세계관은 스토리텔링형 컷신보다 증표, 변이체, 버려진 고대 성, 이벤트 문구, UI 소품으로 전달한다.
+아트디렉터용 문서는 `../art_director_game_design_brief.md` 하나를 기준으로 한다. 이 문서는 아트디렉터가 전체 시스템 흐름까지 이해할 수 있도록 게임 루프, 전투 루프, 런 정체성, 보상/경제 구조, 세계관, 에셋 우선순위를 함께 요약한다. 세계관은 스토리텔링형 컷신보다 증표, 변이체, 버려진 고대 성, 이벤트 문구, UI 소품으로 전달한다.
 
 ## 확정된 큰 방향
 
@@ -419,7 +419,7 @@ Act 1/2 보스 후 동료 선택
 세계 구원보다 먼저 생존이 있는 여정
 ```
 
-핵심 사건과 기능은 다음과 같다. 세부 시각 방향은 `../art_director_worldbuilding_brief.md`를 기준으로 한다.
+핵심 사건과 기능은 다음과 같다. 세부 시각 방향은 `../art_director_game_design_brief.md`를 기준으로 한다.
 
 ```txt
 재난 원인: 왕립 학회와 상단이 버려진 고대 성을 발굴하다 고대 마법 코어를 작동시킴.
