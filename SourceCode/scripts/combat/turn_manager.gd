@@ -8,6 +8,7 @@ const CardEffectResolverScript := preload("res://scripts/combat/card_effect_reso
 const CompanionCombatSystemScript := preload("res://scripts/combat/companion_combat_system.gd")
 const OathTacticResolverScript := preload("res://scripts/combat/oath_tactic_resolver.gd")
 const BondSystemScript := preload("res://scripts/systems/bond_system.gd")
+const CardPlayRulesScript := preload("res://scripts/combat/card_play_rules.gd")
 
 var enemy_ai = EnemyAIResolverScript.new()
 var card_effects = CardEffectResolverScript.new()
@@ -63,6 +64,9 @@ func play_card(hand_index: int, target_index: int = 0) -> Array[String]:
 	var cost := CardDataScript.card_cost(card)
 	if cost > RunState.combat.energy:
 		logs.append("Not enough energy for %s." % CardDataScript.card_name(card))
+		return logs
+	if CardPlayRulesScript.requires_enemy_target(card) and not CardPlayRulesScript.is_live_enemy_index(target_index):
+		logs.append("Choose an enemy target for %s." % CardDataScript.card_name(card))
 		return logs
 
 	RunState.combat.energy -= cost

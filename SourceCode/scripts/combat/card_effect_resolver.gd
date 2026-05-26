@@ -6,16 +6,17 @@ const CardDataScript := preload("res://scripts/data/card_data.gd")
 
 func resolve(card: Dictionary, target_index: int, card_instance: Dictionary = {}) -> Array[String]:
 	var logs: Array[String] = []
-	if target_index < 0 or target_index >= RunState.combat.enemies.size():
-		return logs
-
-	var target: Dictionary = RunState.combat.enemies[target_index]
+	var has_target: bool = target_index >= 0 and target_index < RunState.combat.enemies.size()
+	var target: Dictionary = RunState.combat.enemies[target_index] if has_target else {}
 	var upgraded := bool(card_instance.get("upgraded", false))
 	for effect in card.get("effects", []):
 		if typeof(effect) != TYPE_DICTIONARY:
 			continue
 		match String(effect.get("type", "")):
 			"damage":
+				if not has_target:
+					logs.append("%s needs an enemy target." % CardDataScript.card_name(card))
+					continue
 				var attack_bonus := RunState.equipment.get_total_bonus("attack_damage", "protagonist")
 				var upgrade_bonus := 2 if upgraded else 0
 				logs.append(_deal_damage(card, target, int(effect.get("amount", 0)) + attack_bonus + upgrade_bonus))
@@ -29,6 +30,9 @@ func resolve(card: Dictionary, target_index: int, card_instance: Dictionary = {}
 				var drawn := RunState.deck.draw_cards(int(effect.get("amount", 0)))
 				logs.append("Drew %d cards." % drawn.size())
 			"tactical_mark":
+				if not has_target:
+					logs.append("%s needs an enemy target." % CardDataScript.card_name(card))
+					continue
 				var amount: int = int(effect.get("amount", 0)) + RunState.combat.tactical_mark_bonus
 				_add_status(target, "tactical_mark", amount)
 				logs.append("Applied %d Tactical Mark." % amount)
@@ -53,11 +57,12 @@ func resolve(card: Dictionary, target_index: int, card_instance: Dictionary = {}
 			_:
 				logs.append("No effect.")
 
-	if CardDataScript.card_type(card) == "attack" and int(target.get("hp", 0)) > 0:
+	if has_target and CardDataScript.card_type(card) == "attack" and int(target.get("hp", 0)) > 0:
 		_add_status(target, "tactical_mark", 1 + RunState.combat.tactical_mark_bonus)
 		logs.append("Attack added Tactical Mark.")
 
-	RunState.combat.enemies[target_index] = target
+	if has_target:
+		RunState.combat.enemies[target_index] = target
 	return logs
 
 

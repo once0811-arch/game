@@ -164,6 +164,8 @@ func _make_node_button(node: Dictionary) -> Button:
 	button.add_theme_font_size_override("font_size", 13)
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button.gui_input.connect(_on_node_button_gui_input.bind(String(node.get("id", "")), state))
+	button.mouse_entered.connect(_on_node_hovered.bind(node))
+	button.mouse_exited.connect(_on_node_unhovered)
 	return button
 
 
@@ -190,6 +192,15 @@ func _on_node_button_gui_input(event: InputEvent, node_id: String, state: String
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.pressed:
 			dragging_node_id = node_id
 			map_log_label.text = "Holding contract token. Drag to another lit token or release to travel."
+
+
+func _on_node_hovered(node: Dictionary) -> void:
+	map_log_label.text = _describe_node(node)
+
+
+func _on_node_unhovered() -> void:
+	if dragging_node_id.is_empty():
+		map_log_label.text = "Click or drag a lit contract token to choose the next route. Depth %d / 12 is open." % MapState.get_available_depth()
 
 
 func _node_id_at_position(global_position: Vector2) -> String:
@@ -263,6 +274,48 @@ func _node_type_label(node_type: String) -> String:
 			return "ALLY"
 		_:
 			return node_type.to_upper()
+
+
+func _describe_node(node: Dictionary) -> String:
+	var node_type := String(node.get("type", ""))
+	var state := MapState.get_node_state(node)
+	var parts: Array[String] = [
+		"Depth %d %s: %s" % [int(node.get("depth", 0)), _node_type_label(node_type), String(node.get("label", ""))],
+		state.to_upper(),
+	]
+	var enemy_names := _node_enemy_names(node)
+	if not enemy_names.is_empty():
+		parts.append("Enemies: %s" % ", ".join(PackedStringArray(enemy_names)))
+	if node_type in ["elite", "midboss", "boss"]:
+		parts.append("High risk, better gold and bond gain.")
+	elif node_type == "inn":
+		parts.append("Recover and stabilize the run.")
+	elif node_type == "shop":
+		parts.append("Spend gold on cards, gear, or card removal.")
+	elif node_type == "event":
+		parts.append("Uncertain contract outcome.")
+	elif node_type == "companion_contract":
+		parts.append("Recruit a companion and choose one oath tactic.")
+	elif node_type == "upgrade":
+		parts.append("Strengthen the protagonist or a companion.")
+	return "  |  ".join(PackedStringArray(parts))
+
+
+func _node_enemy_names(node: Dictionary) -> Array[String]:
+	var ids: Array[String] = []
+	for enemy_id in node.get("enemy_ids", []):
+		var id_text := String(enemy_id)
+		if not id_text.is_empty():
+			ids.append(id_text)
+	if ids.is_empty():
+		var single_id := String(node.get("enemy_id", ""))
+		if not single_id.is_empty():
+			ids.append(single_id)
+	var names: Array[String] = []
+	for enemy_id in ids:
+		var enemy := DataRegistry.get_enemy(enemy_id)
+		names.append(String(enemy.get("name", enemy_id)))
+	return names
 
 
 func _node_variant(node_type: String, state: String) -> String:

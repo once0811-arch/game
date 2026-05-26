@@ -14,6 +14,9 @@ var card_name := ""
 var playable := true
 var selected := false
 var hovered := false
+var pressing := false
+var dragging := false
+var press_origin := Vector2.ZERO
 
 
 func setup(card: Dictionary, instance: Dictionary, index: int, can_play: bool, is_selected: bool) -> void:
@@ -40,7 +43,17 @@ func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		var mouse_event := event as InputEventMouseButton
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.pressed:
-			card_pressed.emit(hand_index)
+			pressing = true
+			dragging = false
+			press_origin = get_global_mouse_position()
+		elif mouse_event.button_index == MOUSE_BUTTON_LEFT and not mouse_event.pressed:
+			if pressing and not dragging:
+				card_pressed.emit(hand_index)
+			pressing = false
+			dragging = false
+	elif event is InputEventMouseMotion and pressing and not dragging:
+		if press_origin.distance_to(get_global_mouse_position()) >= 10.0:
+			dragging = true
 			card_drag_started.emit(hand_index, card_name)
 
 
@@ -90,11 +103,23 @@ func _rebuild(card: Dictionary, instance: Dictionary) -> void:
 	art.add_theme_stylebox_override("panel", _art_style(card_type))
 	layout.add_child(art)
 
-	var art_mark := UIStyleScript.label(_type_mark(card_type), 18, Color(1, 1, 1, 0.76))
-	art_mark.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	art_mark.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	art_mark.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	art.add_child(art_mark)
+	var art_path := DataRegistry.get_temp_asset_path(String(card.get("asset_id", "")))
+	if art_path.is_empty():
+		var art_mark := UIStyleScript.label(_type_mark(card_type), 18, Color(1, 1, 1, 0.76))
+		art_mark.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		art_mark.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		art_mark.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		art.add_child(art_mark)
+	else:
+		var art_texture := TextureRect.new()
+		art_texture.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		art_texture.texture = load(art_path)
+		art_texture.custom_minimum_size = Vector2(0, 56)
+		art_texture.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		art_texture.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		art_texture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		art_texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		art.add_child(art_texture)
 
 	var type_label := UIStyleScript.label(card_type.to_upper(), 12, UIStyleScript.GOLD)
 	type_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
