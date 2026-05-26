@@ -34,7 +34,7 @@
       "background_id": "bg_battle_act1_outpost",
       "intents": [
         {"type": "block", "block": 6, "label": "Seal Notes"},
-        {"type": "attack", "damage": 7, "label": "Glass Stylus"},
+        {"type": "healing_down", "percent": 50, "turns": 2, "label": "Black Formula"},
         {"type": "attack", "damage": 9, "label": "Bad Formula"}
       ]
     },

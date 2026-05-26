@@ -27,6 +27,9 @@ The Act route screen in particular exposed test buttons, weak hierarchy, and fla
 - Removed debug navigation buttons from the normal main menu and route map.
 - Rebuilt the route screen around a readable header, route panel, party panel, and equipment panel.
 - Rebuilt combat around a clearer player/enemy/log/hand layout.
+- Added combat feedback toasts for oath triggers, bond gains, Kyle wagers, victory, and defeat.
+- Replaced the combat companion text line with compact companion tiles showing portrait, oath, bond, and base attack.
+- Upgraded companion recruitment and oath selection from plain buttons into contract-style cards with portraits and readable role/rules text.
 - Restyled reward and choice screens so options read as deliberate cards rather than plain buttons.
 - Kept layout constraints simple enough to remain readable at the current project window size.
 
@@ -46,7 +49,7 @@ It does not attempt to copy another game's exact visual trade dress.
 
 - This is still procedural Godot UI, not a final authored scene layout.
 - Card text can still become crowded as effects get longer.
-- Combat needs better animation and enemy/companion positioning.
+- Combat still needs full attack/block/heal animation and sound.
 - Shop and upgrade services still need card picker UI instead of automatic targets.
 - Pixel art quality remains temporary and will strongly affect perceived polish.
 

@@ -25,6 +25,7 @@ A real playable roguelike deckbuilder where the player drafts companions, choose
 |---|---|---|---|
 | Starting run numbers | 76 HP, 99 gold | 75 HP, 80 gold | Implementation updated to 76/99. |
 | Starting deck | 5 attacks, 4 guards, 1 tactical card | 4 attacks, 4 guards, Tactical Prep, Heavy Cut | Implementation updated to 5/4/1. Heavy Cut moved to reward pool. |
+| Protagonist reward pool | Final target 40 protagonist cards | 12 protagonist cards | Demo slice expanded to 20 protagonist cards. |
 | Companion roster | 10 companions | 5 companions | Implementation updated to 10 companions. |
 | Companion cards | Final target 8 per companion | 3 per 5 companions | Implementation updated to 3 per 10 companions; docs clarify 8 each is content-complete target. |
 | Oath tactics | 3 selectable per companion, chosen oath is fixed | Rowan/Sera/Eldric had hooks; Bram/Maren were mostly text only | Implementation updated so all 30 current oath tactics have combat/economy hooks. |
@@ -42,6 +43,7 @@ The current implementation favors clarity over final content volume.
 Energy / draw: 4 energy, 6 draw remains.
 Intent: more choice per turn, not "play every card every turn".
 Starter deck: low-cost baseline plus one 0-cost tactical card.
+Protagonist cards: 20 current cards for the demo slice.
 Companion cards: 3 per companion for the playable slice.
 Oath tactics: mostly +1 draw, +1 energy once, +2~4 oath damage, +1~5 block, or heal 1~2.
 Bond: 30/60/100 stays mild, because two companions can be active.
@@ -69,9 +71,9 @@ These are not blockers for the current playable build, but they are the next pla
 
 1. Companion and enemy art still needs stronger silhouettes and animation polish.
 2. Current companion cards are 3 per companion; final variety needs 8 per companion.
-3. Oath tactics currently show mostly through logs and numbers. They need compact icon flashes, metal-tag reactions, and clearer battlefield feedback.
+3. Oath tactics now have visible combat toasts, but they still need final VFX and sound.
 4. Combat telemetry records oath trigger counts but not value gained per trigger.
-5. Card pool is still too small to judge long-term deck variety.
+5. Card pool is still smaller than the final target, but the demo slice now has enough protagonist cards to reduce early reward repetition.
 6. The route map and reward screens are playable, but they still need the same quality pass as combat cards and main UI.
 
 ## Next Build Priority

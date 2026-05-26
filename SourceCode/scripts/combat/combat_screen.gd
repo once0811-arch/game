@@ -14,13 +14,14 @@ var log_lines: Array[String] = []
 
 var player_label: Label
 var pile_label: Label
-var companion_label: Label
+var companion_box: HBoxContainer
 var hand_area: Control
 var enemy_box: HBoxContainer
 var log_label: Label
 var end_turn_button: Button
 var claim_reward_button: Button
 var enemy_controls: Array[Control] = []
+var feedback_layer: Control
 var selected_target_index := 0
 var selected_card_index := -1
 var dragging_card_index := -1
@@ -49,6 +50,12 @@ func _build_ui() -> void:
 	target_arc.begin_cap_mode = Line2D.LINE_CAP_ROUND
 	target_arc.end_cap_mode = Line2D.LINE_CAP_ROUND
 	add_child(target_arc)
+
+	feedback_layer = Control.new()
+	feedback_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+	feedback_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	feedback_layer.z_index = 90
+	add_child(feedback_layer)
 
 	var header := HBoxContainer.new()
 	header.add_theme_constant_override("separation", 12)
@@ -90,8 +97,9 @@ func _build_ui() -> void:
 	pile_label = UIStyleScript.label("", 15, UIStyleScript.MUTED)
 	stage_box.add_child(pile_label)
 
-	companion_label = UIStyleScript.label("", 15, UIStyleScript.GREEN)
-	stage_box.add_child(companion_label)
+	companion_box = HBoxContainer.new()
+	companion_box.add_theme_constant_override("separation", 8)
+	stage_box.add_child(companion_box)
 
 	enemy_box = HBoxContainer.new()
 	enemy_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -599,19 +607,135 @@ func _on_claim_reward_pressed() -> void:
 func _append_logs(messages: Array[String]) -> void:
 	for message in messages:
 		log_lines.append(message)
+		_show_feedback_for_message(message)
 	while log_lines.size() > 12:
 		log_lines.pop_front()
 
 
 func _refresh_companions() -> void:
+	UIStyleScript.clear(companion_box)
 	if RunState.party.companions.is_empty():
-		companion_label.text = "Companions: none"
+		companion_box.add_child(UIStyleScript.label("No companions under contract.", 15, UIStyleScript.MUTED))
 		return
-	var parts: Array[String] = []
 	for companion in RunState.party.companions:
-		parts.append("%s / %s / %s" % [
+		companion_box.add_child(_make_companion_tile(companion))
+
+
+func _make_companion_tile(companion: Dictionary) -> PanelContainer:
+	var content := HBoxContainer.new()
+	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_theme_constant_override("separation", 8)
+	var panel := UIStyleScript.panel(content, Vector2(0, 70), true)
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	var portrait := TextureRect.new()
+	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	portrait.custom_minimum_size = Vector2(48, 48)
+	portrait.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	portrait.texture = DataRegistry.get_temp_asset_texture(String(companion.get("portrait_asset_id", "")))
+	content.add_child(portrait)
+
+	var text_box := VBoxContainer.new()
+	text_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	text_box.add_theme_constant_override("separation", 1)
+	content.add_child(text_box)
+
+	var name := UIStyleScript.label("%s  ATK %d" % [
 			String(companion.get("name", "?")),
-			String(companion.get("oath_name", "No Oath")),
-			bond_system.describe_bonuses(companion),
-		])
-	companion_label.text = "Companions: " + " | ".join(PackedStringArray(parts))
+			int(DataRegistry.get_companion(String(companion.get("id", ""))).get("base_attack", 0)),
+		], 14, UIStyleScript.TEXT)
+	name.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	text_box.add_child(name)
+
+	var oath := UIStyleScript.label(String(companion.get("oath_name", "No Oath")), 12, UIStyleScript.GOLD)
+	oath.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	text_box.add_child(oath)
+
+	var bond := UIStyleScript.label(bond_system.describe_bonuses(companion), 12, UIStyleScript.GREEN)
+	bond.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	text_box.add_child(bond)
+	return panel
+
+
+func _show_feedback_for_message(message: String) -> void:
+	var lowered := message.to_lower()
+	if lowered.find("oath") >= 0:
+		_show_battle_toast("OATH", message, UIStyleScript.GOLD, "fx_oath_token_glint")
+	elif lowered.find("kyle wager") >= 0:
+		_show_battle_toast("WAGER", message, UIStyleScript.GREEN, "fx_gold_spark")
+	elif lowered.find("bond") >= 0:
+		_show_battle_toast("BOND", message, UIStyleScript.GREEN, "fx_oath_token_glint")
+	elif lowered == "victory.":
+		_show_battle_toast("VICTORY", "Contract fulfilled.", UIStyleScript.GREEN, "fx_gold_spark")
+	elif lowered == "defeat.":
+		_show_battle_toast("DEFEAT", "The road claims the contract.", UIStyleScript.RED, "fx_healing_down_black_crack")
+
+
+func _show_battle_toast(title: String, message: String, color: Color, asset_id: String) -> void:
+	if feedback_layer == null:
+		return
+	var content := HBoxContainer.new()
+	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_theme_constant_override("separation", 10)
+
+	var panel := PanelContainer.new()
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.z_index = 95
+	panel.custom_minimum_size = Vector2(420, 58)
+	panel.add_theme_stylebox_override("panel", _toast_style(color))
+	panel.add_child(content)
+	feedback_layer.add_child(panel)
+
+	var icon := TextureRect.new()
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	icon.custom_minimum_size = Vector2(42, 42)
+	icon.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.texture = DataRegistry.get_temp_asset_texture(asset_id)
+	content.add_child(icon)
+
+	var text_box := VBoxContainer.new()
+	text_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_child(text_box)
+
+	var title_label := UIStyleScript.label(title, 15, color)
+	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	text_box.add_child(title_label)
+
+	var body := UIStyleScript.label(message, 13, UIStyleScript.TEXT)
+	body.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	body.clip_text = true
+	text_box.add_child(body)
+
+	var viewport_size := get_viewport_rect().size
+	panel.position = Vector2((viewport_size.x - panel.custom_minimum_size.x) * 0.5, 82)
+	panel.modulate.a = 0.0
+	var tween := create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(panel, "modulate:a", 1.0, 0.12)
+	tween.parallel().tween_property(panel, "position:y", 64.0, 0.18)
+	tween.tween_interval(1.05)
+	tween.tween_property(panel, "modulate:a", 0.0, 0.26)
+	tween.finished.connect(panel.queue_free)
+
+
+func _toast_style(color: Color) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.035, 0.033, 0.030, 0.96)
+	style.border_color = color
+	style.border_width_left = 2
+	style.border_width_top = 2
+	style.border_width_right = 2
+	style.border_width_bottom = 2
+	style.corner_radius_top_left = 6
+	style.corner_radius_top_right = 6
+	style.corner_radius_bottom_left = 6
+	style.corner_radius_bottom_right = 6
+	style.shadow_color = Color(0, 0, 0, 0.58)
+	style.shadow_size = 10
+	style.shadow_offset = Vector2(0, 4)
+	style.content_margin_left = 12
+	style.content_margin_top = 8
+	style.content_margin_right = 12
+	style.content_margin_bottom = 8
+	return style

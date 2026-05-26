@@ -55,6 +55,26 @@
       "effects": [{"type": "damage", "amount": 12}]
     },
     {
+      "id": "p_clean_cut",
+      "name": "Clean Cut",
+      "type": "attack",
+      "rarity": "common",
+      "cost": 1,
+      "asset_id": "card_motif_attack_sword",
+      "rules_text": "Deal 8 damage.",
+      "effects": [{"type": "damage", "amount": 8}]
+    },
+    {
+      "id": "p_wide_swing",
+      "name": "Wide Swing",
+      "type": "attack",
+      "rarity": "common",
+      "cost": 2,
+      "asset_id": "card_motif_attack_sword",
+      "rules_text": "Deal 6 damage to all enemies.",
+      "effects": [{"type": "damage_all", "amount": 6}]
+    },
+    {
       "id": "p_brace",
       "name": "Brace",
       "type": "skill",
@@ -63,6 +83,16 @@
       "asset_id": "card_motif_skill_guard",
       "rules_text": "Gain 10 block.",
       "effects": [{"type": "block", "amount": 10}]
+    },
+    {
+      "id": "p_quick_step",
+      "name": "Quick Step",
+      "type": "skill",
+      "rarity": "common",
+      "cost": 1,
+      "asset_id": "card_motif_skill_guard",
+      "rules_text": "Gain 5 block. Draw 1.",
+      "effects": [{"type": "block", "amount": 5}, {"type": "draw", "amount": 1}]
     },
     {
       "id": "p_contract_mark",
@@ -75,6 +105,16 @@
       "effects": [{"type": "tactical_mark", "amount": 2}]
     },
     {
+      "id": "p_marked_riposte",
+      "name": "Marked Riposte",
+      "type": "skill",
+      "rarity": "common",
+      "cost": 1,
+      "asset_id": "card_motif_skill_guard",
+      "rules_text": "Gain 4 block. Apply 1 Tactical Mark.",
+      "effects": [{"type": "block", "amount": 4}, {"type": "tactical_mark", "amount": 1}]
+    },
+    {
       "id": "p_road_cleave",
       "name": "Road Cleave",
       "type": "attack",
@@ -83,6 +123,36 @@
       "asset_id": "card_motif_attack_sword",
       "rules_text": "Deal 18 damage.",
       "effects": [{"type": "damage", "amount": 18}]
+    },
+    {
+      "id": "p_shield_line",
+      "name": "Shield Line",
+      "type": "skill",
+      "rarity": "uncommon",
+      "cost": 2,
+      "asset_id": "card_motif_skill_guard",
+      "rules_text": "Gain 14 block.",
+      "effects": [{"type": "block", "amount": 14}]
+    },
+    {
+      "id": "p_field_medicine",
+      "name": "Field Medicine",
+      "type": "skill",
+      "rarity": "uncommon",
+      "cost": 2,
+      "asset_id": "card_motif_skill_guard",
+      "rules_text": "Heal 2. Gain 6 block.",
+      "effects": [{"type": "heal", "amount": 2}, {"type": "block", "amount": 6}]
+    },
+    {
+      "id": "p_sweeping_order",
+      "name": "Sweeping Order",
+      "type": "attack",
+      "rarity": "uncommon",
+      "cost": 3,
+      "asset_id": "card_motif_attack_sword",
+      "rules_text": "Deal 8 damage to all enemies. Apply 1 Tactical Mark.",
+      "effects": [{"type": "damage_all", "amount": 8}, {"type": "tactical_mark", "amount": 1}]
     },
     {
       "id": "p_risk_advance",
@@ -113,6 +183,16 @@
       "asset_id": "card_motif_attack_sword",
       "rules_text": "Deal 14 damage. Draw 1.",
       "effects": [{"type": "damage", "amount": 14}, {"type": "draw", "amount": 1}]
+    },
+    {
+      "id": "p_desperate_stand",
+      "name": "Desperate Stand",
+      "type": "skill",
+      "rarity": "rare",
+      "cost": 3,
+      "asset_id": "card_motif_skill_guard",
+      "rules_text": "Gain 18 block. Heal 2.",
+      "effects": [{"type": "block", "amount": 18}, {"type": "heal", "amount": 2}]
     },
     {
       "id": "p_oath_focus",

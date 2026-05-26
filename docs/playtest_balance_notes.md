@@ -70,7 +70,9 @@ These are starting targets, not final truth:
 - Temporary art reuse may distort perceived difficulty because enemies are not visually distinct enough yet.
 - Combat logs count oath triggers, but not the value gained from each trigger.
 - Kyle's gambling economy is now implemented as a 5-win wager payout. It needs focused testing because normal outcomes should be below average, while jackpot outcomes are allowed to make a run easier.
-- The current playable card pool is smaller than the final 40 protagonist / 80 companion target, so early balance should judge pacing and system clarity before judging final build variety.
+- The current playable card pool is 20 protagonist cards and 30 companion cards. It is still smaller than the final 40 protagonist / 80 companion target, so early balance should judge pacing and system clarity before judging final build variety.
+- Act 1 now has a Healing Down enemy pattern through Mutated Scholar. Verify that it pressures Maren/Isol healing without making healing cards feel like trap picks.
+- Combat now has visible oath/bond/wager/victory feedback. Verify that the toast timing helps rather than covering important card or enemy information.
 
 ## Next Tuning Loop
 
