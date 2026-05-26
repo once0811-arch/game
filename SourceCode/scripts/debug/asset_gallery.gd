@@ -30,6 +30,16 @@ func _build_base_ui() -> void:
 	title.add_theme_font_size_override("font_size", 22)
 	root.add_child(title)
 
+	var actions := HBoxContainer.new()
+	actions.add_theme_constant_override("separation", 8)
+	root.add_child(actions)
+
+	var main_button := Button.new()
+	main_button.text = "Main Menu"
+	main_button.custom_minimum_size = Vector2(120, 34)
+	main_button.pressed.connect(Callable(SceneRouter, "go_to_main"))
+	actions.add_child(main_button)
+
 	status_label = Label.new()
 	status_label.text = "Loading manifest..."
 	root.add_child(status_label)

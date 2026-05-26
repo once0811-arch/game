@@ -11,9 +11,17 @@ config_version=5
 [application]
 
 config/name="deckbuilding"
-run/main_scene="res://scenes/debug/asset_gallery.tscn"
+run/main_scene="res://scenes/main/main.tscn"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[autoload]
+
+DataRegistry="*res://autoloads/data_registry.gd"
+RngService="*res://autoloads/rng_service.gd"
+SaveService="*res://autoloads/save_service.gd"
+SceneRouter="*res://autoloads/scene_router.gd"
+RunState="*res://scripts/state/run_state.gd"
 
 [physics]
 

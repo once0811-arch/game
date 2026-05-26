@@ -1,0 +1,75 @@
+extends Node
+
+const PartyStateScript := preload("res://scripts/state/party_state.gd")
+const DeckStateScript := preload("res://scripts/state/deck_state.gd")
+const CombatStateScript := preload("res://scripts/state/combat_state.gd")
+
+var is_run_active := false
+var run_seed := 0
+var act := 1
+var depth := 0
+var gold := 0
+var current_hp := 1
+var max_hp := 1
+var phase_note := "No active run."
+var party = PartyStateScript.new()
+var deck = DeckStateScript.new()
+var combat = CombatStateScript.new()
+
+
+func start_new_run() -> void:
+	var starting: Dictionary = DataRegistry.get_balance("run", {})
+	is_run_active = true
+	run_seed = RngService.randomize_seed()
+	act = int(starting.get("starting_act", 1))
+	depth = int(starting.get("starting_depth", 0))
+	gold = int(starting.get("starting_gold", 80))
+	max_hp = int(starting.get("starting_max_hp", 75))
+	current_hp = max_hp
+	phase_note = "Phase 1 foundation run. Map and systems are placeholders."
+	party.reset()
+	deck.reset()
+	combat.reset()
+
+
+func advance_depth() -> void:
+	if is_run_active:
+		depth += 1
+
+
+func to_snapshot() -> Dictionary:
+	return {
+		"is_run_active": is_run_active,
+		"run_seed": run_seed,
+		"act": act,
+		"depth": depth,
+		"gold": gold,
+		"current_hp": current_hp,
+		"max_hp": max_hp,
+		"phase_note": phase_note,
+		"party": party.to_dict(),
+		"deck": deck.to_dict(),
+		"combat": combat.to_dict(),
+	}
+
+
+func load_snapshot(snapshot: Dictionary) -> bool:
+	if snapshot.is_empty():
+		return false
+	is_run_active = bool(snapshot.get("is_run_active", false))
+	run_seed = int(snapshot.get("run_seed", 0))
+	act = int(snapshot.get("act", 1))
+	depth = int(snapshot.get("depth", 0))
+	gold = int(snapshot.get("gold", 0))
+	current_hp = int(snapshot.get("current_hp", 1))
+	max_hp = int(snapshot.get("max_hp", max(current_hp, 1)))
+	phase_note = String(snapshot.get("phase_note", "Loaded Phase 1 snapshot."))
+	RngService.set_run_seed(run_seed)
+
+	var party_data: Dictionary = snapshot.get("party", {})
+	var deck_data: Dictionary = snapshot.get("deck", {})
+	var combat_data: Dictionary = snapshot.get("combat", {})
+	party.from_dict(party_data)
+	deck.from_dict(deck_data)
+	combat.from_dict(combat_data)
+	return is_run_active
