@@ -14,7 +14,7 @@ func execute_end_turn_attacks() -> Array[String]:
 		var target_index := _choose_marked_target()
 		if target_index < 0:
 			break
-		var damage := _base_damage(companion) + bond_system.get_damage_bonus(companion)
+		var damage := _base_damage(companion) + bond_system.get_damage_bonus(companion) + RunState.equipment.get_total_bonus("companion_attack_damage", String(companion.get("id", "")))
 		var enemy: Dictionary = RunState.combat.enemies[target_index]
 		enemy["hp"] = max(int(enemy.get("hp", 0)) - damage, 0)
 		RunState.combat.enemies[target_index] = enemy

@@ -7,6 +7,8 @@ const COMPANION_CARDS_PATH := "res://data/cards/companion_cards.json"
 const COMPANIONS_PATH := "res://data/companions/companions.json"
 const ENEMIES_ACT1_PATH := "res://data/enemies/enemies_act1.json"
 const ACT1_ENCOUNTERS_PATH := "res://data/encounters/act1_encounters.json"
+const EQUIPMENT_PATH := "res://data/equipment/equipment.json"
+const EVENTS_ACT1_PATH := "res://data/events/events_act1.json"
 
 var balance_constants: Dictionary = {}
 var temp_asset_manifest: Dictionary = {}
@@ -19,6 +21,9 @@ var companions_by_id: Dictionary = {}
 var enemies_act1: Dictionary = {}
 var enemies_by_id: Dictionary = {}
 var act1_encounters: Dictionary = {}
+var equipment: Dictionary = {}
+var equipment_by_id: Dictionary = {}
+var events_act1: Dictionary = {}
 var load_errors: Array[String] = []
 
 
@@ -35,10 +40,13 @@ func load_all() -> bool:
 	companions = _load_dictionary(COMPANIONS_PATH)
 	enemies_act1 = _load_dictionary(ENEMIES_ACT1_PATH)
 	act1_encounters = _load_dictionary(ACT1_ENCOUNTERS_PATH)
+	equipment = _load_dictionary(EQUIPMENT_PATH)
+	events_act1 = _load_dictionary(EVENTS_ACT1_PATH)
 	_index_temp_assets()
 	_index_cards()
 	_index_companions()
 	_index_enemies()
+	_index_equipment()
 	return load_errors.is_empty()
 
 
@@ -120,6 +128,30 @@ func get_act1_encounters() -> Dictionary:
 	return act1_encounters
 
 
+func get_equipment(equipment_id: String) -> Dictionary:
+	return equipment_by_id.get(equipment_id, {})
+
+
+func get_all_equipment() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for item in equipment_by_id.values():
+		if typeof(item) == TYPE_DICTIONARY:
+			result.append(item)
+	return result
+
+
+func get_equipment_count() -> int:
+	return equipment_by_id.size()
+
+
+func get_act1_events() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for event in events_act1.get("events", []):
+		if typeof(event) == TYPE_DICTIONARY:
+			result.append(event)
+	return result
+
+
 func is_ready_for_phase_1() -> bool:
 	return load_errors.is_empty() and not balance_constants.is_empty() and get_temp_asset_count() > 0
 
@@ -138,6 +170,14 @@ func is_ready_for_phase_4() -> bool:
 
 func is_ready_for_phase_5() -> bool:
 	return is_ready_for_phase_4() and get_companion_count() >= 3
+
+
+func is_ready_for_phase_6() -> bool:
+	return is_ready_for_phase_5()
+
+
+func is_ready_for_phase_7() -> bool:
+	return is_ready_for_phase_6() and get_equipment_count() > 0 and get_act1_events().size() > 0
 
 
 func _load_dictionary(path: String) -> Dictionary:
@@ -198,3 +238,13 @@ func _index_enemies() -> void:
 		var enemy_id := String(enemy.get("id", ""))
 		if not enemy_id.is_empty():
 			enemies_by_id[enemy_id] = enemy
+
+
+func _index_equipment() -> void:
+	equipment_by_id.clear()
+	for item in equipment.get("equipment", []):
+		if typeof(item) != TYPE_DICTIONARY:
+			continue
+		var item_id := String(item.get("id", ""))
+		if not item_id.is_empty():
+			equipment_by_id[item_id] = item

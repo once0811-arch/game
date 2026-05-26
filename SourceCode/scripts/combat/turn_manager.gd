@@ -38,6 +38,7 @@ func start_debug_combat(enemy_id: String) -> Array[String]:
 	var drawn: Array[Dictionary] = RunState.deck.draw_cards(int(DataRegistry.get_balance("combat.draw_per_turn", 6)))
 	logs.append("Combat started: %s." % enemy_data.get("name", enemy_id))
 	logs.append("Drew %d cards." % drawn.size())
+	_apply_equipment_start_bonuses(logs)
 	logs.append_array(oath_resolver.on_combat_start())
 	logs.append_array(companion_combat.apply_bond_start_bonuses())
 	return logs
@@ -60,7 +61,7 @@ func play_card(hand_index: int, target_index: int = 0) -> Array[String]:
 	RunState.deck.play_card(hand_index)
 	RunState.combat.cards_played_this_turn += 1
 	logs.append("Played %s." % CardDataScript.card_name(card))
-	logs.append_array(card_effects.resolve(card, target_index))
+	logs.append_array(card_effects.resolve(card, target_index, instance))
 	logs.append_array(oath_resolver.on_card_play(card, target_index))
 	_update_outcome(logs)
 	return logs
@@ -91,6 +92,11 @@ func _start_player_turn(logs: Array[String]) -> void:
 	var drawn: Array[Dictionary] = RunState.deck.draw_cards(int(DataRegistry.get_balance("combat.draw_per_turn", 6)))
 	logs.append("Turn %d started. Drew %d cards." % [RunState.combat.turn_index, drawn.size()])
 	logs.append_array(companion_combat.apply_bond_start_bonuses())
+	if RunState.combat.healing_reduction_turns > 0:
+		RunState.combat.healing_reduction_turns -= 1
+		if RunState.combat.healing_reduction_turns <= 0:
+			RunState.combat.healing_reduction_percent = 0
+			logs.append("Healing reduction faded.")
 
 
 func _update_outcome(logs: Array[String]) -> void:
@@ -103,8 +109,20 @@ func _update_outcome(logs: Array[String]) -> void:
 		RunState.combat.in_combat = false
 		logs.append("Victory.")
 		var node_type := MapState.get_selected_node_type() if MapState.has_selected_node() else "debug_combat"
+		var gold_table: Dictionary = DataRegistry.get_balance("rewards.gold_by_node_type", {})
+		var gold_gain := int(gold_table.get(node_type, 0))
+		if gold_gain > 0:
+			RunState.gold += gold_gain
+			logs.append("Gained %d gold." % gold_gain)
 		logs.append_array(bond_system.award_for_victory(node_type))
 	elif RunState.current_hp <= 0:
 		RunState.combat.outcome = "defeat"
 		RunState.combat.in_combat = false
 		logs.append("Defeat.")
+
+
+func _apply_equipment_start_bonuses(logs: Array[String]) -> void:
+	var start_block := RunState.equipment.get_total_bonus("start_block")
+	if start_block > 0:
+		RunState.combat.player_block += start_block
+		logs.append("Equipment: gained %d start block." % start_block)

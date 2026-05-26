@@ -9,6 +9,9 @@ const CARD_REWARD_SCENE := "res://scenes/reward/card_reward_screen.tscn"
 const COMPANION_REWARD_SCENE := "res://scenes/companion/companion_reward_screen.tscn"
 const OATH_TACTIC_SELECT_SCENE := "res://scenes/companion/oath_tactic_select_screen.tscn"
 const COMPANION_CARD_SELECT_SCENE := "res://scenes/companion/companion_card_select_screen.tscn"
+const SHOP_SCENE := "res://scenes/shop/shop_screen.tscn"
+const INN_SCENE := "res://scenes/inn/inn_screen.tscn"
+const EVENT_SCENE := "res://scenes/event/event_screen.tscn"
 
 
 func go_to_main() -> void:
@@ -45,6 +48,18 @@ func open_oath_tactic_select() -> void:
 
 func open_companion_card_select() -> void:
 	_change_to(COMPANION_CARD_SELECT_SCENE)
+
+
+func open_shop() -> void:
+	_change_to(SHOP_SCENE)
+
+
+func open_inn() -> void:
+	_change_to(INN_SCENE)
+
+
+func open_event() -> void:
+	_change_to(EVENT_SCENE)
 
 
 func start_new_run() -> void:

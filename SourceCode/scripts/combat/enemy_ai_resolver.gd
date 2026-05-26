@@ -41,6 +41,14 @@ func execute_enemy_turn() -> Array[String]:
 				var block := int(intent.get("block", 0))
 				enemy["block"] = int(enemy.get("block", 0)) + block
 				logs.append("%s gained %d block." % [enemy.get("name", "Enemy"), block])
+			"healing_down":
+				RunState.combat.healing_reduction_percent = int(intent.get("percent", 50))
+				RunState.combat.healing_reduction_turns = int(intent.get("turns", 2))
+				logs.append("%s applied Healing Down %d%% for %d turns." % [
+					enemy.get("name", "Enemy"),
+					RunState.combat.healing_reduction_percent,
+					RunState.combat.healing_reduction_turns,
+				])
 			_:
 				logs.append("%s hesitated." % enemy.get("name", "Enemy"))
 		enemy["intent_index"] = int(enemy.get("intent_index", 0)) + 1

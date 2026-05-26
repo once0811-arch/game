@@ -61,6 +61,64 @@ func add_card_to_discard(card_id: String) -> Dictionary:
 	return card
 
 
+func remove_first_matching(card_ids: Array = []) -> String:
+	var removed := _remove_from_pile(draw_pile, card_ids)
+	if not removed.is_empty():
+		return removed
+	removed = _remove_from_pile(discard_pile, card_ids)
+	if not removed.is_empty():
+		return removed
+	removed = _remove_from_pile(hand, card_ids)
+	if not removed.is_empty():
+		return removed
+	return _remove_from_pile(exhaust_pile, card_ids)
+
+
+func upgrade_first_unupgraded() -> String:
+	var upgraded := _upgrade_in_pile(draw_pile)
+	if not upgraded.is_empty():
+		return upgraded
+	upgraded = _upgrade_in_pile(discard_pile)
+	if not upgraded.is_empty():
+		return upgraded
+	upgraded = _upgrade_in_pile(hand)
+	if not upgraded.is_empty():
+		return upgraded
+	return _upgrade_in_pile(exhaust_pile)
+
+
+func transform_first_starter(replacement_id: String) -> String:
+	if replacement_id.is_empty():
+		return ""
+	var starter_ids := DataRegistry.get_starter_deck_ids()
+	var transformed := _transform_in_pile(draw_pile, starter_ids, replacement_id)
+	if not transformed.is_empty():
+		return transformed
+	transformed = _transform_in_pile(discard_pile, starter_ids, replacement_id)
+	if not transformed.is_empty():
+		return transformed
+	transformed = _transform_in_pile(hand, starter_ids, replacement_id)
+	if not transformed.is_empty():
+		return transformed
+	return _transform_in_pile(exhaust_pile, starter_ids, replacement_id)
+
+
+func copy_first_non_starter() -> String:
+	var starter_ids := DataRegistry.get_starter_deck_ids()
+	var card_id := _find_first_not_in(draw_pile, starter_ids)
+	if card_id.is_empty():
+		card_id = _find_first_not_in(discard_pile, starter_ids)
+	if card_id.is_empty():
+		card_id = _find_first_not_in(hand, starter_ids)
+	if card_id.is_empty():
+		card_id = _find_first_not_in(exhaust_pile, starter_ids)
+	if card_id.is_empty():
+		card_id = String(starter_ids[0]) if starter_ids.size() > 0 else ""
+	if not card_id.is_empty():
+		add_card_to_discard(card_id)
+	return card_id
+
+
 func shuffle_discard_into_draw_pile() -> void:
 	while not discard_pile.is_empty():
 		draw_pile.append(discard_pile.pop_back())
@@ -73,6 +131,10 @@ func shuffle_draw_pile() -> void:
 
 func get_total_cards() -> int:
 	return draw_pile.size() + hand.size() + discard_pile.size() + exhaust_pile.size()
+
+
+func has_card_id(card_id: String) -> bool:
+	return _pile_has_card(draw_pile, card_id) or _pile_has_card(hand, card_id) or _pile_has_card(discard_pile, card_id) or _pile_has_card(exhaust_pile, card_id)
 
 
 func to_dict() -> Dictionary:
@@ -117,3 +179,50 @@ func _shuffle_array(values: Array[Dictionary]) -> void:
 		var temp := values[i]
 		values[i] = values[j]
 		values[j] = temp
+
+
+func _remove_from_pile(pile: Array[Dictionary], card_ids: Array) -> String:
+	for i in range(pile.size()):
+		var card_id := CardInstanceScript.get_card_id(pile[i])
+		if card_ids.is_empty() or card_ids.has(card_id):
+			pile.remove_at(i)
+			return card_id
+	return ""
+
+
+func _upgrade_in_pile(pile: Array[Dictionary]) -> String:
+	for i in range(pile.size()):
+		var instance: Dictionary = pile[i]
+		if bool(instance.get("upgraded", false)):
+			continue
+		instance["upgraded"] = true
+		pile[i] = instance
+		return CardInstanceScript.get_card_id(instance)
+	return ""
+
+
+func _transform_in_pile(pile: Array[Dictionary], source_ids: Array, replacement_id: String) -> String:
+	for i in range(pile.size()):
+		var instance: Dictionary = pile[i]
+		var card_id := CardInstanceScript.get_card_id(instance)
+		if source_ids.has(card_id):
+			instance["card_id"] = replacement_id
+			instance["upgraded"] = false
+			pile[i] = instance
+			return card_id
+	return ""
+
+
+func _find_first_not_in(pile: Array[Dictionary], excluded_ids: Array) -> String:
+	for instance in pile:
+		var card_id := CardInstanceScript.get_card_id(instance)
+		if not excluded_ids.has(card_id):
+			return card_id
+	return ""
+
+
+func _pile_has_card(pile: Array[Dictionary], card_id: String) -> bool:
+	for instance in pile:
+		if CardInstanceScript.get_card_id(instance) == card_id:
+			return true
+	return false

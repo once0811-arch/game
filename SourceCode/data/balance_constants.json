@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "phase": 6,
+  "phase": 7,
   "run": {
     "starting_act": 1,
     "starting_depth": 0,
@@ -27,9 +27,32 @@
   "rewards": {
     "card_options": 3,
     "skip_gold": 15,
+    "gold_by_node_type": {
+      "combat": 22,
+      "elite": 45,
+      "midboss": 40,
+      "boss": 80,
+      "debug_combat": 0
+    },
     "companion_options": 3,
     "companion_card_choices": 3,
     "companion_card_picks": 2
+  },
+  "shop": {
+    "protagonist_cards": 4,
+    "companion_cards": 2,
+    "equipment_items": 3,
+    "remove_base_cost": 75,
+    "remove_cost_growth": 25
+  },
+  "inn": {
+    "normal_weight": 2,
+    "event_weight": 1,
+    "room_options": 3
+  },
+  "equipment": {
+    "slots": ["helmet", "armor", "weapon"],
+    "protagonist_id": "protagonist"
   },
   "debug": {
     "phase_1_map_nodes_enabled": false,

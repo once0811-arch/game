@@ -138,12 +138,13 @@ func _make_menu_button(label_text: String) -> Button:
 
 func _refresh_status() -> void:
 	continue_button.disabled = not SaveService.has_save()
-	var data_state := "ready" if DataRegistry.is_ready_for_phase_5() else "missing"
-	status_label.text = "Data: %s | Cards: %d | Companions: %d | Enemies: %d | Temp assets: %d | Save: %s" % [
+	var data_state := "ready" if DataRegistry.is_ready_for_phase_7() else "missing"
+	status_label.text = "Data: %s | Cards: %d | Companions: %d | Enemies: %d | Equipment: %d | Temp assets: %d | Save: %s" % [
 		data_state,
 		DataRegistry.get_card_count(),
 		DataRegistry.get_companion_count(),
 		DataRegistry.get_enemy_count(),
+		DataRegistry.get_equipment_count(),
 		DataRegistry.get_temp_asset_count(),
 		"found" if SaveService.has_save() else "none",
 	]

@@ -3,6 +3,7 @@ extends Node
 const PartyStateScript := preload("res://scripts/state/party_state.gd")
 const DeckStateScript := preload("res://scripts/state/deck_state.gd")
 const CombatStateScript := preload("res://scripts/state/combat_state.gd")
+const EquipmentInventoryScript := preload("res://scripts/systems/equipment_inventory.gd")
 
 var is_run_active := false
 var run_seed := 0
@@ -15,6 +16,7 @@ var phase_note := "No active run."
 var party = PartyStateScript.new()
 var deck = DeckStateScript.new()
 var combat = CombatStateScript.new()
+var equipment = EquipmentInventoryScript.new()
 
 
 func start_new_run() -> void:
@@ -30,6 +32,7 @@ func start_new_run() -> void:
 	party.reset()
 	deck.build_starting_deck(DataRegistry.get_starter_deck_ids())
 	combat.reset()
+	equipment.reset()
 
 
 func advance_depth() -> void:
@@ -50,6 +53,7 @@ func to_snapshot() -> Dictionary:
 		"party": party.to_dict(),
 		"deck": deck.to_dict(),
 		"combat": combat.to_dict(),
+		"equipment": equipment.to_dict(),
 	}
 
 
@@ -69,7 +73,9 @@ func load_snapshot(snapshot: Dictionary) -> bool:
 	var party_data: Dictionary = snapshot.get("party", {})
 	var deck_data: Dictionary = snapshot.get("deck", {})
 	var combat_data: Dictionary = snapshot.get("combat", {})
+	var equipment_data: Dictionary = snapshot.get("equipment", {})
 	party.from_dict(party_data)
 	deck.from_dict(deck_data)
 	combat.from_dict(combat_data)
+	equipment.from_dict(equipment_data)
 	return is_run_active

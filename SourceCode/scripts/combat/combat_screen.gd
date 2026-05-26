@@ -181,6 +181,11 @@ func _refresh() -> void:
 		RunState.combat.max_energy,
 		RunState.combat.turn_index,
 	]
+	if RunState.combat.healing_reduction_turns > 0:
+		player_label.text += "\nHealing Down %d%% / %d turns" % [
+			RunState.combat.healing_reduction_percent,
+			RunState.combat.healing_reduction_turns,
+		]
 	_refresh_enemy()
 	pile_label.text = "Draw %d | Hand %d | Discard %d | Exhaust %d" % [
 		RunState.deck.draw_pile.size(),
@@ -226,15 +231,17 @@ func _refresh_hand() -> void:
 	for i in range(RunState.deck.hand.size()):
 		var instance: Dictionary = RunState.deck.hand[i]
 		var card := DataRegistry.get_card(CardInstanceScript.get_card_id(instance))
-		hand_box.add_child(_make_card_button(card, i))
+		hand_box.add_child(_make_card_button(card, instance, i))
 
 
-func _make_card_button(card: Dictionary, hand_index: int) -> Button:
+func _make_card_button(card: Dictionary, instance: Dictionary, hand_index: int) -> Button:
 	var button := Button.new()
 	var cost := CardDataScript.card_cost(card)
+	var upgraded_suffix := "+" if bool(instance.get("upgraded", false)) else ""
 	button.custom_minimum_size = Vector2(150, 124)
-	button.text = "%s [%d]\n%s\n%s" % [
+	button.text = "%s%s [%d]\n%s\n%s" % [
 		CardDataScript.card_name(card),
+		upgraded_suffix,
 		cost,
 		CardDataScript.card_type(card),
 		CardDataScript.card_rules_text(card),

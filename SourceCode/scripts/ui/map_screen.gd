@@ -3,6 +3,9 @@ extends Control
 var run_label: Label
 var node_grid: GridContainer
 var map_log_label: Label
+var equipment_label: Label
+var equipment_box: HBoxContainer
+var equipment_status_label: Label
 
 
 func _ready() -> void:
@@ -73,6 +76,26 @@ func _build_ui() -> void:
 	map_log_label.modulate = Color(0.82, 0.84, 0.78)
 	map_box.add_child(map_log_label)
 
+	var equipment_panel := PanelContainer.new()
+	layout.add_child(equipment_panel)
+
+	var equipment_layout := VBoxContainer.new()
+	equipment_layout.add_theme_constant_override("separation", 8)
+	equipment_panel.add_child(equipment_layout)
+
+	equipment_label = Label.new()
+	equipment_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	equipment_layout.add_child(equipment_label)
+
+	equipment_box = HBoxContainer.new()
+	equipment_box.add_theme_constant_override("separation", 8)
+	equipment_layout.add_child(equipment_box)
+
+	equipment_status_label = Label.new()
+	equipment_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	equipment_status_label.modulate = Color(0.82, 0.88, 0.80)
+	equipment_layout.add_child(equipment_status_label)
+
 	var actions := HBoxContainer.new()
 	actions.add_theme_constant_override("separation", 10)
 	layout.add_child(actions)
@@ -96,6 +119,21 @@ func _build_ui() -> void:
 	combat_test.text = "Combat Test"
 	combat_test.pressed.connect(Callable(SceneRouter, "open_combat_test"))
 	actions.add_child(combat_test)
+
+	var shop_test := Button.new()
+	shop_test.text = "Shop"
+	shop_test.pressed.connect(Callable(SceneRouter, "open_shop"))
+	actions.add_child(shop_test)
+
+	var inn_test := Button.new()
+	inn_test.text = "Inn"
+	inn_test.pressed.connect(Callable(SceneRouter, "open_inn"))
+	actions.add_child(inn_test)
+
+	var event_test := Button.new()
+	event_test.text = "Event"
+	event_test.pressed.connect(Callable(SceneRouter, "open_event"))
+	actions.add_child(event_test)
 
 	var main := Button.new()
 	main.text = "Main Menu"
@@ -122,6 +160,7 @@ func _refresh_run_info() -> void:
 func _refresh() -> void:
 	_refresh_run_info()
 	_refresh_nodes()
+	_refresh_equipment()
 
 
 func _refresh_nodes() -> void:
@@ -160,6 +199,12 @@ func _on_node_pressed(node_id: String) -> void:
 	elif node_type == "companion_contract":
 		CompanionManager.begin_recruitment("map_contract")
 		SceneRouter.open_companion_reward()
+	elif node_type == "shop":
+		SceneRouter.open_shop()
+	elif node_type == "inn":
+		SceneRouter.open_inn()
+	elif node_type == "event":
+		SceneRouter.open_event()
 	else:
 		MapState.complete_selected_node()
 		_refresh()
@@ -170,3 +215,35 @@ func _on_save_pressed() -> void:
 	snapshot["map"] = MapState.to_snapshot()
 	SaveService.write_run_snapshot(snapshot)
 	_refresh()
+
+
+func _refresh_equipment() -> void:
+	if equipment_label == null:
+		return
+	var equipped_lines := RunState.equipment.get_equipped_lines()
+	if equipped_lines.is_empty():
+		equipment_label.text = "Equipment: none"
+	else:
+		equipment_label.text = "Equipment\n" + "\n".join(PackedStringArray(equipped_lines))
+	for child in equipment_box.get_children():
+		child.queue_free()
+	if RunState.equipment.owned_items.is_empty():
+		equipment_status_label.text = "No equipment in inventory."
+		return
+	equipment_status_label.text = "Inventory"
+	for instance in RunState.equipment.owned_items:
+		var data := RunState.equipment.get_data_for_instance(instance)
+		var button := Button.new()
+		button.custom_minimum_size = Vector2(170, 58)
+		button.text = "#%d %s\n%s" % [
+			int(instance.get("instance_id", 0)),
+			data.get("name", "Equipment"),
+			data.get("slot", "?"),
+		]
+		button.pressed.connect(_on_equipment_pressed.bind(int(instance.get("instance_id", 0))))
+		equipment_box.add_child(button)
+
+
+func _on_equipment_pressed(instance_id: int) -> void:
+	equipment_status_label.text = RunState.equipment.equip_cycle(instance_id)
+	_refresh_equipment()
