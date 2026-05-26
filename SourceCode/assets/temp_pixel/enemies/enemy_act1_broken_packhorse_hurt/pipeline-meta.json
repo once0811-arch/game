@@ -1,0 +1,155 @@
+{
+  "target": "asset",
+  "mode": "hurt",
+  "prompt": "Temporary 2D pixel art proxy for enemy_act1_broken_packhorse_hurt. Role=creature, action=hurt, palette=enemy, solid #FF00FF raw background, readable tactical fantasy silhouette, replaceable by final art.",
+  "role": "",
+  "input": "/Users/gimgibeom/Desktop/deckbuilder/SourceCode/assets/temp_pixel/_raw/enemy_act1_broken_packhorse_hurt_raw.png",
+  "threshold": 100,
+  "edge_threshold": 150,
+  "duration": 200,
+  "rows": 2,
+  "cols": 2,
+  "cell_size": 128,
+  "fit_scale": 0.85,
+  "trim_border": 4,
+  "edge_clean_depth": 3,
+  "align": "bottom",
+  "shared_scale": true,
+  "component_mode": "all",
+  "component_padding": 0,
+  "min_component_area": 1,
+  "edge_touch_margin": 0,
+  "frame_labels": [
+    "hurt-1",
+    "hurt-2",
+    "hurt-3",
+    "hurt-4"
+  ],
+  "frames": [
+    {
+      "grid": [
+        0,
+        0
+      ],
+      "source_box": [
+        0,
+        0,
+        128,
+        128
+      ],
+      "component_mode": "all",
+      "component_count": 1,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        21,
+        46,
+        95,
+        95
+      ],
+      "edge_touch": false,
+      "output_size": [
+        108,
+        72
+      ],
+      "paste_position": [
+        10,
+        47
+      ]
+    },
+    {
+      "grid": [
+        0,
+        1
+      ],
+      "source_box": [
+        128,
+        0,
+        256,
+        128
+      ],
+      "component_mode": "all",
+      "component_count": 1,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        21,
+        45,
+        95,
+        94
+      ],
+      "edge_touch": false,
+      "output_size": [
+        108,
+        72
+      ],
+      "paste_position": [
+        10,
+        47
+      ]
+    },
+    {
+      "grid": [
+        1,
+        0
+      ],
+      "source_box": [
+        0,
+        128,
+        128,
+        256
+      ],
+      "component_mode": "all",
+      "component_count": 1,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        21,
+        47,
+        95,
+        96
+      ],
+      "edge_touch": false,
+      "output_size": [
+        108,
+        72
+      ],
+      "paste_position": [
+        10,
+        47
+      ]
+    },
+    {
+      "grid": [
+        1,
+        1
+      ],
+      "source_box": [
+        128,
+        128,
+        256,
+        256
+      ],
+      "component_mode": "all",
+      "component_count": 1,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        21,
+        46,
+        95,
+        95
+      ],
+      "edge_touch": false,
+      "output_size": [
+        108,
+        72
+      ],
+      "paste_position": [
+        10,
+        47
+      ]
+    }
+  ],
+  "edge_touch_frames": []
+}

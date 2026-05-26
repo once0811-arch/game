@@ -1,0 +1,155 @@
+{
+  "target": "asset",
+  "mode": "fx",
+  "prompt": "Temporary 2D pixel FX sheet for fx_slash_small, solid magenta raw background.",
+  "role": "",
+  "input": "/Users/gimgibeom/Desktop/deckbuilder/SourceCode/assets/temp_pixel/_raw/fx_slash_small_raw.png",
+  "threshold": 100,
+  "edge_threshold": 150,
+  "duration": 200,
+  "rows": 2,
+  "cols": 2,
+  "cell_size": 96,
+  "fit_scale": 0.85,
+  "trim_border": 4,
+  "edge_clean_depth": 3,
+  "align": "center",
+  "shared_scale": true,
+  "component_mode": "all",
+  "component_padding": 0,
+  "min_component_area": 1,
+  "edge_touch_margin": 0,
+  "frame_labels": [
+    "fx-1",
+    "fx-2",
+    "fx-3",
+    "fx-4"
+  ],
+  "frames": [
+    {
+      "grid": [
+        0,
+        0
+      ],
+      "source_box": [
+        0,
+        0,
+        96,
+        96
+      ],
+      "component_mode": "all",
+      "component_count": 2,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        19,
+        20,
+        73,
+        68
+      ],
+      "edge_touch": false,
+      "output_size": [
+        69,
+        62
+      ],
+      "paste_position": [
+        13,
+        17
+      ]
+    },
+    {
+      "grid": [
+        0,
+        1
+      ],
+      "source_box": [
+        96,
+        0,
+        192,
+        96
+      ],
+      "component_mode": "all",
+      "component_count": 2,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        17,
+        20,
+        73,
+        68
+      ],
+      "edge_touch": false,
+      "output_size": [
+        72,
+        62
+      ],
+      "paste_position": [
+        12,
+        17
+      ]
+    },
+    {
+      "grid": [
+        1,
+        0
+      ],
+      "source_box": [
+        0,
+        96,
+        96,
+        192
+      ],
+      "component_mode": "all",
+      "component_count": 2,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        15,
+        20,
+        74,
+        68
+      ],
+      "edge_touch": false,
+      "output_size": [
+        76,
+        62
+      ],
+      "paste_position": [
+        10,
+        17
+      ]
+    },
+    {
+      "grid": [
+        1,
+        1
+      ],
+      "source_box": [
+        96,
+        96,
+        192,
+        192
+      ],
+      "component_mode": "all",
+      "component_count": 2,
+      "selected_component_area": null,
+      "selected_component_bbox": null,
+      "crop_bbox": [
+        13,
+        20,
+        76,
+        68
+      ],
+      "edge_touch": false,
+      "output_size": [
+        81,
+        62
+      ],
+      "paste_position": [
+        7,
+        17
+      ]
+    }
+  ],
+  "edge_touch_frames": []
+}

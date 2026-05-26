@@ -1,0 +1,1 @@
+Temporary 2D pixel battle/background scene for bg_battle_act1_road_ruin: collapsed road with ruined caravan traces. UI-safe lower area, replaceable final art.

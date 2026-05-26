@@ -1,0 +1,1 @@
+Temporary 2D pixel art proxy for companion_eldric_guard. Role=humanoid, action=guard, palette=eldric, solid #FF00FF raw background, readable tactical fantasy silhouette, replaceable by final art.

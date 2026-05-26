@@ -1,0 +1,1 @@
+Temporary 2D pixel art proxy for elite_act1_blackprint_captain_idle. Role=boss, action=idle, palette=boss, solid #FF00FF raw background, readable tactical fantasy silhouette, replaceable by final art.

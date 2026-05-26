@@ -1,0 +1,1 @@
+Temporary 2D pixel battle/background scene for bg_event_act1_generic: generic event backdrop with broken signs. UI-safe lower area, replaceable final art.

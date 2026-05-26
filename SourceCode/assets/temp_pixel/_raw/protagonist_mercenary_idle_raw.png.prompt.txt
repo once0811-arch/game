@@ -1,0 +1,1 @@
+Temporary 2D pixel art proxy for protagonist_mercenary_idle. Role=humanoid, action=idle, palette=protagonist, solid #FF00FF raw background, readable tactical fantasy silhouette, replaceable by final art.

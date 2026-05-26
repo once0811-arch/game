@@ -1,0 +1,1 @@
+Temporary 2D pixel art proxy for protagonist_mercenary_attack. Role=humanoid, action=attack, palette=protagonist, solid #FF00FF raw background, readable tactical fantasy silhouette, replaceable by final art.

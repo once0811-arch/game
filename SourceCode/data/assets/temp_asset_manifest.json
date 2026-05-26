@@ -1,0 +1,1767 @@
+{
+  "version": "0.1.0",
+  "style": "temp_pixel",
+  "generated_by": "tools/phase0_generate_temp_pixel_assets.py",
+  "source_pipeline": "agent-sprite-forge magenta cleanup and frame extraction for sheets",
+  "assets": [
+    {
+      "id": "protagonist_mercenary_idle",
+      "type": "sprite_sheet",
+      "category": "actors",
+      "path": "res://assets/temp_pixel/actors/protagonist_mercenary_idle/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/actors/protagonist_mercenary_idle/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "protagonist_mercenary_attack",
+      "type": "sprite_sheet",
+      "category": "actors",
+      "path": "res://assets/temp_pixel/actors/protagonist_mercenary_attack/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/actors/protagonist_mercenary_attack/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "protagonist_mercenary_guard",
+      "type": "sprite_sheet",
+      "category": "actors",
+      "path": "res://assets/temp_pixel/actors/protagonist_mercenary_guard/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/actors/protagonist_mercenary_guard/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "protagonist_portrait",
+      "type": "portrait",
+      "category": "actors",
+      "path": "res://assets/temp_pixel/actors/protagonist_portrait.png",
+      "prompt_path": "res://assets/temp_pixel/actors/protagonist_portrait.png.prompt.txt",
+      "frame_size": [
+        96,
+        96
+      ],
+      "frames": 1
+    },
+    {
+      "id": "companion_rowan_idle",
+      "type": "sprite_sheet",
+      "category": "companions",
+      "path": "res://assets/temp_pixel/companions/companion_rowan_idle/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/companions/companion_rowan_idle/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "companion_rowan_attack",
+      "type": "sprite_sheet",
+      "category": "companions",
+      "path": "res://assets/temp_pixel/companions/companion_rowan_attack/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/companions/companion_rowan_attack/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "companion_rowan_portrait",
+      "type": "portrait",
+      "category": "companions",
+      "path": "res://assets/temp_pixel/companions/companion_rowan_portrait.png",
+      "prompt_path": "res://assets/temp_pixel/companions/companion_rowan_portrait.png.prompt.txt",
+      "frame_size": [
+        96,
+        96
+      ],
+      "frames": 1
+    },
+    {
+      "id": "companion_rowan_oath_1",
+      "type": "image",
+      "category": "ui/oaths",
+      "path": "res://assets/temp_pixel/ui/oaths/companion_rowan_oath_1.png",
+      "prompt_path": "res://assets/temp_pixel/ui/oaths/companion_rowan_oath_1.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1,
+      "notes": "oath icon 1"
+    },
+    {
+      "id": "companion_rowan_oath_2",
+      "type": "image",
+      "category": "ui/oaths",
+      "path": "res://assets/temp_pixel/ui/oaths/companion_rowan_oath_2.png",
+      "prompt_path": "res://assets/temp_pixel/ui/oaths/companion_rowan_oath_2.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1,
+      "notes": "oath icon 2"
+    },
+    {
+      "id": "companion_rowan_oath_3",
+      "type": "image",
+      "category": "ui/oaths",
+      "path": "res://assets/temp_pixel/ui/oaths/companion_rowan_oath_3.png",
+      "prompt_path": "res://assets/temp_pixel/ui/oaths/companion_rowan_oath_3.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1,
+      "notes": "oath icon 3"
+    },
+    {
+      "id": "companion_sera_idle",
+      "type": "sprite_sheet",
+      "category": "companions",
+      "path": "res://assets/temp_pixel/companions/companion_sera_idle/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/companions/companion_sera_idle/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "companion_sera_attack",
+      "type": "sprite_sheet",
+      "category": "companions",
+      "path": "res://assets/temp_pixel/companions/companion_sera_attack/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/companions/companion_sera_attack/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "companion_sera_portrait",
+      "type": "portrait",
+      "category": "companions",
+      "path": "res://assets/temp_pixel/companions/companion_sera_portrait.png",
+      "prompt_path": "res://assets/temp_pixel/companions/companion_sera_portrait.png.prompt.txt",
+      "frame_size": [
+        96,
+        96
+      ],
+      "frames": 1
+    },
+    {
+      "id": "companion_sera_oath_1",
+      "type": "image",
+      "category": "ui/oaths",
+      "path": "res://assets/temp_pixel/ui/oaths/companion_sera_oath_1.png",
+      "prompt_path": "res://assets/temp_pixel/ui/oaths/companion_sera_oath_1.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1,
+      "notes": "oath icon 1"
+    },
+    {
+      "id": "companion_sera_oath_2",
+      "type": "image",
+      "category": "ui/oaths",
+      "path": "res://assets/temp_pixel/ui/oaths/companion_sera_oath_2.png",
+      "prompt_path": "res://assets/temp_pixel/ui/oaths/companion_sera_oath_2.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1,
+      "notes": "oath icon 2"
+    },
+    {
+      "id": "companion_sera_oath_3",
+      "type": "image",
+      "category": "ui/oaths",
+      "path": "res://assets/temp_pixel/ui/oaths/companion_sera_oath_3.png",
+      "prompt_path": "res://assets/temp_pixel/ui/oaths/companion_sera_oath_3.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1,
+      "notes": "oath icon 3"
+    },
+    {
+      "id": "companion_eldric_idle",
+      "type": "sprite_sheet",
+      "category": "companions",
+      "path": "res://assets/temp_pixel/companions/companion_eldric_idle/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/companions/companion_eldric_idle/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "companion_eldric_guard",
+      "type": "sprite_sheet",
+      "category": "companions",
+      "path": "res://assets/temp_pixel/companions/companion_eldric_guard/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/companions/companion_eldric_guard/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "companion_eldric_portrait",
+      "type": "portrait",
+      "category": "companions",
+      "path": "res://assets/temp_pixel/companions/companion_eldric_portrait.png",
+      "prompt_path": "res://assets/temp_pixel/companions/companion_eldric_portrait.png.prompt.txt",
+      "frame_size": [
+        96,
+        96
+      ],
+      "frames": 1
+    },
+    {
+      "id": "companion_eldric_oath_1",
+      "type": "image",
+      "category": "ui/oaths",
+      "path": "res://assets/temp_pixel/ui/oaths/companion_eldric_oath_1.png",
+      "prompt_path": "res://assets/temp_pixel/ui/oaths/companion_eldric_oath_1.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1,
+      "notes": "oath icon 1"
+    },
+    {
+      "id": "companion_eldric_oath_2",
+      "type": "image",
+      "category": "ui/oaths",
+      "path": "res://assets/temp_pixel/ui/oaths/companion_eldric_oath_2.png",
+      "prompt_path": "res://assets/temp_pixel/ui/oaths/companion_eldric_oath_2.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1,
+      "notes": "oath icon 2"
+    },
+    {
+      "id": "companion_eldric_oath_3",
+      "type": "image",
+      "category": "ui/oaths",
+      "path": "res://assets/temp_pixel/ui/oaths/companion_eldric_oath_3.png",
+      "prompt_path": "res://assets/temp_pixel/ui/oaths/companion_eldric_oath_3.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1,
+      "notes": "oath icon 3"
+    },
+    {
+      "id": "companion_bram_portrait",
+      "type": "portrait",
+      "category": "companions",
+      "path": "res://assets/temp_pixel/companions/companion_bram_portrait.png",
+      "prompt_path": "res://assets/temp_pixel/companions/companion_bram_portrait.png.prompt.txt",
+      "frame_size": [
+        96,
+        96
+      ],
+      "frames": 1,
+      "notes": "reserve companion portrait"
+    },
+    {
+      "id": "companion_maren_portrait",
+      "type": "portrait",
+      "category": "companions",
+      "path": "res://assets/temp_pixel/companions/companion_maren_portrait.png",
+      "prompt_path": "res://assets/temp_pixel/companions/companion_maren_portrait.png.prompt.txt",
+      "frame_size": [
+        96,
+        96
+      ],
+      "frames": 1,
+      "notes": "reserve companion portrait"
+    },
+    {
+      "id": "companion_tor_portrait",
+      "type": "portrait",
+      "category": "companions",
+      "path": "res://assets/temp_pixel/companions/companion_tor_portrait.png",
+      "prompt_path": "res://assets/temp_pixel/companions/companion_tor_portrait.png.prompt.txt",
+      "frame_size": [
+        96,
+        96
+      ],
+      "frames": 1,
+      "notes": "reserve companion portrait"
+    },
+    {
+      "id": "companion_lina_portrait",
+      "type": "portrait",
+      "category": "companions",
+      "path": "res://assets/temp_pixel/companions/companion_lina_portrait.png",
+      "prompt_path": "res://assets/temp_pixel/companions/companion_lina_portrait.png.prompt.txt",
+      "frame_size": [
+        96,
+        96
+      ],
+      "frames": 1,
+      "notes": "reserve companion portrait"
+    },
+    {
+      "id": "companion_noa_portrait",
+      "type": "portrait",
+      "category": "companions",
+      "path": "res://assets/temp_pixel/companions/companion_noa_portrait.png",
+      "prompt_path": "res://assets/temp_pixel/companions/companion_noa_portrait.png.prompt.txt",
+      "frame_size": [
+        96,
+        96
+      ],
+      "frames": 1,
+      "notes": "reserve companion portrait"
+    },
+    {
+      "id": "companion_isol_portrait",
+      "type": "portrait",
+      "category": "companions",
+      "path": "res://assets/temp_pixel/companions/companion_isol_portrait.png",
+      "prompt_path": "res://assets/temp_pixel/companions/companion_isol_portrait.png.prompt.txt",
+      "frame_size": [
+        96,
+        96
+      ],
+      "frames": 1,
+      "notes": "reserve companion portrait"
+    },
+    {
+      "id": "companion_kyle_portrait",
+      "type": "portrait",
+      "category": "companions",
+      "path": "res://assets/temp_pixel/companions/companion_kyle_portrait.png",
+      "prompt_path": "res://assets/temp_pixel/companions/companion_kyle_portrait.png.prompt.txt",
+      "frame_size": [
+        96,
+        96
+      ],
+      "frames": 1,
+      "notes": "reserve companion portrait"
+    },
+    {
+      "id": "enemy_act1_mutated_merchant_idle",
+      "type": "sprite_sheet",
+      "category": "enemies",
+      "path": "res://assets/temp_pixel/enemies/enemy_act1_mutated_merchant_idle/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/enemies/enemy_act1_mutated_merchant_idle/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "enemy_act1_mutated_merchant_hurt",
+      "type": "sprite_sheet",
+      "category": "enemies",
+      "path": "res://assets/temp_pixel/enemies/enemy_act1_mutated_merchant_hurt/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/enemies/enemy_act1_mutated_merchant_hurt/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "enemy_act1_mutated_scholar_idle",
+      "type": "sprite_sheet",
+      "category": "enemies",
+      "path": "res://assets/temp_pixel/enemies/enemy_act1_mutated_scholar_idle/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/enemies/enemy_act1_mutated_scholar_idle/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "enemy_act1_mutated_scholar_hurt",
+      "type": "sprite_sheet",
+      "category": "enemies",
+      "path": "res://assets/temp_pixel/enemies/enemy_act1_mutated_scholar_hurt/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/enemies/enemy_act1_mutated_scholar_hurt/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "enemy_act1_mutated_mercenary_idle",
+      "type": "sprite_sheet",
+      "category": "enemies",
+      "path": "res://assets/temp_pixel/enemies/enemy_act1_mutated_mercenary_idle/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/enemies/enemy_act1_mutated_mercenary_idle/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "enemy_act1_mutated_mercenary_hurt",
+      "type": "sprite_sheet",
+      "category": "enemies",
+      "path": "res://assets/temp_pixel/enemies/enemy_act1_mutated_mercenary_hurt/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/enemies/enemy_act1_mutated_mercenary_hurt/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "enemy_act1_twisted_wolf_idle",
+      "type": "sprite_sheet",
+      "category": "enemies",
+      "path": "res://assets/temp_pixel/enemies/enemy_act1_twisted_wolf_idle/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/enemies/enemy_act1_twisted_wolf_idle/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "enemy_act1_twisted_wolf_hurt",
+      "type": "sprite_sheet",
+      "category": "enemies",
+      "path": "res://assets/temp_pixel/enemies/enemy_act1_twisted_wolf_hurt/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/enemies/enemy_act1_twisted_wolf_hurt/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "enemy_act1_broken_packhorse_idle",
+      "type": "sprite_sheet",
+      "category": "enemies",
+      "path": "res://assets/temp_pixel/enemies/enemy_act1_broken_packhorse_idle/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/enemies/enemy_act1_broken_packhorse_idle/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "enemy_act1_broken_packhorse_hurt",
+      "type": "sprite_sheet",
+      "category": "enemies",
+      "path": "res://assets/temp_pixel/enemies/enemy_act1_broken_packhorse_hurt/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/enemies/enemy_act1_broken_packhorse_hurt/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "enemy_act1_rooted_scavenger_idle",
+      "type": "sprite_sheet",
+      "category": "enemies",
+      "path": "res://assets/temp_pixel/enemies/enemy_act1_rooted_scavenger_idle/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/enemies/enemy_act1_rooted_scavenger_idle/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "enemy_act1_rooted_scavenger_hurt",
+      "type": "sprite_sheet",
+      "category": "enemies",
+      "path": "res://assets/temp_pixel/enemies/enemy_act1_rooted_scavenger_hurt/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/enemies/enemy_act1_rooted_scavenger_hurt/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "elite_act1_blackprint_captain_idle",
+      "type": "sprite_sheet",
+      "category": "bosses",
+      "path": "res://assets/temp_pixel/bosses/elite_act1_blackprint_captain_idle/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/bosses/elite_act1_blackprint_captain_idle/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "elite_act1_blackprint_captain_hurt",
+      "type": "sprite_sheet",
+      "category": "bosses",
+      "path": "res://assets/temp_pixel/bosses/elite_act1_blackprint_captain_hurt/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/bosses/elite_act1_blackprint_captain_hurt/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "elite_act1_armored_caravan_guard_idle",
+      "type": "sprite_sheet",
+      "category": "bosses",
+      "path": "res://assets/temp_pixel/bosses/elite_act1_armored_caravan_guard_idle/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/bosses/elite_act1_armored_caravan_guard_idle/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "elite_act1_armored_caravan_guard_hurt",
+      "type": "sprite_sheet",
+      "category": "bosses",
+      "path": "res://assets/temp_pixel/bosses/elite_act1_armored_caravan_guard_hurt/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/bosses/elite_act1_armored_caravan_guard_hurt/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "elite_act1_excavation_scholar_idle",
+      "type": "sprite_sheet",
+      "category": "bosses",
+      "path": "res://assets/temp_pixel/bosses/elite_act1_excavation_scholar_idle/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/bosses/elite_act1_excavation_scholar_idle/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "elite_act1_excavation_scholar_hurt",
+      "type": "sprite_sheet",
+      "category": "bosses",
+      "path": "res://assets/temp_pixel/bosses/elite_act1_excavation_scholar_hurt/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/bosses/elite_act1_excavation_scholar_hurt/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "midboss_act1_blackened_guard_idle",
+      "type": "sprite_sheet",
+      "category": "bosses",
+      "path": "res://assets/temp_pixel/bosses/midboss_act1_blackened_guard_idle/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/bosses/midboss_act1_blackened_guard_idle/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "midboss_act1_blackened_guard_hurt",
+      "type": "sprite_sheet",
+      "category": "bosses",
+      "path": "res://assets/temp_pixel/bosses/midboss_act1_blackened_guard_hurt/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/bosses/midboss_act1_blackened_guard_hurt/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "boss_act1_blackprint_warlord_idle",
+      "type": "sprite_sheet",
+      "category": "bosses",
+      "path": "res://assets/temp_pixel/bosses/boss_act1_blackprint_warlord_idle/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/bosses/boss_act1_blackprint_warlord_idle/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "boss_act1_blackprint_warlord_hurt",
+      "type": "sprite_sheet",
+      "category": "bosses",
+      "path": "res://assets/temp_pixel/bosses/boss_act1_blackprint_warlord_hurt/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/bosses/boss_act1_blackprint_warlord_hurt/prompt-used.txt",
+      "frame_size": [
+        128,
+        128
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "bottom"
+    },
+    {
+      "id": "bg_battle_act1_road_ruin",
+      "type": "background",
+      "category": "backgrounds",
+      "path": "res://assets/temp_pixel/backgrounds/bg_battle_act1_road_ruin.png",
+      "prompt_path": "res://assets/temp_pixel/backgrounds/bg_battle_act1_road_ruin.png.prompt.txt",
+      "frame_size": [
+        1280,
+        720
+      ],
+      "frames": 1
+    },
+    {
+      "id": "bg_battle_act1_outpost",
+      "type": "background",
+      "category": "backgrounds",
+      "path": "res://assets/temp_pixel/backgrounds/bg_battle_act1_outpost.png",
+      "prompt_path": "res://assets/temp_pixel/backgrounds/bg_battle_act1_outpost.png.prompt.txt",
+      "frame_size": [
+        1280,
+        720
+      ],
+      "frames": 1
+    },
+    {
+      "id": "bg_battle_act1_boss_gate",
+      "type": "background",
+      "category": "backgrounds",
+      "path": "res://assets/temp_pixel/backgrounds/bg_battle_act1_boss_gate.png",
+      "prompt_path": "res://assets/temp_pixel/backgrounds/bg_battle_act1_boss_gate.png.prompt.txt",
+      "frame_size": [
+        1280,
+        720
+      ],
+      "frames": 1
+    },
+    {
+      "id": "bg_map_act1_route",
+      "type": "background",
+      "category": "backgrounds",
+      "path": "res://assets/temp_pixel/backgrounds/bg_map_act1_route.png",
+      "prompt_path": "res://assets/temp_pixel/backgrounds/bg_map_act1_route.png.prompt.txt",
+      "frame_size": [
+        1280,
+        720
+      ],
+      "frames": 1
+    },
+    {
+      "id": "bg_shop_act1_rusty_trader",
+      "type": "background",
+      "category": "backgrounds",
+      "path": "res://assets/temp_pixel/backgrounds/bg_shop_act1_rusty_trader.png",
+      "prompt_path": "res://assets/temp_pixel/backgrounds/bg_shop_act1_rusty_trader.png.prompt.txt",
+      "frame_size": [
+        1280,
+        720
+      ],
+      "frames": 1
+    },
+    {
+      "id": "bg_inn_act1_warm_common",
+      "type": "background",
+      "category": "backgrounds",
+      "path": "res://assets/temp_pixel/backgrounds/bg_inn_act1_warm_common.png",
+      "prompt_path": "res://assets/temp_pixel/backgrounds/bg_inn_act1_warm_common.png.prompt.txt",
+      "frame_size": [
+        1280,
+        720
+      ],
+      "frames": 1
+    },
+    {
+      "id": "bg_inn_act1_suspicious",
+      "type": "background",
+      "category": "backgrounds",
+      "path": "res://assets/temp_pixel/backgrounds/bg_inn_act1_suspicious.png",
+      "prompt_path": "res://assets/temp_pixel/backgrounds/bg_inn_act1_suspicious.png.prompt.txt",
+      "frame_size": [
+        1280,
+        720
+      ],
+      "frames": 1
+    },
+    {
+      "id": "bg_event_act1_generic",
+      "type": "background",
+      "category": "backgrounds",
+      "path": "res://assets/temp_pixel/backgrounds/bg_event_act1_generic.png",
+      "prompt_path": "res://assets/temp_pixel/backgrounds/bg_event_act1_generic.png.prompt.txt",
+      "frame_size": [
+        1280,
+        720
+      ],
+      "frames": 1
+    },
+    {
+      "id": "icon_energy",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/icon_energy.png",
+      "prompt_path": "res://assets/temp_pixel/ui/icon_energy.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "icon_health",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/icon_health.png",
+      "prompt_path": "res://assets/temp_pixel/ui/icon_health.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "icon_gold",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/icon_gold.png",
+      "prompt_path": "res://assets/temp_pixel/ui/icon_gold.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "icon_block",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/icon_block.png",
+      "prompt_path": "res://assets/temp_pixel/ui/icon_block.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "icon_draw_pile",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/icon_draw_pile.png",
+      "prompt_path": "res://assets/temp_pixel/ui/icon_draw_pile.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "icon_discard_pile",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/icon_discard_pile.png",
+      "prompt_path": "res://assets/temp_pixel/ui/icon_discard_pile.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "icon_exhaust_pile",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/icon_exhaust_pile.png",
+      "prompt_path": "res://assets/temp_pixel/ui/icon_exhaust_pile.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "icon_tactical_mark",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/icon_tactical_mark.png",
+      "prompt_path": "res://assets/temp_pixel/ui/icon_tactical_mark.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "icon_vulnerable",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/icon_vulnerable.png",
+      "prompt_path": "res://assets/temp_pixel/ui/icon_vulnerable.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "icon_weak",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/icon_weak.png",
+      "prompt_path": "res://assets/temp_pixel/ui/icon_weak.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "icon_poison",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/icon_poison.png",
+      "prompt_path": "res://assets/temp_pixel/ui/icon_poison.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "icon_heal",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/icon_heal.png",
+      "prompt_path": "res://assets/temp_pixel/ui/icon_heal.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "icon_healing_down",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/icon_healing_down.png",
+      "prompt_path": "res://assets/temp_pixel/ui/icon_healing_down.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "icon_helmet_slot",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/icon_helmet_slot.png",
+      "prompt_path": "res://assets/temp_pixel/ui/icon_helmet_slot.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "icon_armor_slot",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/icon_armor_slot.png",
+      "prompt_path": "res://assets/temp_pixel/ui/icon_armor_slot.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "icon_weapon_slot",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/icon_weapon_slot.png",
+      "prompt_path": "res://assets/temp_pixel/ui/icon_weapon_slot.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "icon_bond_30",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/icon_bond_30.png",
+      "prompt_path": "res://assets/temp_pixel/ui/icon_bond_30.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "icon_bond_60",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/icon_bond_60.png",
+      "prompt_path": "res://assets/temp_pixel/ui/icon_bond_60.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "icon_bond_100",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/icon_bond_100.png",
+      "prompt_path": "res://assets/temp_pixel/ui/icon_bond_100.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "node_combat",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/node_combat.png",
+      "prompt_path": "res://assets/temp_pixel/ui/node_combat.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "node_elite",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/node_elite.png",
+      "prompt_path": "res://assets/temp_pixel/ui/node_elite.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "node_mid_boss",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/node_mid_boss.png",
+      "prompt_path": "res://assets/temp_pixel/ui/node_mid_boss.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "node_boss",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/node_boss.png",
+      "prompt_path": "res://assets/temp_pixel/ui/node_boss.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "node_shop",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/node_shop.png",
+      "prompt_path": "res://assets/temp_pixel/ui/node_shop.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "node_inn",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/node_inn.png",
+      "prompt_path": "res://assets/temp_pixel/ui/node_inn.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "node_event",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/node_event.png",
+      "prompt_path": "res://assets/temp_pixel/ui/node_event.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "node_treasure",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/node_treasure.png",
+      "prompt_path": "res://assets/temp_pixel/ui/node_treasure.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "node_companion_trace",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/node_companion_trace.png",
+      "prompt_path": "res://assets/temp_pixel/ui/node_companion_trace.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "node_companion_contract",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/node_companion_contract.png",
+      "prompt_path": "res://assets/temp_pixel/ui/node_companion_contract.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "node_upgrade",
+      "type": "image",
+      "category": "ui",
+      "path": "res://assets/temp_pixel/ui/node_upgrade.png",
+      "prompt_path": "res://assets/temp_pixel/ui/node_upgrade.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "card_frame_protagonist_attack_common",
+      "type": "card_art",
+      "category": "cards",
+      "path": "res://assets/temp_pixel/cards/card_frame_protagonist_attack_common.png",
+      "prompt_path": "res://assets/temp_pixel/cards/card_frame_protagonist_attack_common.png.prompt.txt",
+      "frame_size": [
+        160,
+        224
+      ],
+      "frames": 1
+    },
+    {
+      "id": "card_frame_protagonist_skill_common",
+      "type": "card_art",
+      "category": "cards",
+      "path": "res://assets/temp_pixel/cards/card_frame_protagonist_skill_common.png",
+      "prompt_path": "res://assets/temp_pixel/cards/card_frame_protagonist_skill_common.png.prompt.txt",
+      "frame_size": [
+        160,
+        224
+      ],
+      "frames": 1
+    },
+    {
+      "id": "card_frame_protagonist_power_common",
+      "type": "card_art",
+      "category": "cards",
+      "path": "res://assets/temp_pixel/cards/card_frame_protagonist_power_common.png",
+      "prompt_path": "res://assets/temp_pixel/cards/card_frame_protagonist_power_common.png.prompt.txt",
+      "frame_size": [
+        160,
+        224
+      ],
+      "frames": 1
+    },
+    {
+      "id": "card_frame_companion_attack_common",
+      "type": "card_art",
+      "category": "cards",
+      "path": "res://assets/temp_pixel/cards/card_frame_companion_attack_common.png",
+      "prompt_path": "res://assets/temp_pixel/cards/card_frame_companion_attack_common.png.prompt.txt",
+      "frame_size": [
+        160,
+        224
+      ],
+      "frames": 1
+    },
+    {
+      "id": "card_frame_companion_skill_common",
+      "type": "card_art",
+      "category": "cards",
+      "path": "res://assets/temp_pixel/cards/card_frame_companion_skill_common.png",
+      "prompt_path": "res://assets/temp_pixel/cards/card_frame_companion_skill_common.png.prompt.txt",
+      "frame_size": [
+        160,
+        224
+      ],
+      "frames": 1
+    },
+    {
+      "id": "card_frame_companion_power_common",
+      "type": "card_art",
+      "category": "cards",
+      "path": "res://assets/temp_pixel/cards/card_frame_companion_power_common.png",
+      "prompt_path": "res://assets/temp_pixel/cards/card_frame_companion_power_common.png.prompt.txt",
+      "frame_size": [
+        160,
+        224
+      ],
+      "frames": 1
+    },
+    {
+      "id": "card_motif_attack_sword",
+      "type": "card_art",
+      "category": "cards",
+      "path": "res://assets/temp_pixel/cards/card_motif_attack_sword.png",
+      "prompt_path": "res://assets/temp_pixel/cards/card_motif_attack_sword.png.prompt.txt",
+      "frame_size": [
+        160,
+        224
+      ],
+      "frames": 1
+    },
+    {
+      "id": "card_motif_skill_guard",
+      "type": "card_art",
+      "category": "cards",
+      "path": "res://assets/temp_pixel/cards/card_motif_skill_guard.png",
+      "prompt_path": "res://assets/temp_pixel/cards/card_motif_skill_guard.png.prompt.txt",
+      "frame_size": [
+        160,
+        224
+      ],
+      "frames": 1
+    },
+    {
+      "id": "card_motif_power_oath",
+      "type": "card_art",
+      "category": "cards",
+      "path": "res://assets/temp_pixel/cards/card_motif_power_oath.png",
+      "prompt_path": "res://assets/temp_pixel/cards/card_motif_power_oath.png.prompt.txt",
+      "frame_size": [
+        160,
+        224
+      ],
+      "frames": 1
+    },
+    {
+      "id": "card_motif_rowan_spear",
+      "type": "card_art",
+      "category": "cards",
+      "path": "res://assets/temp_pixel/cards/card_motif_rowan_spear.png",
+      "prompt_path": "res://assets/temp_pixel/cards/card_motif_rowan_spear.png.prompt.txt",
+      "frame_size": [
+        160,
+        224
+      ],
+      "frames": 1
+    },
+    {
+      "id": "card_motif_sera_dagger",
+      "type": "card_art",
+      "category": "cards",
+      "path": "res://assets/temp_pixel/cards/card_motif_sera_dagger.png",
+      "prompt_path": "res://assets/temp_pixel/cards/card_motif_sera_dagger.png.prompt.txt",
+      "frame_size": [
+        160,
+        224
+      ],
+      "frames": 1
+    },
+    {
+      "id": "card_motif_eldric_shield",
+      "type": "card_art",
+      "category": "cards",
+      "path": "res://assets/temp_pixel/cards/card_motif_eldric_shield.png",
+      "prompt_path": "res://assets/temp_pixel/cards/card_motif_eldric_shield.png.prompt.txt",
+      "frame_size": [
+        160,
+        224
+      ],
+      "frames": 1
+    },
+    {
+      "id": "equip_helmet_01",
+      "type": "image",
+      "category": "equipment",
+      "path": "res://assets/temp_pixel/equipment/equip_helmet_01.png",
+      "prompt_path": "res://assets/temp_pixel/equipment/equip_helmet_01.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "equip_armor_01",
+      "type": "image",
+      "category": "equipment",
+      "path": "res://assets/temp_pixel/equipment/equip_armor_01.png",
+      "prompt_path": "res://assets/temp_pixel/equipment/equip_armor_01.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "equip_weapon_01",
+      "type": "image",
+      "category": "equipment",
+      "path": "res://assets/temp_pixel/equipment/equip_weapon_01.png",
+      "prompt_path": "res://assets/temp_pixel/equipment/equip_weapon_01.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "equip_helmet_02",
+      "type": "image",
+      "category": "equipment",
+      "path": "res://assets/temp_pixel/equipment/equip_helmet_02.png",
+      "prompt_path": "res://assets/temp_pixel/equipment/equip_helmet_02.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "equip_armor_02",
+      "type": "image",
+      "category": "equipment",
+      "path": "res://assets/temp_pixel/equipment/equip_armor_02.png",
+      "prompt_path": "res://assets/temp_pixel/equipment/equip_armor_02.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "equip_weapon_02",
+      "type": "image",
+      "category": "equipment",
+      "path": "res://assets/temp_pixel/equipment/equip_weapon_02.png",
+      "prompt_path": "res://assets/temp_pixel/equipment/equip_weapon_02.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "equip_helmet_03",
+      "type": "image",
+      "category": "equipment",
+      "path": "res://assets/temp_pixel/equipment/equip_helmet_03.png",
+      "prompt_path": "res://assets/temp_pixel/equipment/equip_helmet_03.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "equip_armor_03",
+      "type": "image",
+      "category": "equipment",
+      "path": "res://assets/temp_pixel/equipment/equip_armor_03.png",
+      "prompt_path": "res://assets/temp_pixel/equipment/equip_armor_03.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "equip_weapon_03",
+      "type": "image",
+      "category": "equipment",
+      "path": "res://assets/temp_pixel/equipment/equip_weapon_03.png",
+      "prompt_path": "res://assets/temp_pixel/equipment/equip_weapon_03.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "equip_helmet_04",
+      "type": "image",
+      "category": "equipment",
+      "path": "res://assets/temp_pixel/equipment/equip_helmet_04.png",
+      "prompt_path": "res://assets/temp_pixel/equipment/equip_helmet_04.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "equip_armor_04",
+      "type": "image",
+      "category": "equipment",
+      "path": "res://assets/temp_pixel/equipment/equip_armor_04.png",
+      "prompt_path": "res://assets/temp_pixel/equipment/equip_armor_04.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "equip_weapon_04",
+      "type": "image",
+      "category": "equipment",
+      "path": "res://assets/temp_pixel/equipment/equip_weapon_04.png",
+      "prompt_path": "res://assets/temp_pixel/equipment/equip_weapon_04.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "equip_helmet_05",
+      "type": "image",
+      "category": "equipment",
+      "path": "res://assets/temp_pixel/equipment/equip_helmet_05.png",
+      "prompt_path": "res://assets/temp_pixel/equipment/equip_helmet_05.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "equip_armor_05",
+      "type": "image",
+      "category": "equipment",
+      "path": "res://assets/temp_pixel/equipment/equip_armor_05.png",
+      "prompt_path": "res://assets/temp_pixel/equipment/equip_armor_05.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "equip_weapon_05",
+      "type": "image",
+      "category": "equipment",
+      "path": "res://assets/temp_pixel/equipment/equip_weapon_05.png",
+      "prompt_path": "res://assets/temp_pixel/equipment/equip_weapon_05.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "equip_helmet_06",
+      "type": "image",
+      "category": "equipment",
+      "path": "res://assets/temp_pixel/equipment/equip_helmet_06.png",
+      "prompt_path": "res://assets/temp_pixel/equipment/equip_helmet_06.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "equip_armor_06",
+      "type": "image",
+      "category": "equipment",
+      "path": "res://assets/temp_pixel/equipment/equip_armor_06.png",
+      "prompt_path": "res://assets/temp_pixel/equipment/equip_armor_06.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "equip_weapon_06",
+      "type": "image",
+      "category": "equipment",
+      "path": "res://assets/temp_pixel/equipment/equip_weapon_06.png",
+      "prompt_path": "res://assets/temp_pixel/equipment/equip_weapon_06.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "equip_helmet_07",
+      "type": "image",
+      "category": "equipment",
+      "path": "res://assets/temp_pixel/equipment/equip_helmet_07.png",
+      "prompt_path": "res://assets/temp_pixel/equipment/equip_helmet_07.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "equip_armor_07",
+      "type": "image",
+      "category": "equipment",
+      "path": "res://assets/temp_pixel/equipment/equip_armor_07.png",
+      "prompt_path": "res://assets/temp_pixel/equipment/equip_armor_07.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "equip_weapon_07",
+      "type": "image",
+      "category": "equipment",
+      "path": "res://assets/temp_pixel/equipment/equip_weapon_07.png",
+      "prompt_path": "res://assets/temp_pixel/equipment/equip_weapon_07.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "equip_helmet_08",
+      "type": "image",
+      "category": "equipment",
+      "path": "res://assets/temp_pixel/equipment/equip_helmet_08.png",
+      "prompt_path": "res://assets/temp_pixel/equipment/equip_helmet_08.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "equip_armor_08",
+      "type": "image",
+      "category": "equipment",
+      "path": "res://assets/temp_pixel/equipment/equip_armor_08.png",
+      "prompt_path": "res://assets/temp_pixel/equipment/equip_armor_08.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "equip_weapon_08",
+      "type": "image",
+      "category": "equipment",
+      "path": "res://assets/temp_pixel/equipment/equip_weapon_08.png",
+      "prompt_path": "res://assets/temp_pixel/equipment/equip_weapon_08.png.prompt.txt",
+      "frame_size": [
+        48,
+        48
+      ],
+      "frames": 1
+    },
+    {
+      "id": "fx_slash_small",
+      "type": "sprite_sheet",
+      "category": "fx",
+      "path": "res://assets/temp_pixel/fx/fx_slash_small/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/fx/fx_slash_small/prompt-used.txt",
+      "frame_size": [
+        96,
+        96
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "center"
+    },
+    {
+      "id": "fx_pierce_red",
+      "type": "sprite_sheet",
+      "category": "fx",
+      "path": "res://assets/temp_pixel/fx/fx_pierce_red/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/fx/fx_pierce_red/prompt-used.txt",
+      "frame_size": [
+        96,
+        96
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "center"
+    },
+    {
+      "id": "fx_guard_flash",
+      "type": "sprite_sheet",
+      "category": "fx",
+      "path": "res://assets/temp_pixel/fx/fx_guard_flash/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/fx/fx_guard_flash/prompt-used.txt",
+      "frame_size": [
+        96,
+        96
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "center"
+    },
+    {
+      "id": "fx_tactical_mark_pin",
+      "type": "sprite_sheet",
+      "category": "fx",
+      "path": "res://assets/temp_pixel/fx/fx_tactical_mark_pin/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/fx/fx_tactical_mark_pin/prompt-used.txt",
+      "frame_size": [
+        96,
+        96
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "center"
+    },
+    {
+      "id": "fx_oath_token_glint",
+      "type": "sprite_sheet",
+      "category": "fx",
+      "path": "res://assets/temp_pixel/fx/fx_oath_token_glint/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/fx/fx_oath_token_glint/prompt-used.txt",
+      "frame_size": [
+        96,
+        96
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "center"
+    },
+    {
+      "id": "fx_heal_low",
+      "type": "sprite_sheet",
+      "category": "fx",
+      "path": "res://assets/temp_pixel/fx/fx_heal_low/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/fx/fx_heal_low/prompt-used.txt",
+      "frame_size": [
+        96,
+        96
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "center"
+    },
+    {
+      "id": "fx_healing_down_black_crack",
+      "type": "sprite_sheet",
+      "category": "fx",
+      "path": "res://assets/temp_pixel/fx/fx_healing_down_black_crack/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/fx/fx_healing_down_black_crack/prompt-used.txt",
+      "frame_size": [
+        96,
+        96
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "center"
+    },
+    {
+      "id": "fx_poison_puff",
+      "type": "sprite_sheet",
+      "category": "fx",
+      "path": "res://assets/temp_pixel/fx/fx_poison_puff/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/fx/fx_poison_puff/prompt-used.txt",
+      "frame_size": [
+        96,
+        96
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "center"
+    },
+    {
+      "id": "fx_gold_spark",
+      "type": "sprite_sheet",
+      "category": "fx",
+      "path": "res://assets/temp_pixel/fx/fx_gold_spark/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/fx/fx_gold_spark/prompt-used.txt",
+      "frame_size": [
+        96,
+        96
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "center"
+    },
+    {
+      "id": "fx_card_draw_wisp",
+      "type": "sprite_sheet",
+      "category": "fx",
+      "path": "res://assets/temp_pixel/fx/fx_card_draw_wisp/sheet-transparent.png",
+      "prompt_path": "res://assets/temp_pixel/fx/fx_card_draw_wisp/prompt-used.txt",
+      "frame_size": [
+        96,
+        96
+      ],
+      "frames": 4,
+      "rows": 2,
+      "cols": 2,
+      "anchor": "center"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+Temporary 2D pixel FX sheet for fx_card_draw_wisp, solid magenta raw background.

@@ -1,0 +1,1 @@
+Temporary 2D pixel card frame or motif for card_motif_power_oath, readable Godot UI proxy.

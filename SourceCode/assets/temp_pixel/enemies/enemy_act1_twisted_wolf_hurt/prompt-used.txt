@@ -1,0 +1,1 @@
+Temporary 2D pixel art proxy for enemy_act1_twisted_wolf_hurt. Role=creature, action=hurt, palette=enemy, solid #FF00FF raw background, readable tactical fantasy silhouette, replaceable by final art.
