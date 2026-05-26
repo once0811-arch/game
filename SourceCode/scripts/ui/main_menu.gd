@@ -78,6 +78,10 @@ func _build_ui() -> void:
 	gallery.pressed.connect(Callable(SceneRouter, "open_asset_gallery"))
 	menu.add_child(gallery)
 
+	var deck_debug := _make_menu_button("Deck Debug")
+	deck_debug.pressed.connect(Callable(SceneRouter, "open_deck_debug"))
+	menu.add_child(deck_debug)
+
 	var quit := _make_menu_button("Quit")
 	quit.pressed.connect(_on_quit_pressed)
 	menu.add_child(quit)
@@ -131,8 +135,9 @@ func _make_menu_button(label_text: String) -> Button:
 func _refresh_status() -> void:
 	continue_button.disabled = not SaveService.has_save()
 	var data_state := "ready" if DataRegistry.is_ready_for_phase_1() else "missing"
-	status_label.text = "Data: %s | Temp assets: %d | Save: %s" % [
+	status_label.text = "Data: %s | Cards: %d | Temp assets: %d | Save: %s" % [
 		data_state,
+		DataRegistry.get_card_count(),
 		DataRegistry.get_temp_asset_count(),
 		"found" if SaveService.has_save() else "none",
 	]

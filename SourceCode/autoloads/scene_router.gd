@@ -3,6 +3,7 @@ extends Node
 const MAIN_SCENE := "res://scenes/main/main.tscn"
 const MAP_SCENE := "res://scenes/map/map_screen.tscn"
 const ASSET_GALLERY_SCENE := "res://scenes/debug/asset_gallery.tscn"
+const DECK_DEBUG_SCENE := "res://scenes/debug/deck_debug.tscn"
 
 
 func go_to_main() -> void:
@@ -15,6 +16,10 @@ func go_to_map() -> void:
 
 func open_asset_gallery() -> void:
 	_change_to(ASSET_GALLERY_SCENE)
+
+
+func open_deck_debug() -> void:
+	_change_to(DECK_DEBUG_SCENE)
 
 
 func start_new_run() -> void:

@@ -84,6 +84,11 @@ func _build_ui() -> void:
 	gallery.pressed.connect(Callable(SceneRouter, "open_asset_gallery"))
 	actions.add_child(gallery)
 
+	var deck_debug := Button.new()
+	deck_debug.text = "Deck Debug"
+	deck_debug.pressed.connect(Callable(SceneRouter, "open_deck_debug"))
+	actions.add_child(deck_debug)
+
 	var main := Button.new()
 	main.text = "Main Menu"
 	main.pressed.connect(Callable(SceneRouter, "go_to_main"))

@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "phase": 1,
+  "phase": 2,
   "run": {
     "starting_act": 1,
     "starting_depth": 0,
@@ -23,8 +23,12 @@
     "first_companion_after_midboss": true,
     "second_companion_after_boss": true
   },
+  "rewards": {
+    "card_options": 3,
+    "skip_gold": 15
+  },
   "debug": {
     "phase_1_map_nodes_enabled": false,
-    "phase_2_deck_debug_enabled": false
+    "phase_2_deck_debug_enabled": true
   }
 }

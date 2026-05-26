@@ -2,10 +2,13 @@ extends Node
 
 const BALANCE_CONSTANTS_PATH := "res://data/balance_constants.json"
 const TEMP_ASSET_MANIFEST_PATH := "res://data/assets/temp_asset_manifest.json"
+const PROTAGONIST_CARDS_PATH := "res://data/cards/protagonist_cards.json"
 
 var balance_constants: Dictionary = {}
 var temp_asset_manifest: Dictionary = {}
 var temp_assets_by_id: Dictionary = {}
+var protagonist_cards: Dictionary = {}
+var cards_by_id: Dictionary = {}
 var load_errors: Array[String] = []
 
 
@@ -17,7 +20,9 @@ func load_all() -> bool:
 	load_errors.clear()
 	balance_constants = _load_dictionary(BALANCE_CONSTANTS_PATH)
 	temp_asset_manifest = _load_dictionary(TEMP_ASSET_MANIFEST_PATH)
+	protagonist_cards = _load_dictionary(PROTAGONIST_CARDS_PATH)
 	_index_temp_assets()
+	_index_cards()
 	return load_errors.is_empty()
 
 
@@ -43,8 +48,32 @@ func get_temp_asset_count() -> int:
 	return temp_assets_by_id.size()
 
 
+func get_starter_deck_ids() -> Array:
+	return protagonist_cards.get("starting_deck", [])
+
+
+func get_card(card_id: String) -> Dictionary:
+	return cards_by_id.get(card_id, {})
+
+
+func get_all_cards() -> Array[Dictionary]:
+	var cards: Array[Dictionary] = []
+	for card in cards_by_id.values():
+		if typeof(card) == TYPE_DICTIONARY:
+			cards.append(card)
+	return cards
+
+
+func get_card_count() -> int:
+	return cards_by_id.size()
+
+
 func is_ready_for_phase_1() -> bool:
 	return load_errors.is_empty() and not balance_constants.is_empty() and get_temp_asset_count() > 0
+
+
+func is_ready_for_phase_2() -> bool:
+	return is_ready_for_phase_1() and get_starter_deck_ids().size() == 10 and get_card_count() > 0
 
 
 func _load_dictionary(path: String) -> Dictionary:
@@ -69,3 +98,13 @@ func _index_temp_assets() -> void:
 		var asset_id := String(asset.get("id", ""))
 		if not asset_id.is_empty():
 			temp_assets_by_id[asset_id] = asset
+
+
+func _index_cards() -> void:
+	cards_by_id.clear()
+	for card in protagonist_cards.get("cards", []):
+		if typeof(card) != TYPE_DICTIONARY:
+			continue
+		var card_id := String(card.get("id", ""))
+		if not card_id.is_empty():
+			cards_by_id[card_id] = card

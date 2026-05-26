@@ -28,7 +28,7 @@ func start_new_run() -> void:
 	current_hp = max_hp
 	phase_note = "Phase 1 foundation run. Map and systems are placeholders."
 	party.reset()
-	deck.reset()
+	deck.build_starting_deck(DataRegistry.get_starter_deck_ids())
 	combat.reset()
 
 

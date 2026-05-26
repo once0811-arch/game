@@ -1,0 +1,138 @@
+{
+  "version": "0.1.0",
+  "owner": "protagonist",
+  "starting_deck": [
+    "p_strike",
+    "p_strike",
+    "p_strike",
+    "p_strike",
+    "p_guard",
+    "p_guard",
+    "p_guard",
+    "p_guard",
+    "p_tactical_prep",
+    "p_heavy_cut"
+  ],
+  "cards": [
+    {
+      "id": "p_strike",
+      "name": "Strike",
+      "type": "attack",
+      "rarity": "starter",
+      "cost": 1,
+      "asset_id": "card_motif_attack_sword",
+      "rules_text": "Deal 6 damage.",
+      "effects": [{"type": "damage", "amount": 6}]
+    },
+    {
+      "id": "p_guard",
+      "name": "Guard",
+      "type": "skill",
+      "rarity": "starter",
+      "cost": 1,
+      "asset_id": "card_motif_skill_guard",
+      "rules_text": "Gain 5 block.",
+      "effects": [{"type": "block", "amount": 5}]
+    },
+    {
+      "id": "p_tactical_prep",
+      "name": "Tactical Prep",
+      "type": "skill",
+      "rarity": "starter",
+      "cost": 2,
+      "asset_id": "card_motif_power_oath",
+      "rules_text": "Draw 2. Gain 1 Tactical Mark.",
+      "effects": [{"type": "draw", "amount": 2}, {"type": "tactical_mark", "amount": 1}]
+    },
+    {
+      "id": "p_heavy_cut",
+      "name": "Heavy Cut",
+      "type": "attack",
+      "rarity": "starter",
+      "cost": 2,
+      "asset_id": "card_motif_attack_sword",
+      "rules_text": "Deal 12 damage.",
+      "effects": [{"type": "damage", "amount": 12}]
+    },
+    {
+      "id": "p_brace",
+      "name": "Brace",
+      "type": "skill",
+      "rarity": "common",
+      "cost": 2,
+      "asset_id": "card_motif_skill_guard",
+      "rules_text": "Gain 10 block.",
+      "effects": [{"type": "block", "amount": 10}]
+    },
+    {
+      "id": "p_contract_mark",
+      "name": "Contract Mark",
+      "type": "skill",
+      "rarity": "common",
+      "cost": 1,
+      "asset_id": "card_motif_power_oath",
+      "rules_text": "Apply 2 Tactical Mark.",
+      "effects": [{"type": "tactical_mark", "amount": 2}]
+    },
+    {
+      "id": "p_road_cleave",
+      "name": "Road Cleave",
+      "type": "attack",
+      "rarity": "common",
+      "cost": 3,
+      "asset_id": "card_motif_attack_sword",
+      "rules_text": "Deal 18 damage.",
+      "effects": [{"type": "damage", "amount": 18}]
+    },
+    {
+      "id": "p_risk_advance",
+      "name": "Risk Advance",
+      "type": "skill",
+      "rarity": "uncommon",
+      "cost": 0,
+      "asset_id": "card_motif_power_oath",
+      "rules_text": "Draw 1. Lose 2 HP.",
+      "effects": [{"type": "draw", "amount": 1}, {"type": "lose_hp", "amount": 2}]
+    },
+    {
+      "id": "p_blood_price",
+      "name": "Blood Price",
+      "type": "skill",
+      "rarity": "uncommon",
+      "cost": 0,
+      "asset_id": "card_motif_power_oath",
+      "rules_text": "Gain 2 energy. Lose 4 HP.",
+      "effects": [{"type": "gain_energy", "amount": 2}, {"type": "lose_hp", "amount": 4}]
+    },
+    {
+      "id": "p_breakthrough",
+      "name": "Breakthrough",
+      "type": "attack",
+      "rarity": "uncommon",
+      "cost": 3,
+      "asset_id": "card_motif_attack_sword",
+      "rules_text": "Deal 14 damage. Draw 1.",
+      "effects": [{"type": "damage", "amount": 14}, {"type": "draw", "amount": 1}]
+    },
+    {
+      "id": "p_oath_focus",
+      "name": "Oath Focus",
+      "type": "power",
+      "rarity": "rare",
+      "cost": 2,
+      "asset_id": "card_motif_power_oath",
+      "rules_text": "Future Tactical Mark effects gain +1 this combat.",
+      "effects": [{"type": "power_tactical_mark_bonus", "amount": 1}]
+    },
+    {
+      "id": "p_last_light",
+      "name": "Last Light",
+      "type": "skill",
+      "rarity": "rare",
+      "cost": 3,
+      "asset_id": "card_motif_skill_guard",
+      "rules_text": "Gain 8 block. Heal 3.",
+      "effects": [{"type": "block", "amount": 8}, {"type": "heal", "amount": 3}]
+    }
+  ]
+}
