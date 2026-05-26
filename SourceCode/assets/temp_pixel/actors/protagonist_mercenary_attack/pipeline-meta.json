@@ -1,7 +1,7 @@
 {
   "target": "npc",
   "mode": "attack",
-  "prompt": "Temporary 2D pixel art proxy for protagonist_mercenary_attack. Role=humanoid, action=attack, palette=protagonist, solid #FF00FF raw background, readable tactical fantasy silhouette, replaceable by final art.",
+  "prompt": "Phase0 v2 temporary pixel art for protagonist_mercenary_attack. Pseudo-voxel 3/4 tactical fantasy, chunky readable silhouette, cold blue-gray world palette with warm fire accents, top-left light, rim highlights, black outline, solid #FF00FF raw background.",
   "role": "",
   "input": "/Users/gimgibeom/Desktop/deckbuilder/SourceCode/assets/temp_pixel/_raw/protagonist_mercenary_attack_raw.png",
   "threshold": 100,
@@ -42,19 +42,19 @@
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        45,
-        29,
-        91,
-        97
+        14,
+        32,
+        112,
+        120
       ],
       "edge_touch": false,
       "output_size": [
-        73,
-        108
+        100,
+        90
       ],
       "paste_position": [
-        27,
-        11
+        14,
+        29
       ]
     },
     {
@@ -73,19 +73,19 @@
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        45,
-        27,
-        95,
-        95
+        14,
+        30,
+        118,
+        120
       ],
       "edge_touch": false,
       "output_size": [
-        80,
-        108
+        106,
+        92
       ],
       "paste_position": [
-        24,
-        11
+        11,
+        27
       ]
     },
     {
@@ -100,23 +100,23 @@
         256
       ],
       "component_mode": "all",
-      "component_count": 1,
+      "component_count": 2,
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        45,
-        29,
-        99,
-        97
+        14,
+        32,
+        120,
+        120
       ],
       "edge_touch": false,
       "output_size": [
-        86,
-        108
+        108,
+        90
       ],
       "paste_position": [
-        21,
-        11
+        10,
+        29
       ]
     },
     {
@@ -135,19 +135,19 @@
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        45,
-        30,
-        93,
-        98
+        14,
+        34,
+        116,
+        120
       ],
       "edge_touch": false,
       "output_size": [
-        76,
-        108
+        104,
+        88
       ],
       "paste_position": [
-        26,
-        11
+        12,
+        31
       ]
     }
   ],

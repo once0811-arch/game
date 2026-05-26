@@ -1,1 +1,1 @@
-Temporary 2D pixel icon for icon_draw_pile, clean silhouette, replaceable final art.
+Phase0 v2 polished pixel icon for icon_draw_pile; bevel, outline, readable silhouette.

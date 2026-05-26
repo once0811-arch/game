@@ -1,1 +1,1 @@
-Temporary 2D pixel battle/background scene for bg_shop_act1_rusty_trader: rusty roadside trader shelter. UI-safe lower area, replaceable final art.
+Phase0 v2 pixel background for bg_shop_act1_rusty_trader; moody survival road movie fantasy, pseudo-voxel ruin depth, UI-safe floor.

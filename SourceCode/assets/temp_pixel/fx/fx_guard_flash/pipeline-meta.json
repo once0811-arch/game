@@ -1,7 +1,7 @@
 {
   "target": "asset",
   "mode": "fx",
-  "prompt": "Temporary 2D pixel FX sheet for fx_guard_flash, solid magenta raw background.",
+  "prompt": "Phase0 v2 temporary pixel art for fx_guard_flash. Pseudo-voxel 3/4 tactical fantasy, chunky readable silhouette, cold blue-gray world palette with warm fire accents, top-left light, rim highlights, black outline, solid #FF00FF raw background.",
   "role": "",
   "input": "/Users/gimgibeom/Desktop/deckbuilder/SourceCode/assets/temp_pixel/_raw/fx_guard_flash_raw.png",
   "threshold": 100,
@@ -42,19 +42,19 @@
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        16,
-        16,
-        73,
-        73
+        26,
+        26,
+        64,
+        64
       ],
       "edge_touch": false,
       "output_size": [
-        81,
-        81
+        36,
+        36
       ],
       "paste_position": [
-        7,
-        7
+        30,
+        30
       ]
     },
     {
@@ -73,19 +73,19 @@
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        16,
-        16,
-        73,
-        73
+        18,
+        18,
+        72,
+        72
       ],
       "edge_touch": false,
       "output_size": [
-        81,
-        81
+        51,
+        51
       ],
       "paste_position": [
-        7,
-        7
+        22,
+        22
       ]
     },
     {
@@ -104,19 +104,19 @@
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        16,
-        16,
-        73,
-        73
+        10,
+        10,
+        80,
+        80
       ],
       "edge_touch": false,
       "output_size": [
-        81,
-        81
+        66,
+        66
       ],
       "paste_position": [
-        7,
-        7
+        15,
+        15
       ]
     },
     {
@@ -135,10 +135,10 @@
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        16,
-        16,
-        73,
-        73
+        2,
+        2,
+        88,
+        88
       ],
       "edge_touch": false,
       "output_size": [

@@ -1,1 +1,1 @@
-Temporary 2D pixel icon for icon_helmet_slot, clean silhouette, replaceable final art.
+Phase0 v2 polished pixel icon for icon_helmet_slot; bevel, outline, readable silhouette.

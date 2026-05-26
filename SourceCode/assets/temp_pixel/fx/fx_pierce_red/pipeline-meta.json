@@ -1,7 +1,7 @@
 {
   "target": "asset",
   "mode": "fx",
-  "prompt": "Temporary 2D pixel FX sheet for fx_pierce_red, solid magenta raw background.",
+  "prompt": "Phase0 v2 temporary pixel art for fx_pierce_red. Pseudo-voxel 3/4 tactical fantasy, chunky readable silhouette, cold blue-gray world palette with warm fire accents, top-left light, rim highlights, black outline, solid #FF00FF raw background.",
   "role": "",
   "input": "/Users/gimgibeom/Desktop/deckbuilder/SourceCode/assets/temp_pixel/_raw/fx_pierce_red_raw.png",
   "threshold": 100,
@@ -38,23 +38,23 @@
         96
       ],
       "component_mode": "all",
-      "component_count": 2,
+      "component_count": 21,
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        19,
-        20,
-        73,
-        68
+        26,
+        32,
+        88,
+        88
       ],
       "edge_touch": false,
       "output_size": [
-        69,
-        62
+        72,
+        65
       ],
       "paste_position": [
-        13,
-        17
+        12,
+        15
       ]
     },
     {
@@ -69,23 +69,23 @@
         96
       ],
       "component_mode": "all",
-      "component_count": 2,
+      "component_count": 21,
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        17,
-        20,
-        73,
-        68
+        22,
+        32,
+        88,
+        88
       ],
       "edge_touch": false,
       "output_size": [
-        72,
-        62
+        76,
+        65
       ],
       "paste_position": [
-        12,
-        17
+        10,
+        15
       ]
     },
     {
@@ -100,22 +100,22 @@
         192
       ],
       "component_mode": "all",
-      "component_count": 2,
+      "component_count": 21,
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        15,
         20,
-        74,
-        68
+        34,
+        88,
+        88
       ],
       "edge_touch": false,
       "output_size": [
-        76,
+        79,
         62
       ],
       "paste_position": [
-        10,
+        8,
         17
       ]
     },
@@ -131,14 +131,14 @@
         192
       ],
       "component_mode": "all",
-      "component_count": 2,
+      "component_count": 21,
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        13,
-        20,
-        76,
-        68
+        18,
+        34,
+        88,
+        88
       ],
       "edge_touch": false,
       "output_size": [

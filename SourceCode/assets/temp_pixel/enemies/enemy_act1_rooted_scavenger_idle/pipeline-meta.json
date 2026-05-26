@@ -1,7 +1,7 @@
 {
-  "target": "asset",
+  "target": "npc",
   "mode": "idle",
-  "prompt": "Temporary 2D pixel art proxy for enemy_act1_rooted_scavenger_idle. Role=creature, action=idle, palette=enemy, solid #FF00FF raw background, readable tactical fantasy silhouette, replaceable by final art.",
+  "prompt": "Phase0 v2 temporary pixel art for enemy_act1_rooted_scavenger_idle. Pseudo-voxel 3/4 tactical fantasy, chunky readable silhouette, cold blue-gray world palette with warm fire accents, top-left light, rim highlights, black outline, solid #FF00FF raw background.",
   "role": "",
   "input": "/Users/gimgibeom/Desktop/deckbuilder/SourceCode/assets/temp_pixel/_raw/enemy_act1_rooted_scavenger_idle_raw.png",
   "threshold": 100,
@@ -38,23 +38,23 @@
         128
       ],
       "component_mode": "all",
-      "component_count": 1,
+      "component_count": 3,
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        31,
-        41,
-        90,
-        100
+        14,
+        46,
+        110,
+        120
       ],
       "edge_touch": false,
       "output_size": [
         108,
-        108
+        83
       ],
       "paste_position": [
         10,
-        11
+        36
       ]
     },
     {
@@ -69,23 +69,23 @@
         128
       ],
       "component_mode": "all",
-      "component_count": 1,
+      "component_count": 4,
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        31,
-        40,
-        90,
-        99
+        14,
+        44,
+        110,
+        120
       ],
       "edge_touch": false,
       "output_size": [
         108,
-        108
+        86
       ],
       "paste_position": [
         10,
-        11
+        33
       ]
     },
     {
@@ -100,23 +100,23 @@
         256
       ],
       "component_mode": "all",
-      "component_count": 1,
+      "component_count": 3,
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        31,
-        42,
-        90,
-        101
+        14,
+        46,
+        110,
+        120
       ],
       "edge_touch": false,
       "output_size": [
         108,
-        108
+        83
       ],
       "paste_position": [
         10,
-        11
+        36
       ]
     },
     {
@@ -131,23 +131,23 @@
         256
       ],
       "component_mode": "all",
-      "component_count": 1,
+      "component_count": 3,
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        31,
-        41,
-        90,
-        100
+        14,
+        48,
+        110,
+        120
       ],
       "edge_touch": false,
       "output_size": [
         108,
-        108
+        81
       ],
       "paste_position": [
         10,
-        11
+        38
       ]
     }
   ],

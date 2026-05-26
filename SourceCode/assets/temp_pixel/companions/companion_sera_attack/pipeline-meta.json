@@ -1,7 +1,7 @@
 {
   "target": "npc",
   "mode": "attack",
-  "prompt": "Temporary 2D pixel art proxy for companion_sera_attack. Role=humanoid, action=attack, palette=sera, solid #FF00FF raw background, readable tactical fantasy silhouette, replaceable by final art.",
+  "prompt": "Phase0 v2 temporary pixel art for companion_sera_attack. Pseudo-voxel 3/4 tactical fantasy, chunky readable silhouette, cold blue-gray world palette with warm fire accents, top-left light, rim highlights, black outline, solid #FF00FF raw background.",
   "role": "",
   "input": "/Users/gimgibeom/Desktop/deckbuilder/SourceCode/assets/temp_pixel/_raw/companion_sera_attack_raw.png",
   "threshold": 100,
@@ -38,23 +38,23 @@
         128
       ],
       "component_mode": "all",
-      "component_count": 1,
+      "component_count": 2,
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        31,
-        29,
-        90,
-        97
+        10,
+        36,
+        120,
+        120
       ],
       "edge_touch": false,
       "output_size": [
-        87,
-        101
+        99,
+        76
       ],
       "paste_position": [
-        20,
-        18
+        14,
+        43
       ]
     },
     {
@@ -69,23 +69,23 @@
         128
       ],
       "component_mode": "all",
-      "component_count": 1,
+      "component_count": 3,
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        28,
-        27,
-        94,
-        95
+        4,
+        34,
+        120,
+        120
       ],
       "edge_touch": false,
       "output_size": [
-        98,
-        101
+        105,
+        77
       ],
       "paste_position": [
-        15,
-        18
+        11,
+        42
       ]
     },
     {
@@ -100,23 +100,23 @@
         256
       ],
       "component_mode": "all",
-      "component_count": 1,
+      "component_count": 3,
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        24,
-        29,
-        97,
-        97
+        0,
+        36,
+        120,
+        120
       ],
-      "edge_touch": false,
+      "edge_touch": true,
       "output_size": [
         108,
-        101
+        76
       ],
       "paste_position": [
         10,
-        18
+        43
       ]
     },
     {
@@ -131,25 +131,30 @@
         256
       ],
       "component_mode": "all",
-      "component_count": 1,
+      "component_count": 3,
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        29,
-        30,
-        92,
-        98
+        6,
+        38,
+        120,
+        120
       ],
       "edge_touch": false,
       "output_size": [
-        93,
-        101
+        103,
+        74
       ],
       "paste_position": [
-        17,
-        18
+        12,
+        45
       ]
     }
   ],
-  "edge_touch_frames": []
+  "edge_touch_frames": [
+    [
+      1,
+      0
+    ]
+  ]
 }

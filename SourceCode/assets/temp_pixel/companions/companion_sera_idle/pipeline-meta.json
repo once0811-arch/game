@@ -1,7 +1,7 @@
 {
   "target": "npc",
   "mode": "idle",
-  "prompt": "Temporary 2D pixel art proxy for companion_sera_idle. Role=humanoid, action=idle, palette=sera, solid #FF00FF raw background, readable tactical fantasy silhouette, replaceable by final art.",
+  "prompt": "Phase0 v2 temporary pixel art for companion_sera_idle. Pseudo-voxel 3/4 tactical fantasy, chunky readable silhouette, cold blue-gray world palette with warm fire accents, top-left light, rim highlights, black outline, solid #FF00FF raw background.",
   "role": "",
   "input": "/Users/gimgibeom/Desktop/deckbuilder/SourceCode/assets/temp_pixel/_raw/companion_sera_idle_raw.png",
   "threshold": 100,
@@ -42,19 +42,19 @@
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        31,
-        29,
-        90,
-        97
+        10,
+        36,
+        120,
+        120
       ],
       "edge_touch": false,
       "output_size": [
-        94,
-        108
+        108,
+        83
       ],
       "paste_position": [
-        17,
-        11
+        10,
+        36
       ]
     },
     {
@@ -73,19 +73,19 @@
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        31,
-        27,
-        90,
-        95
+        10,
+        34,
+        120,
+        120
       ],
       "edge_touch": false,
       "output_size": [
-        94,
-        108
+        108,
+        85
       ],
       "paste_position": [
-        17,
-        11
+        10,
+        34
       ]
     },
     {
@@ -104,19 +104,19 @@
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        31,
-        29,
-        90,
-        97
+        10,
+        36,
+        120,
+        120
       ],
       "edge_touch": false,
       "output_size": [
-        94,
-        108
+        108,
+        83
       ],
       "paste_position": [
-        17,
-        11
+        10,
+        36
       ]
     },
     {
@@ -135,19 +135,19 @@
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        31,
-        30,
-        90,
-        98
+        10,
+        38,
+        120,
+        120
       ],
       "edge_touch": false,
       "output_size": [
-        94,
-        108
+        108,
+        81
       ],
       "paste_position": [
-        17,
-        11
+        10,
+        38
       ]
     }
   ],

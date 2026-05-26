@@ -1,1 +1,1 @@
-Temporary 2D pixel icon for icon_bond_30, clean silhouette, replaceable final art.
+Phase0 v2 polished pixel icon for icon_bond_30; bevel, outline, readable silhouette.

@@ -1,7 +1,7 @@
 {
-  "target": "asset",
+  "target": "npc",
   "mode": "hurt",
-  "prompt": "Temporary 2D pixel art proxy for enemy_act1_twisted_wolf_hurt. Role=creature, action=hurt, palette=enemy, solid #FF00FF raw background, readable tactical fantasy silhouette, replaceable by final art.",
+  "prompt": "Phase0 v2 temporary pixel art for enemy_act1_twisted_wolf_hurt. Pseudo-voxel 3/4 tactical fantasy, chunky readable silhouette, cold blue-gray world palette with warm fire accents, top-left light, rim highlights, black outline, solid #FF00FF raw background.",
   "role": "",
   "input": "/Users/gimgibeom/Desktop/deckbuilder/SourceCode/assets/temp_pixel/_raw/enemy_act1_twisted_wolf_hurt_raw.png",
   "threshold": 100,
@@ -42,19 +42,19 @@
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        21,
-        36,
-        95,
-        95
+        4,
+        48,
+        118,
+        120
       ],
       "edge_touch": false,
       "output_size": [
         108,
-        86
+        68
       ],
       "paste_position": [
         10,
-        33
+        51
       ]
     },
     {
@@ -73,19 +73,19 @@
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        21,
-        35,
-        95,
-        94
+        4,
+        46,
+        118,
+        120
       ],
       "edge_touch": false,
       "output_size": [
         108,
-        86
+        70
       ],
       "paste_position": [
         10,
-        33
+        49
       ]
     },
     {
@@ -104,19 +104,19 @@
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        21,
-        37,
-        95,
-        96
+        4,
+        48,
+        118,
+        120
       ],
       "edge_touch": false,
       "output_size": [
         108,
-        86
+        68
       ],
       "paste_position": [
         10,
-        33
+        51
       ]
     },
     {
@@ -135,19 +135,19 @@
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        21,
-        36,
-        95,
-        95
+        4,
+        50,
+        118,
+        120
       ],
       "edge_touch": false,
       "output_size": [
         108,
-        86
+        66
       ],
       "paste_position": [
         10,
-        33
+        53
       ]
     }
   ],

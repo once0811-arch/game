@@ -1,7 +1,7 @@
 {
   "target": "npc",
   "mode": "attack",
-  "prompt": "Temporary 2D pixel art proxy for companion_rowan_attack. Role=humanoid, action=attack, palette=rowan, solid #FF00FF raw background, readable tactical fantasy silhouette, replaceable by final art.",
+  "prompt": "Phase0 v2 temporary pixel art for companion_rowan_attack. Pseudo-voxel 3/4 tactical fantasy, chunky readable silhouette, cold blue-gray world palette with warm fire accents, top-left light, rim highlights, black outline, solid #FF00FF raw background.",
   "role": "",
   "input": "/Users/gimgibeom/Desktop/deckbuilder/SourceCode/assets/temp_pixel/_raw/companion_rowan_attack_raw.png",
   "threshold": 100,
@@ -38,23 +38,23 @@
         128
       ],
       "component_mode": "all",
-      "component_count": 2,
+      "component_count": 1,
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        45,
-        25,
-        93,
-        99
+        14,
+        36,
+        112,
+        120
       ],
       "edge_touch": false,
       "output_size": [
-        70,
-        108
+        100,
+        86
       ],
       "paste_position": [
-        29,
-        11
+        14,
+        33
       ]
     },
     {
@@ -69,23 +69,23 @@
         128
       ],
       "component_mode": "all",
-      "component_count": 2,
+      "component_count": 1,
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        45,
-        23,
-        97,
-        97
+        14,
+        34,
+        118,
+        120
       ],
       "edge_touch": false,
       "output_size": [
-        76,
-        108
+        106,
+        88
       ],
       "paste_position": [
-        26,
-        11
+        11,
+        31
       ]
     },
     {
@@ -104,19 +104,19 @@
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        45,
-        25,
-        101,
-        99
+        14,
+        36,
+        120,
+        120
       ],
       "edge_touch": false,
       "output_size": [
-        82,
-        108
+        108,
+        86
       ],
       "paste_position": [
-        23,
-        11
+        10,
+        33
       ]
     },
     {
@@ -131,23 +131,23 @@
         256
       ],
       "component_mode": "all",
-      "component_count": 2,
+      "component_count": 1,
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        45,
-        26,
-        95,
-        100
+        14,
+        38,
+        114,
+        120
       ],
       "edge_touch": false,
       "output_size": [
-        73,
-        108
+        102,
+        84
       ],
       "paste_position": [
-        27,
-        11
+        13,
+        35
       ]
     }
   ],

@@ -1,7 +1,7 @@
 {
   "target": "npc",
   "mode": "idle",
-  "prompt": "Temporary 2D pixel art proxy for protagonist_mercenary_idle. Role=humanoid, action=idle, palette=protagonist, solid #FF00FF raw background, readable tactical fantasy silhouette, replaceable by final art.",
+  "prompt": "Phase0 v2 temporary pixel art for protagonist_mercenary_idle. Pseudo-voxel 3/4 tactical fantasy, chunky readable silhouette, cold blue-gray world palette with warm fire accents, top-left light, rim highlights, black outline, solid #FF00FF raw background.",
   "role": "",
   "input": "/Users/gimgibeom/Desktop/deckbuilder/SourceCode/assets/temp_pixel/_raw/protagonist_mercenary_idle_raw.png",
   "threshold": 100,
@@ -38,23 +38,23 @@
         128
       ],
       "component_mode": "all",
-      "component_count": 1,
+      "component_count": 2,
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        45,
-        29,
-        91,
-        97
+        20,
+        32,
+        112,
+        120
       ],
       "edge_touch": false,
       "output_size": [
-        73,
-        108
+        108,
+        104
       ],
       "paste_position": [
-        27,
-        11
+        10,
+        15
       ]
     },
     {
@@ -69,23 +69,23 @@
         128
       ],
       "component_mode": "all",
-      "component_count": 1,
+      "component_count": 2,
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        45,
-        27,
-        91,
-        95
+        20,
+        30,
+        112,
+        120
       ],
       "edge_touch": false,
       "output_size": [
-        73,
-        108
+        108,
+        106
       ],
       "paste_position": [
-        27,
-        11
+        10,
+        13
       ]
     },
     {
@@ -100,23 +100,23 @@
         256
       ],
       "component_mode": "all",
-      "component_count": 1,
+      "component_count": 2,
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        45,
-        29,
-        91,
-        97
+        20,
+        32,
+        112,
+        120
       ],
       "edge_touch": false,
       "output_size": [
-        73,
-        108
+        108,
+        104
       ],
       "paste_position": [
-        27,
-        11
+        10,
+        15
       ]
     },
     {
@@ -131,23 +131,23 @@
         256
       ],
       "component_mode": "all",
-      "component_count": 1,
+      "component_count": 2,
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        45,
-        30,
-        91,
-        98
+        20,
+        34,
+        112,
+        120
       ],
       "edge_touch": false,
       "output_size": [
-        73,
-        108
+        108,
+        101
       ],
       "paste_position": [
-        27,
-        11
+        10,
+        18
       ]
     }
   ],

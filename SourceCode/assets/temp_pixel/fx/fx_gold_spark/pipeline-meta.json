@@ -1,7 +1,7 @@
 {
   "target": "asset",
   "mode": "fx",
-  "prompt": "Temporary 2D pixel FX sheet for fx_gold_spark, solid magenta raw background.",
+  "prompt": "Phase0 v2 temporary pixel art for fx_gold_spark. Pseudo-voxel 3/4 tactical fantasy, chunky readable silhouette, cold blue-gray world palette with warm fire accents, top-left light, rim highlights, black outline, solid #FF00FF raw background.",
   "role": "",
   "input": "/Users/gimgibeom/Desktop/deckbuilder/SourceCode/assets/temp_pixel/_raw/fx_gold_spark_raw.png",
   "threshold": 100,
@@ -42,19 +42,19 @@
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        16,
-        16,
-        73,
-        73
+        22,
+        24,
+        68,
+        66
       ],
       "edge_touch": false,
       "output_size": [
-        81,
-        81
+        42,
+        38
       ],
       "paste_position": [
-        7,
-        7
+        27,
+        29
       ]
     },
     {
@@ -73,19 +73,19 @@
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
+        14,
         16,
-        16,
-        73,
-        73
+        76,
+        74
       ],
       "edge_touch": false,
       "output_size": [
-        81,
-        81
+        57,
+        53
       ],
       "paste_position": [
-        7,
-        7
+        19,
+        21
       ]
     },
     {
@@ -104,19 +104,19 @@
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        16,
-        16,
-        73,
-        73
+        6,
+        8,
+        84,
+        82
       ],
       "edge_touch": false,
       "output_size": [
-        81,
-        81
+        72,
+        68
       ],
       "paste_position": [
-        7,
-        7
+        12,
+        14
       ]
     },
     {
@@ -135,12 +135,12 @@
       "selected_component_area": null,
       "selected_component_bbox": null,
       "crop_bbox": [
-        16,
-        16,
-        73,
-        73
+        0,
+        0,
+        88,
+        88
       ],
-      "edge_touch": false,
+      "edge_touch": true,
       "output_size": [
         81,
         81
@@ -151,5 +151,10 @@
       ]
     }
   ],
-  "edge_touch_frames": []
+  "edge_touch_frames": [
+    [
+      1,
+      1
+    ]
+  ]
 }

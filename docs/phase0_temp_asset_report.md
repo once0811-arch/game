@@ -4,7 +4,7 @@
 
 ## 결과 요약
 
-Phase 0 임시 픽셀 에셋 생성을 완료했다.
+Phase 0 임시 픽셀 에셋 생성을 완료했고, 1차 프록시 에셋의 시각 품질이 너무 낮아 `temp_pixel_voxel_v2` 아트 패스를 추가로 적용했다.
 
 ```txt
 생성 에셋 수: 135개
@@ -12,9 +12,33 @@ Phase 0 임시 픽셀 에셋 생성을 완료했다.
 manifest: SourceCode/data/assets/temp_asset_manifest.json
 Godot 확인 씬: SourceCode/scenes/debug/asset_gallery.tscn
 현재 실행 메인 씬: res://scenes/debug/asset_gallery.tscn
+현재 스타일: temp_pixel_voxel_v2
 ```
 
 `agent-sprite-forge`는 프로젝트에 커밋하지 않는 외부 스킬 폴더로 유지한다. 생성된 애니메이션 시트는 `agent-sprite-forge/skills/generate2dsprite/scripts/generate2dsprite.py process`를 통해 magenta cleanup, 프레임 분리, 투명 sheet, GIF preview, pipeline metadata를 생성했다.
+
+v2 패스는 아래 기준을 적용했다.
+
+```txt
+1. 도형 프록시처럼 보이던 캐릭터를 2D 픽셀/가벼운 복셀풍 3/4 실루엣으로 교체
+2. 작은 해상도에서 먼저 그리고 NEAREST 업스케일해 도트 질감 유지
+3. 검은 외곽선, 상단 좌측 조명, 림라이트, 바닥 그림자 적용
+4. Act 1의 차가운 청회색 + 모닥불색, 재난/후반 암시용 보라 + 진녹색 유지
+5. 장비 아이콘은 원형 UI 배지가 아니라 실제 물건 실루엣으로 분리
+6. 배경은 단순 테스트 패턴이 아니라 로드무비형 폐허/상점/여관/성문 장소감이 보이도록 재작성
+```
+
+프리뷰:
+
+```txt
+docs/art/phase0_temp_pixel_v2_preview.png
+```
+
+재생성 스크립트:
+
+```txt
+tools/phase0_upgrade_pixel_assets.py
+```
 
 ## 생성 범위
 
@@ -49,7 +73,7 @@ SourceCode/scenes/debug/asset_gallery.tscn
 
 ## 교체 원칙
 
-이번 에셋은 전부 임시 픽셀아트다. 정식 아트가 들어오면 아래 중 하나로 교체한다.
+이번 에셋은 전부 임시 픽셀아트다. v2 패스는 개발 중 보기 좋은 수준까지 끌어올리기 위한 것이며, 정식 아트가 들어오면 아래 중 하나로 교체한다.
 
 ```txt
 1. 같은 manifest id와 같은 역할의 파일을 덮어쓴다.

@@ -97,12 +97,13 @@ Godot 4.x import pipeline
 아트 방향:
 
 ```txt
-스타일: 2D pixel art, readable tactical fantasy, muted apocalypse palette
-시점: 전투는 side/3-4 hybrid, 맵/노드는 UI icon 중심
+스타일: 2D pixel art + 가벼운 2D 복셀풍, readable tactical fantasy, muted apocalypse palette
+시점: 전투는 side/3-4 hybrid보다 3/4 실루엣을 조금 더 강하게 사용, 맵/노드는 UI icon 중심
 배경: 16:9 가로 화면용, 카드 UI가 올라가도 방해하지 않는 낮은 대비
 캐릭터: 작은 크기에서도 실루엣 구분
 색감: Act 1은 차가운 청회색 + 모닥불색, 위험 표시는 마른 피 색
 후반용 예비 팔레트: 어두운 보라 + 진녹색
+현재 임시 패스: temp_pixel_voxel_v2
 ```
 
 ### 0.1 에셋 생성 규칙
@@ -110,6 +111,7 @@ Godot 4.x import pipeline
 ```txt
 raw 생성 이미지는 agent-sprite-forge 원칙에 따라 solid #FF00FF 배경을 사용한다.
 후처리 결과는 투명 PNG로 저장한다.
+임시 아트라도 단순 도형 프록시처럼 보이면 안 되며, 검은 외곽선, 상단 좌측 조명, 림라이트, 바닥 그림자로 게임 화면에서 견딜 수 있는 품질을 맞춘다.
 애니메이션은 처음부터 복잡하게 만들지 않는다.
 전투용 캐릭터는 idle 4프레임, attack 4프레임, hurt 1~2프레임을 기본으로 한다.
 동료와 적의 실제 전투 연출은 첫 구현에서 짧은 이동/깜빡임/VFX로 보강한다.

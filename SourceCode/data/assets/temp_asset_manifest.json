@@ -1,8 +1,8 @@
 {
-  "version": "0.1.0",
-  "style": "temp_pixel",
-  "generated_by": "tools/phase0_generate_temp_pixel_assets.py",
-  "source_pipeline": "agent-sprite-forge magenta cleanup and frame extraction for sheets",
+  "version": "0.1.1",
+  "style": "temp_pixel_voxel_v2",
+  "generated_by": "tools/phase0_upgrade_pixel_assets.py",
+  "source_pipeline": "pixel/voxel-style redraw plus agent-sprite-forge magenta cleanup for sprite sheets",
   "assets": [
     {
       "id": "protagonist_mercenary_idle",

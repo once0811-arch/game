@@ -1,1 +1,1 @@
-Temporary 2D pixel art proxy for protagonist_mercenary_attack. Role=humanoid, action=attack, palette=protagonist, solid #FF00FF raw background, readable tactical fantasy silhouette, replaceable by final art.
+Phase0 v2 temporary pixel art for protagonist_mercenary_attack. Pseudo-voxel 3/4 tactical fantasy, chunky readable silhouette, cold blue-gray world palette with warm fire accents, top-left light, rim highlights, black outline, solid #FF00FF raw background.

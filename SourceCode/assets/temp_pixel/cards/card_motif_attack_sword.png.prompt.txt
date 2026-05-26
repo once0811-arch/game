@@ -1,1 +1,1 @@
-Temporary 2D pixel card frame or motif for card_motif_attack_sword, readable Godot UI proxy.
+Phase0 v2 pixel card frame/motif for card_motif_attack_sword; bevel frame, readable cost coin and art panel.

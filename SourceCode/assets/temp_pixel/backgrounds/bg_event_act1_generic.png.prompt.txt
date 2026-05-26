@@ -1,1 +1,1 @@
-Temporary 2D pixel battle/background scene for bg_event_act1_generic: generic event backdrop with broken signs. UI-safe lower area, replaceable final art.
+Phase0 v2 pixel background for bg_event_act1_generic; moody survival road movie fantasy, pseudo-voxel ruin depth, UI-safe floor.

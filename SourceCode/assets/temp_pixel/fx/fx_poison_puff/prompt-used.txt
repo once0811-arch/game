@@ -1,1 +1,1 @@
-Temporary 2D pixel FX sheet for fx_poison_puff, solid magenta raw background.
+Phase0 v2 temporary pixel art for fx_poison_puff. Pseudo-voxel 3/4 tactical fantasy, chunky readable silhouette, cold blue-gray world palette with warm fire accents, top-left light, rim highlights, black outline, solid #FF00FF raw background.
