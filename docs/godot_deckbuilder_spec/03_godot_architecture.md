@@ -278,8 +278,8 @@ max_companions = 2
 
 ```txt
 companion_id
-passive_level
-reward_bonus_level
+selected_oath_tactic_id
+bond_score
 owned_card_ids
 available_card_ids
 upgraded_card_ids
@@ -320,7 +320,7 @@ gear_slots_by_character = {
 2. draw_pile 셔플
 3. CombatState 생성
 4. 적 데이터 로드
-5. 전투 시작 파워/장비/동료 패시브 적용
+5. 전투 시작 파워/장비/동료 패시브/유대 보너스 적용
 6. 첫 턴 시작
 ```
 
@@ -342,6 +342,7 @@ CardView 클릭/드래그
 → energy 차감
 → CardEffectResolver.resolve(card, target)
 → 단일 대상 공격/지휘 카드라면 전술 표식 갱신
+→ OathTacticSystem.check_after_card_play() 호출
 → CombatState 갱신
 → UI 갱신
 ```
@@ -365,6 +366,7 @@ CardView 클릭/드래그
 perform_end_turn_attacks(combat_state)
 resolve_companion_attack(companion, target)
 select_target_for_companion(combat_state)
+apply_bond_score_rewards(run_state, node_result)
 ```
 
 대상 선택:
@@ -377,7 +379,28 @@ select_target_for_companion(combat_state)
 
 동료는 체력이 없으므로 EnemyAI는 동료를 직접 타겟팅하지 않는다.
 
-## 7. 카드 효과 처리 방식
+## 7. 서약 전술 처리 방식
+
+`OathTacticSystem`이 담당한다.
+
+```txt
+get_selected_oath_tactic(companion_instance)
+check_after_card_play(combat_state, companion_instance)
+check_after_status_apply(combat_state, companion_instance)
+check_after_enemy_defeated(combat_state, companion_instance)
+resolve_oath_tactic_effects(combat_state, tactic)
+```
+
+서약 전술 규칙:
+
+```txt
+동료마다 3개 중 영입 시 선택한 1개만 활성화.
+선택한 서약 전술은 런 중 변경/업그레이드 없음.
+발동 제한은 tactic.limit에 따른다. 예: once_per_turn, once_per_combat.
+전술 표식, 카드 사용 기록, 방어도 획득량, 비용 0 카드 사용 수 같은 전투 로그를 조건으로 사용한다.
+```
+
+## 8. 카드 효과 처리 방식
 
 카드 효과는 데이터의 `effects` 배열을 읽고 처리한다.
 
@@ -425,7 +448,7 @@ potion_effect
 relic_trigger
 ```
 
-## 8. 장비 효과 처리 방식
+## 9. 장비 효과 처리 방식
 
 장비 효과는 `EquipmentEffectResolver`가 처리한다.
 
@@ -451,7 +474,7 @@ owner_only
 
 힐러가 장착하면 의미가 있고, 딜러가 장착하면 힐 카드가 없어서 사실상 의미가 없을 수 있다.
 
-## 9. 장비 교체 타이밍
+## 10. 장비 교체 타이밍
 
 장비는 다음 노드 선택 화면에서 자유롭게 교체 가능하다.
 
@@ -464,7 +487,7 @@ MapScreen에서 EquipmentInventoryScreen을 열 수 있다.
 상점에서는 구매 후 즉시 인벤토리에 들어가며, 다음 노드 선택 화면에서 장착 가능.
 ```
 
-## 10. 보상 생성 흐름
+## 11. 보상 생성 흐름
 
 ### 일반 전투
 
@@ -490,7 +513,7 @@ Act 1/2: companion_reward_3
 Act 3: ending
 ```
 
-## 11. 여관 구현 흐름
+## 12. 여관 구현 흐름
 
 ```txt
 InnGenerator.generate_inn()
@@ -507,7 +530,7 @@ InnGenerator.generate_inn()
 
 이벤트 여관은 가격/효과 변동 가능. 단, 결과는 긍정적 변동성 원칙을 지킨다.
 
-## 12. 모바일/PC 입력
+## 13. 모바일/PC 입력
 
 PC와 모바일 모두 가로 화면이다.
 
@@ -520,7 +543,7 @@ PC와 모바일 모두 가로 화면이다.
 우클릭/상세보기 = 모바일에서는 길게 누르기
 ```
 
-## 13. 해상도/레이아웃
+## 14. 해상도/레이아웃
 
 기본 설계는 16:9 가로를 기준으로 한다.
 
@@ -531,7 +554,7 @@ UI는 Control 노드 anchor/container 기반
 카드 텍스트는 모바일에서 읽힐 크기를 유지
 ```
 
-## 14. Codex 구현 순서
+## 15. Codex 구현 순서
 
 아래 순서로 구현한다.
 
@@ -545,13 +568,15 @@ UI는 Control 노드 anchor/container 기반
 7. 맵 1Act 흐름과 Act 1 동료 예고 이벤트
 8. 동료 영입
 9. 동료 전투 공격
-10. 엘리트 강화
-11. 상점/여관/이벤트
-12. 장비 인벤토리
-13. 저장/로드
+10. 서약 전술 발동
+11. 유대 점수 누적
+12. 엘리트 강화
+13. 상점/여관/이벤트
+14. 장비 인벤토리
+15. 저장/로드
 ```
 
-## 15. 플레이테스트 지표
+## 16. 플레이테스트 지표
 
 첫 구현부터 아래 지표를 `RunTelemetry`에 쌓을 수 있게 준비한다. UI로 보여줄 필요는 없고, 개발 로그 또는 저장 데이터에 남겨도 된다.
 
@@ -563,6 +588,8 @@ UI는 Control 노드 anchor/container 기반
 카드 보상 스킵 횟수
 동료별 후보 등장/선택 횟수
 동료별 승리 런 포함 횟수
+서약 전술별 선택/발동 횟수
+동료별 유대 점수 획득량
 장비 구매/장착 횟수
 여관 방 선택 횟수
 상점 서비스 구매 횟수

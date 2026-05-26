@@ -91,11 +91,45 @@ upgraded_description_ko: 강화 표시 설명
     "id": "rowan_focus_target",
     "name_ko": "집중 추격",
     "description_ko": "플레이어가 같은 적을 연속 공격하면 로완의 기본 공격 피해가 증가합니다.",
-    "levels": [
-      {"level": 0, "bonus_damage": 3},
-      {"level": 1, "bonus_damage": 5},
-      {"level": 2, "bonus_damage": 7}
-    ]
+    "base_values": {"bonus_damage": 3},
+    "bond_60_values": {"bonus_damage": 5}
+  },
+  "oath_tactics": [
+    {
+      "id": "rowan_oath_red_pursuit",
+      "name_ko": "붉은 추격",
+      "trigger_ko": "한 턴에 같은 적을 2회 이상 공격하고 대상이 살아 있습니다.",
+      "timing": "after_card_play",
+      "limit": "once_per_turn",
+      "effects": [
+        {"type": "companion_attack", "target": "tactical_mark", "damage_multiplier": 1.0}
+      ]
+    },
+    {
+      "id": "rowan_oath_spearpoint_lock",
+      "name_ko": "창끝 고정",
+      "trigger_ko": "전술 표식 대상에게 취약을 부여합니다.",
+      "timing": "after_status_apply",
+      "limit": "once_per_turn",
+      "effects": [
+        {"type": "gain_block", "amount": 4}
+      ]
+    },
+    {
+      "id": "rowan_oath_execution_order",
+      "name_ko": "처형 명령",
+      "trigger_ko": "전술 표식 대상이 처치됩니다.",
+      "timing": "after_enemy_defeated",
+      "limit": "once_per_turn",
+      "effects": [
+        {"type": "draw", "amount": 1}
+      ]
+    }
+  ],
+  "bond_bonuses": {
+    "30": [{"type": "companion_basic_attack_damage_add", "amount": 1}],
+    "60": [{"type": "passive_value_override", "key": "bonus_damage", "amount": 5}],
+    "100": [{"type": "first_tactical_mark_attack_damage_add", "amount": 2}]
   },
   "card_pool": [
     "rowan_piercing_lunge",
@@ -114,9 +148,8 @@ upgraded_description_ko: 강화 표시 설명
   "companion_id": "companion_rowan",
   "is_recruited": true,
   "recruited_act": 1,
-  "passive_level": 0,
-  "bond_level": 0,
-  "reward_bonus_level": 0,
+  "selected_oath_tactic_id": "rowan_oath_red_pursuit",
+  "bond_score": 18,
   "owned_card_ids": [
     "rowan_piercing_lunge",
     "rowan_spear_wall"
@@ -129,7 +162,7 @@ upgraded_description_ko: 강화 표시 설명
 }
 ```
 
-`bond_level`은 디자인 명칭인 유대 단계다. 구현을 단순화하려면 MVP에서는 `passive_level`과 같은 값으로 유지해도 된다.
+`bond_score`는 0~100 범위다. 30/60/100 보너스는 점수 기준으로 자동 적용하며, 서약 전술은 런 중 변경하거나 업그레이드하지 않는다.
 
 ## 5. EquipmentData
 
@@ -227,14 +260,15 @@ card_manipulation
 combo
 ```
 
-## 9. CompanionUpgradeData
+## 9. CompanionGrowthRewardData
 
 ```json
 {
-  "id": "upgrade_companion_passive",
-  "type": "passive_level_up",
+  "id": "reward_companion_bond_10",
+  "type": "bond_score_add",
   "target": "companion",
-  "description_ko": "선택한 동료의 패시브를 1단계 강화합니다."
+  "amount": 10,
+  "description_ko": "선택한 동료의 유대 점수를 10 올립니다."
 }
 ```
 
@@ -445,6 +479,20 @@ add_status_card
     "upgraded_reward_chance_by_act": {"1": 0, "2": 20, "3": 40},
     "skip_gold_by_act": {"1": 8, "2": 10, "3": 12}
   },
+  "bond": {
+    "max_score": 100,
+    "thresholds": [30, 60, 100],
+    "gain": {
+      "normal_combat_win": 3,
+      "elite_combat_win": 7,
+      "boss_combat_win": 12,
+      "companion_card_pick": 3,
+      "companion_card_upgrade": 5,
+      "equipped_companion_combat_win": 1,
+      "act2_new_companion_start": 20,
+      "act2_existing_companion_pick": 20
+    }
+  },
   "gold_rewards": {
     "normal_combat": [12, 20],
     "elite_combat": [30, 45],
@@ -504,6 +552,8 @@ add_status_card
 {
   "combat_turn_counts": [],
   "combat_hp_losses": [],
+  "bond_score_gains": {},
+  "oath_tactic_trigger_counts": {},
   "card_reward_seen_counts": {},
   "card_reward_pick_counts": {},
   "card_reward_skip_count": 0,
