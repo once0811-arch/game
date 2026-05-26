@@ -10,6 +10,7 @@ var stock: Array[Dictionary] = []
 var gold_label: Label
 var product_grid: GridContainer
 var status_label: Label
+var feedback_layer: Control
 
 
 func _ready() -> void:
@@ -23,6 +24,11 @@ func _ready() -> void:
 func _build_ui() -> void:
 	UIStyleScript.add_background(self, "bg_shop_act1_rusty_trader", 0.72)
 	var root := UIStyleScript.page_root(self, 30)
+	feedback_layer = Control.new()
+	feedback_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+	feedback_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	feedback_layer.z_index = 80
+	add_child(feedback_layer)
 
 	var layout := VBoxContainer.new()
 	layout.add_theme_constant_override("separation", 12)
@@ -95,8 +101,10 @@ func _on_product_pressed(index: int) -> void:
 	if bool(product.get("purchased", false)):
 		return
 	var price := int(product.get("price", 0))
+	var source_position := _product_center(index)
 	if RunState.gold < price:
 		status_label.text = "Not enough gold."
+		_spawn_shop_feedback("Not enough gold", source_position, UIStyleScript.RED)
 		return
 	RunState.gold -= price
 	var logs: Array[String] = []
@@ -120,6 +128,7 @@ func _on_product_pressed(index: int) -> void:
 	stock[index] = product
 	status_label.text = "\n".join(PackedStringArray(logs))
 	_refresh()
+	_spawn_purchase_feedback(String(product.get("title", "Purchase")), source_position)
 
 
 func _apply_service(service: String) -> Array[String]:
@@ -144,3 +153,99 @@ func _on_leave_pressed() -> void:
 	if MapState.has_selected_node() and MapState.get_selected_node_type() == "shop":
 		MapState.complete_selected_node()
 	SceneRouter.go_to_map()
+
+
+func _product_center(index: int) -> Vector2:
+	if product_grid != null and index >= 0 and index < product_grid.get_child_count():
+		var child := product_grid.get_child(index) as Control
+		if child != null:
+			return child.global_position + child.size * 0.5
+	return get_viewport_rect().size * 0.5
+
+
+func _spawn_purchase_feedback(title: String, source_position: Vector2) -> void:
+	_spawn_shop_feedback("Purchased\n%s" % title, source_position, UIStyleScript.GOLD)
+	for i in range(5):
+		_spawn_coin_spark(source_position + Vector2((i - 2) * 10, 0))
+
+
+func _spawn_shop_feedback(text: String, source_position: Vector2, color: Color) -> void:
+	if feedback_layer == null:
+		return
+	var panel := PanelContainer.new()
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.z_index = 90
+	panel.custom_minimum_size = Vector2(260, 68)
+	panel.size = panel.custom_minimum_size
+	panel.add_theme_stylebox_override("panel", _feedback_style(color))
+	feedback_layer.add_child(panel)
+	var viewport_size := get_viewport_rect().size
+	var start_position := Vector2((viewport_size.x - panel.custom_minimum_size.x) * 0.5, 82.0)
+	panel.global_position = start_position
+	var label := UIStyleScript.label(text, 16, Color.WHITE)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.custom_minimum_size = Vector2(248, 60)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	panel.add_child(label)
+	panel.modulate.a = 0.0
+	var lift_position := panel.global_position + Vector2(0, -12)
+	var exit_position := panel.global_position + Vector2(0, -46)
+	var tween := create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(panel, "modulate:a", 1.0, 0.08)
+	tween.parallel().tween_property(panel, "global_position", lift_position, 0.16)
+	tween.tween_interval(0.42)
+	tween.tween_property(panel, "global_position", exit_position, 0.30)
+	tween.parallel().tween_property(panel, "modulate:a", 0.0, 0.30)
+	tween.finished.connect(panel.queue_free)
+
+
+func _spawn_coin_spark(source_position: Vector2) -> void:
+	if feedback_layer == null:
+		return
+	var spark := PanelContainer.new()
+	spark.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	spark.z_index = 88
+	spark.custom_minimum_size = Vector2(12, 12)
+	spark.size = spark.custom_minimum_size
+	spark.add_theme_stylebox_override("panel", _coin_style())
+	feedback_layer.add_child(spark)
+	spark.global_position = source_position
+	var drift := Vector2(RngService.roll_int(-28, 28), RngService.roll_int(-54, -22))
+	var tween := create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(spark, "global_position", spark.global_position + drift, 0.40)
+	tween.parallel().tween_property(spark, "modulate:a", 0.0, 0.40)
+	tween.finished.connect(spark.queue_free)
+
+
+func _feedback_style(color: Color) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.035, 0.032, 0.028, 0.96)
+	style.border_color = color
+	style.border_width_left = 2
+	style.border_width_top = 2
+	style.border_width_right = 2
+	style.border_width_bottom = 2
+	style.corner_radius_top_left = 6
+	style.corner_radius_top_right = 6
+	style.corner_radius_bottom_left = 6
+	style.corner_radius_bottom_right = 6
+	style.shadow_color = Color(0, 0, 0, 0.52)
+	style.shadow_size = 8
+	style.shadow_offset = Vector2(0, 4)
+	return style
+
+
+func _coin_style() -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = UIStyleScript.GOLD
+	style.border_color = Color(1.0, 0.90, 0.45, 1.0)
+	style.border_width_left = 1
+	style.border_width_top = 1
+	style.border_width_right = 1
+	style.border_width_bottom = 1
+	style.corner_radius_top_left = 8
+	style.corner_radius_top_right = 8
+	style.corner_radius_bottom_left = 8
+	style.corner_radius_bottom_right = 8
+	return style

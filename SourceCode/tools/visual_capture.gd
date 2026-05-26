@@ -54,6 +54,9 @@ func _capture() -> void:
 	root.add_child(scene)
 	for _i in range(8):
 		await process_frame
+	await _perform_preview_action(scene, mode)
+	for _i in range(4):
+		await process_frame
 	if dump_tree:
 		_dump_control_tree(scene, 0)
 	var viewport_texture := root.get_texture()
@@ -83,7 +86,7 @@ func _prepare_state(mode: String) -> void:
 	if not bool(run_state.get("is_run_active")):
 		run_state.call("start_new_run")
 	map_state.call("ensure_current_act")
-	if mode == "combat_companion":
+	if mode in ["combat_companion", "combat_card_preview", "combat_enemy_preview"]:
 		_recruit_demo_companion("rowan", "rowan_spear_line", ["c_rowan_pin", "c_rowan_banner"])
 	elif mode == "oath_rowan":
 		_prepare_companion_selection("rowan")
@@ -96,6 +99,76 @@ func _prepare_state(mode: String) -> void:
 		map_state.set("current_depth", 7)
 	elif mode == "map_act1":
 		map_state.set("current_depth", 0)
+
+
+func _perform_preview_action(scene: Node, mode: String) -> void:
+	match mode:
+		"combat_card_preview":
+			await _preview_combat_card(scene)
+		"combat_enemy_preview":
+			await _preview_enemy_turn(scene)
+		"shop_purchase_preview":
+			await _preview_shop_purchase(scene)
+		"inn_room_preview":
+			await _preview_inn_room(scene)
+
+
+func _preview_combat_card(scene: Node) -> void:
+	var run_state := root.get_node_or_null("/root/RunState")
+	if run_state == null or not scene.has_method("_play_card_at_target"):
+		return
+	var hand = run_state.get("deck").hand
+	for i in range(hand.size()):
+		if scene.has_method("_is_card_playable") and not bool(scene.call("_is_card_playable", i)):
+			continue
+		if scene.has_method("_card_requires_target") and bool(scene.call("_card_requires_target", i)):
+			scene.call("_play_card_at_target", i, 0)
+			await create_timer(0.12).timeout
+			return
+	for i in range(hand.size()):
+		if scene.has_method("_is_card_playable") and bool(scene.call("_is_card_playable", i)):
+			scene.call("_play_card_at_target", i, -1)
+			await create_timer(0.12).timeout
+			return
+
+
+func _preview_enemy_turn(scene: Node) -> void:
+	if not scene.has_method("_on_end_turn_pressed"):
+		return
+	scene.call("_on_end_turn_pressed")
+	await create_timer(0.10).timeout
+
+
+func _preview_shop_purchase(scene: Node) -> void:
+	if not scene.has_method("_on_product_pressed"):
+		return
+	var index := 0
+	var products = scene.get("stock")
+	var run_state := root.get_node_or_null("/root/RunState")
+	if typeof(products) == TYPE_ARRAY and run_state != null:
+		for i in range(products.size()):
+			var product = products[i]
+			if typeof(product) == TYPE_DICTIONARY and int(product.get("price", 0)) <= int(run_state.get("gold")):
+				index = i
+				break
+	scene.call("_on_product_pressed", index)
+	await create_timer(0.10).timeout
+
+
+func _preview_inn_room(scene: Node) -> void:
+	if not scene.has_method("_on_room_pressed"):
+		return
+	var index := 0
+	var rooms = scene.get("rooms")
+	var run_state := root.get_node_or_null("/root/RunState")
+	if typeof(rooms) == TYPE_ARRAY and run_state != null:
+		for i in range(rooms.size()):
+			var room = rooms[i]
+			if typeof(room) == TYPE_DICTIONARY and int(room.get("price", 0)) <= int(run_state.get("gold")):
+				index = i
+				break
+	scene.call("_on_room_pressed", index)
+	await create_timer(0.10).timeout
 
 
 func _recruit_demo_companion(companion_id: String, oath_id: String, card_ids: Array[String]) -> void:

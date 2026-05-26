@@ -20,6 +20,8 @@ var pile_label: Label
 var companion_box: HBoxContainer
 var hand_area: Control
 var enemy_box: HBoxContainer
+var player_actor: Control
+var protagonist_sprite: TextureRect
 var log_label: Label
 var end_turn_button: Button
 var claim_reward_button: Button
@@ -96,6 +98,7 @@ func _build_ui() -> void:
 	battlefield.add_child(floor_shadow)
 
 	var player_box := VBoxContainer.new()
+	player_actor = player_box
 	player_box.anchor_left = 0.075
 	player_box.anchor_top = 0.35
 	player_box.anchor_right = 0.075
@@ -109,6 +112,7 @@ func _build_ui() -> void:
 	battlefield.add_child(player_box)
 
 	var protagonist := TextureRect.new()
+	protagonist_sprite = protagonist
 	protagonist.custom_minimum_size = Vector2(250, 230)
 	protagonist.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	protagonist.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
@@ -383,12 +387,13 @@ func _refresh_enemy() -> void:
 
 
 func _make_enemy_panel(enemy: Dictionary, enemy_index: int) -> Control:
-	var panel := Control.new()
+	var panel := PanelContainer.new()
 	panel.custom_minimum_size = Vector2(258, 326)
 	panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	panel.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	panel.gui_input.connect(_on_enemy_panel_gui_input.bind(enemy_index))
+	_style_enemy_panel(panel, enemy_index)
 
 	var margin := MarginContainer.new()
 	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -556,13 +561,16 @@ func _play_card_at_target(hand_index: int, target_index: int) -> void:
 	if _card_requires_target(hand_index) and not _enemy_can_target(target_index):
 		_show_invalid_action("Choose an enemy target.")
 		return
-	var played_name := _card_name_for_hand_index(hand_index)
-	var feedback_position := _target_feedback_position(target_index)
+	var instance: Dictionary = RunState.deck.hand[hand_index]
+	var card := DataRegistry.get_card(CardInstanceScript.get_card_id(instance)).duplicate(true)
+	var source_position := _card_center_for_hand_index(hand_index)
+	var effect_kind := _card_effect_kind(card)
 	selected_target_index = target_index
 	selected_card_index = -1
-	_append_logs(turn_manager.play_card(hand_index, target_index))
-	_spawn_float_text(played_name, feedback_position, UIStyleScript.GOLD)
+	var messages := turn_manager.play_card(hand_index, target_index)
+	_append_logs(messages)
 	_refresh()
+	_play_card_feedback.call_deferred(card, source_position, target_index, effect_kind, messages)
 
 
 func _on_end_turn_pressed() -> void:
@@ -570,8 +578,10 @@ func _on_end_turn_pressed() -> void:
 	dragging_card_index = -1
 	_clear_drag_preview()
 	_clear_target_arc()
-	_append_logs(turn_manager.end_player_turn())
+	var messages := turn_manager.end_player_turn()
+	_append_logs(messages)
 	_refresh()
+	_play_enemy_feedback.call_deferred(messages)
 
 
 func _layout_hand_cards() -> void:
@@ -739,6 +749,389 @@ func _spawn_float_text(text: String, global_position: Vector2, color: Color) -> 
 
 func _show_invalid_action(text: String) -> void:
 	_spawn_float_text(text, get_global_mouse_position(), UIStyleScript.RED)
+
+
+func _play_card_feedback(card: Dictionary, source_position: Vector2, target_index: int, effect_kind: String, messages: Array[String]) -> void:
+	var destination := _feedback_destination(target_index, effect_kind)
+	_animate_played_card(card, source_position, destination, effect_kind)
+	await get_tree().create_timer(0.18).timeout
+	match effect_kind:
+		"damage_all":
+			for i in range(enemy_controls.size()):
+				_spawn_projectile(source_position, _enemy_center(i), effect_kind)
+				_animate_target_hit(i, effect_kind)
+		"damage", "mark":
+			_spawn_projectile(source_position, destination, effect_kind)
+			_animate_target_hit(target_index, effect_kind)
+		"block", "heal":
+			_spawn_impact(destination, effect_kind)
+			_animate_player_buff(effect_kind)
+		_:
+			_spawn_impact(destination, effect_kind)
+	_spawn_log_feedback(messages, target_index, effect_kind)
+
+
+func _play_enemy_feedback(messages: Array[String]) -> void:
+	for message in messages:
+		var lowered := message.to_lower()
+		if lowered.find(" used ") >= 0 and lowered.find(" damage") >= 0:
+			var enemy_index := _enemy_index_from_message(message)
+			if enemy_index >= 0:
+				_animate_enemy_lunge(enemy_index)
+				_spawn_projectile(_enemy_center(enemy_index), _player_center(), "enemy_attack")
+			_animate_player_hit()
+			_spawn_number_from_message(message, _player_center() + Vector2(0, -74), UIStyleScript.RED)
+		elif lowered.find(" applied healing down") >= 0:
+			var caster_index := _enemy_index_from_message(message)
+			var from_position := _enemy_center(caster_index) if caster_index >= 0 else get_viewport_rect().size * 0.5
+			_spawn_projectile(from_position, _player_center(), "hex")
+			_spawn_float_text("Healing Down", _player_center() + Vector2(-68, -90), Color(0.74, 0.44, 0.86))
+			_animate_player_hit(Color(0.56, 0.30, 0.70, 1.0))
+		elif lowered.find(" gained ") >= 0 and lowered.find(" block") >= 0:
+			var guard_index := _enemy_index_from_message(message)
+			if guard_index >= 0:
+				_spawn_impact(_enemy_center(guard_index), "block")
+		elif lowered.find("attacked marked target") >= 0:
+			var target_index := _clamp_target_index(selected_target_index)
+			_spawn_projectile(_companion_origin(), _enemy_center(target_index), "mark")
+			_animate_target_hit(target_index, "damage")
+
+
+func _card_effect_kind(card: Dictionary) -> String:
+	var has_damage := false
+	var has_damage_all := false
+	var has_block := false
+	var has_heal := false
+	var has_mark := false
+	for effect in card.get("effects", []):
+		if typeof(effect) != TYPE_DICTIONARY:
+			continue
+		match String(effect.get("type", "")):
+			"damage":
+				has_damage = true
+			"damage_all":
+				has_damage_all = true
+			"block":
+				has_block = true
+			"heal":
+				has_heal = true
+			"tactical_mark", "power_tactical_mark_bonus":
+				has_mark = true
+	if has_damage_all:
+		return "damage_all"
+	if has_damage:
+		return "damage"
+	if has_heal:
+		return "heal"
+	if has_block:
+		return "block"
+	if has_mark:
+		return "mark"
+	return "utility"
+
+
+func _feedback_destination(target_index: int, effect_kind: String) -> Vector2:
+	if effect_kind in ["block", "heal", "utility"]:
+		return _player_center()
+	return _target_feedback_position(target_index)
+
+
+func _animate_played_card(card: Dictionary, source_position: Vector2, destination: Vector2, effect_kind: String) -> void:
+	if feedback_layer == null:
+		return
+	var play_card := _make_action_card(card, effect_kind)
+	feedback_layer.add_child(play_card)
+	play_card.global_position = source_position - play_card.custom_minimum_size * 0.5
+	play_card.scale = Vector2(0.72, 0.72)
+	play_card.modulate.a = 0.0
+	var apex := (source_position + destination) * 0.5 + Vector2(0, -120)
+	var tween := create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(play_card, "modulate:a", 1.0, 0.06)
+	tween.parallel().tween_property(play_card, "scale", Vector2(1.18, 1.18), 0.16)
+	tween.parallel().tween_property(play_card, "global_position", apex - play_card.custom_minimum_size * 0.5, 0.16)
+	tween.tween_property(play_card, "global_position", destination - play_card.custom_minimum_size * 0.32, 0.15)
+	tween.parallel().tween_property(play_card, "scale", Vector2(0.64, 0.64), 0.15)
+	tween.tween_property(play_card, "modulate:a", 0.0, 0.08)
+	tween.finished.connect(play_card.queue_free)
+
+
+func _make_action_card(card: Dictionary, effect_kind: String) -> PanelContainer:
+	var panel := PanelContainer.new()
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.z_index = 120
+	panel.custom_minimum_size = Vector2(150, 212)
+	panel.size = panel.custom_minimum_size
+	panel.add_theme_stylebox_override("panel", _action_card_style(effect_kind))
+
+	var margin := MarginContainer.new()
+	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	margin.add_theme_constant_override("margin_left", 10)
+	margin.add_theme_constant_override("margin_top", 10)
+	margin.add_theme_constant_override("margin_right", 10)
+	margin.add_theme_constant_override("margin_bottom", 10)
+	panel.add_child(margin)
+
+	var layout := VBoxContainer.new()
+	layout.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layout.add_theme_constant_override("separation", 6)
+	margin.add_child(layout)
+
+	var title := UIStyleScript.label(CardDataScript.card_name(card), 15, Color.WHITE)
+	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.clip_text = true
+	layout.add_child(title)
+
+	var art := TextureRect.new()
+	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	art.custom_minimum_size = Vector2(126, 86)
+	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	var art_path := DataRegistry.get_temp_asset_path(String(card.get("asset_id", "")))
+	if not art_path.is_empty():
+		art.texture = load(art_path)
+	layout.add_child(art)
+
+	var verb := UIStyleScript.label(_effect_label(effect_kind), 13, _effect_color(effect_kind))
+	verb.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	verb.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	layout.add_child(verb)
+	return panel
+
+
+func _action_card_style(effect_kind: String) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.075, 0.066, 0.052, 0.96)
+	style.border_color = _effect_color(effect_kind)
+	style.border_width_left = 3
+	style.border_width_top = 3
+	style.border_width_right = 3
+	style.border_width_bottom = 3
+	style.corner_radius_top_left = 9
+	style.corner_radius_top_right = 9
+	style.corner_radius_bottom_left = 9
+	style.corner_radius_bottom_right = 9
+	style.shadow_color = Color(0, 0, 0, 0.62)
+	style.shadow_size = 16
+	style.shadow_offset = Vector2(0, 7)
+	return style
+
+
+func _spawn_projectile(from_position: Vector2, to_position: Vector2, effect_kind: String) -> void:
+	if feedback_layer == null:
+		return
+	var projectile := PanelContainer.new()
+	projectile.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	projectile.z_index = 115
+	projectile.custom_minimum_size = Vector2(18, 18)
+	projectile.size = projectile.custom_minimum_size
+	projectile.add_theme_stylebox_override("panel", _disc_style(_effect_color(effect_kind), true))
+	feedback_layer.add_child(projectile)
+	projectile.global_position = from_position - projectile.size * 0.5
+	var tween := create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(projectile, "global_position", to_position - projectile.size * 0.5, 0.18)
+	tween.parallel().tween_property(projectile, "scale", Vector2(1.65, 1.65), 0.18)
+	tween.tween_property(projectile, "modulate:a", 0.0, 0.08)
+	tween.finished.connect(projectile.queue_free)
+
+
+func _spawn_impact(global_position: Vector2, effect_kind: String) -> void:
+	if feedback_layer == null:
+		return
+	var ring := PanelContainer.new()
+	ring.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	ring.z_index = 118
+	ring.custom_minimum_size = Vector2(58, 58)
+	ring.size = ring.custom_minimum_size
+	ring.add_theme_stylebox_override("panel", _ring_style(_effect_color(effect_kind)))
+	feedback_layer.add_child(ring)
+	ring.global_position = global_position - ring.size * 0.5
+	ring.scale = Vector2(0.35, 0.35)
+	var tween := create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(ring, "scale", Vector2(1.38, 1.38), 0.18)
+	tween.parallel().tween_property(ring, "modulate:a", 0.0, 0.24)
+	tween.finished.connect(ring.queue_free)
+
+
+func _animate_target_hit(target_index: int, effect_kind: String) -> void:
+	if target_index < 0 or target_index >= enemy_controls.size():
+		return
+	var target := enemy_controls[target_index]
+	var original := target.position
+	var shove := Vector2(12, 0) if effect_kind != "mark" else Vector2(0, -8)
+	var tween := create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(target, "position", original + shove, 0.045)
+	tween.tween_property(target, "position", original - shove * 0.45, 0.055)
+	tween.tween_property(target, "position", original, 0.065)
+	_spawn_impact(_enemy_center(target_index), effect_kind)
+
+
+func _animate_enemy_lunge(enemy_index: int) -> void:
+	if enemy_index < 0 or enemy_index >= enemy_controls.size():
+		return
+	var target := enemy_controls[enemy_index]
+	var original := target.position
+	var tween := create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(target, "position", original + Vector2(-34, 0), 0.10)
+	tween.tween_property(target, "position", original, 0.16)
+
+
+func _animate_player_hit(color: Color = Color(1.0, 0.32, 0.22, 1.0)) -> void:
+	if protagonist_sprite == null:
+		return
+	var original := protagonist_sprite.position
+	var original_modulate := protagonist_sprite.modulate
+	var tween := create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(protagonist_sprite, "position", original + Vector2(-12, 0), 0.05)
+	tween.parallel().tween_property(protagonist_sprite, "modulate", color, 0.05)
+	tween.tween_property(protagonist_sprite, "position", original + Vector2(8, 0), 0.06)
+	tween.tween_property(protagonist_sprite, "position", original, 0.08)
+	tween.parallel().tween_property(protagonist_sprite, "modulate", original_modulate, 0.16)
+
+
+func _animate_player_buff(effect_kind: String) -> void:
+	var actor := player_actor if player_actor != null else protagonist_sprite
+	if actor == null:
+		return
+	var original_scale := actor.scale
+	var tween := create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(actor, "scale", original_scale * 1.04, 0.10)
+	tween.tween_property(actor, "scale", original_scale, 0.16)
+	_spawn_float_text(_effect_label(effect_kind), _player_center() + Vector2(-58, -92), _effect_color(effect_kind))
+
+
+func _spawn_log_feedback(messages: Array[String], target_index: int, effect_kind: String) -> void:
+	for message in messages:
+		var lowered := message.to_lower()
+		if lowered.find("dealt") >= 0 and lowered.find("damage") >= 0:
+			_spawn_number_from_message(message, _target_feedback_position(target_index) + Vector2(0, -70), UIStyleScript.RED)
+		elif lowered.begins_with("gained") and lowered.find("block") >= 0:
+			_spawn_number_from_message(message, _player_center() + Vector2(0, -72), UIStyleScript.BLUE, "+")
+		elif lowered.find("healed") >= 0:
+			_spawn_number_from_message(message, _player_center() + Vector2(0, -92), UIStyleScript.GREEN, "+")
+		elif lowered.find("applied") >= 0 and lowered.find("tactical mark") >= 0:
+			_spawn_number_from_message(message, _target_feedback_position(target_index) + Vector2(0, -94), UIStyleScript.GOLD, "Mark ")
+		elif lowered.find("gained") >= 0 and lowered.find("energy") >= 0:
+			_spawn_number_from_message(message, _energy_center(), UIStyleScript.GOLD, "+")
+
+
+func _spawn_number_from_message(message: String, position: Vector2, color: Color, prefix: String = "") -> void:
+	var amount := _first_integer(message)
+	if amount < 0:
+		return
+	_spawn_float_text("%s%d" % [prefix, amount], position, color)
+
+
+func _first_integer(text: String) -> int:
+	var digits := ""
+	for i in range(text.length()):
+		var character := text.substr(i, 1)
+		if character >= "0" and character <= "9":
+			digits += character
+		elif not digits.is_empty():
+			break
+	return int(digits) if not digits.is_empty() else -1
+
+
+func _enemy_index_from_message(message: String) -> int:
+	for i in range(RunState.combat.enemies.size()):
+		var enemy: Dictionary = RunState.combat.enemies[i]
+		var enemy_name := String(enemy.get("name", ""))
+		if not enemy_name.is_empty() and message.begins_with(enemy_name):
+			return i
+	return -1
+
+
+func _player_center() -> Vector2:
+	if protagonist_sprite != null:
+		return protagonist_sprite.global_position + protagonist_sprite.size * 0.5
+	if player_actor != null:
+		return player_actor.global_position + player_actor.size * 0.5
+	return get_viewport_rect().size * 0.5
+
+
+func _enemy_center(enemy_index: int) -> Vector2:
+	if enemy_index >= 0 and enemy_index < enemy_controls.size():
+		var enemy_control := enemy_controls[enemy_index]
+		return enemy_control.global_position + enemy_control.size * 0.5
+	return get_viewport_rect().size * 0.5
+
+
+func _energy_center() -> Vector2:
+	if energy_label != null:
+		return energy_label.global_position + energy_label.size * 0.5
+	return Vector2(80, get_viewport_rect().size.y - 80)
+
+
+func _companion_origin() -> Vector2:
+	if companion_box != null and companion_box.get_child_count() > 0:
+		var child := companion_box.get_child(0) as Control
+		if child != null:
+			return child.global_position + child.size * 0.5
+	return _player_center() + Vector2(60, -80)
+
+
+func _effect_label(effect_kind: String) -> String:
+	match effect_kind:
+		"damage", "damage_all", "enemy_attack":
+			return "Strike"
+		"block":
+			return "Guard"
+		"heal":
+			return "Mend"
+		"mark":
+			return "Mark"
+		"hex":
+			return "Hex"
+		_:
+			return "Tactic"
+
+
+func _effect_color(effect_kind: String) -> Color:
+	match effect_kind:
+		"damage", "damage_all", "enemy_attack":
+			return Color(1.0, 0.26, 0.18, 1.0)
+		"block":
+			return UIStyleScript.BLUE
+		"heal":
+			return UIStyleScript.GREEN
+		"mark":
+			return UIStyleScript.GOLD
+		"hex":
+			return Color(0.70, 0.38, 0.82, 1.0)
+		_:
+			return Color(0.82, 0.78, 0.64, 1.0)
+
+
+func _disc_style(color: Color, filled: bool) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(color.r, color.g, color.b, 0.95 if filled else 0.0)
+	style.border_color = color
+	style.border_width_left = 2
+	style.border_width_top = 2
+	style.border_width_right = 2
+	style.border_width_bottom = 2
+	style.corner_radius_top_left = 16
+	style.corner_radius_top_right = 16
+	style.corner_radius_bottom_left = 16
+	style.corner_radius_bottom_right = 16
+	style.shadow_color = Color(color.r, color.g, color.b, 0.42)
+	style.shadow_size = 9
+	style.shadow_offset = Vector2.ZERO
+	return style
+
+
+func _ring_style(color: Color) -> StyleBoxFlat:
+	var style := _disc_style(color, false)
+	style.border_width_left = 4
+	style.border_width_top = 4
+	style.border_width_right = 4
+	style.border_width_bottom = 4
+	style.corner_radius_top_left = 30
+	style.corner_radius_top_right = 30
+	style.corner_radius_bottom_left = 30
+	style.corner_radius_bottom_right = 30
+	return style
 
 
 func _bar_style(color: Color) -> StyleBoxFlat:
@@ -914,13 +1307,18 @@ func _show_battle_toast(title: String, message: String, color: Color, asset_id: 
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	panel.z_index = 95
 	panel.custom_minimum_size = Vector2(420, 58)
+	panel.size = panel.custom_minimum_size
 	panel.add_theme_stylebox_override("panel", _toast_style(color))
 	panel.add_child(content)
 	feedback_layer.add_child(panel)
+	content.custom_minimum_size = Vector2(396, 42)
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.size_flags_vertical = Control.SIZE_EXPAND_FILL
 
 	var icon := TextureRect.new()
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	icon.custom_minimum_size = Vector2(42, 42)
+	icon.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	icon.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.texture = DataRegistry.get_temp_asset_texture(asset_id)
@@ -928,14 +1326,21 @@ func _show_battle_toast(title: String, message: String, color: Color, asset_id: 
 
 	var text_box := VBoxContainer.new()
 	text_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	text_box.custom_minimum_size = Vector2(320, 42)
+	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	content.add_child(text_box)
 
 	var title_label := UIStyleScript.label(title, 15, color)
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	title_label.custom_minimum_size = Vector2(320, 18)
+	title_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	title_label.clip_text = true
 	text_box.add_child(title_label)
 
 	var body := UIStyleScript.label(message, 13, UIStyleScript.TEXT)
 	body.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	body.custom_minimum_size = Vector2(320, 18)
+	body.autowrap_mode = TextServer.AUTOWRAP_OFF
 	body.clip_text = true
 	text_box.add_child(body)
 
