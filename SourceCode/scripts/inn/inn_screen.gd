@@ -88,10 +88,20 @@ func _make_room_button(room: Dictionary, index: int) -> Button:
 		price,
 		room.get("description", ""),
 	]
+	button.icon = _room_icon(room)
 	button.disabled = RunState.gold < price
 	UIStyleScript.style_card_button(button, "primary" if not button.disabled else "locked")
 	button.pressed.connect(_on_room_pressed.bind(index))
 	return button
+
+
+func _room_icon(room: Dictionary) -> Texture2D:
+	var description := String(room.get("description", "")).to_lower()
+	if description.find("equipment") >= 0:
+		return DataRegistry.get_temp_asset_texture("node_treasure")
+	if description.find("recover") >= 0 or description.find("heal") >= 0:
+		return DataRegistry.get_temp_asset_texture("icon_heal")
+	return DataRegistry.get_temp_asset_texture("node_inn")
 
 
 func _on_room_pressed(index: int) -> void:

@@ -72,7 +72,7 @@ func _make_companion_card(companion: Dictionary) -> PanelContainer:
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size = Vector2(270, 300)
 	panel.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	panel.add_theme_stylebox_override("panel", _contract_panel_style(UIStyleScript.BORDER_BRIGHT))
+	UIStyleScript.style_asset_panel(panel, "primary", true, false)
 	panel.gui_input.connect(_on_companion_card_input.bind(companion_id))
 	panel.add_child(content)
 

@@ -72,10 +72,30 @@ func _make_choice_button(choice: Dictionary, index: int) -> Button:
 	var button := Button.new()
 	button.custom_minimum_size = Vector2(0, 82)
 	button.text = "%s\n%s" % [choice.get("label", "Choice"), choice.get("description", "")]
+	button.icon = _choice_icon(choice)
 	button.disabled = not event_resolver.can_pay_effects(choice.get("effects", []))
 	UIStyleScript.style_card_button(button, "primary" if not button.disabled else "locked")
 	button.pressed.connect(_on_choice_pressed.bind(index))
 	return button
+
+
+func _choice_icon(choice: Dictionary) -> Texture2D:
+	var effects: Array = choice.get("effects", [])
+	for effect in effects:
+		if typeof(effect) != TYPE_DICTIONARY:
+			continue
+		match String(effect.get("type", "")):
+			"gain_gold":
+				return DataRegistry.get_temp_asset_texture("icon_gold")
+			"lose_hp":
+				return DataRegistry.get_temp_asset_texture("icon_health")
+			"heal":
+				return DataRegistry.get_temp_asset_texture("icon_heal")
+			"gain_equipment":
+				return DataRegistry.get_temp_asset_texture("node_treasure")
+			"bond_all":
+				return DataRegistry.get_temp_asset_texture("node_companion_contract")
+	return DataRegistry.get_temp_asset_texture("node_event")
 
 
 func _on_choice_pressed(index: int) -> void:

@@ -44,6 +44,7 @@ func _build_ui() -> void:
 
 	var skip := Button.new()
 	skip.text = "Take %d Gold" % reward_generator.get_skip_gold()
+	skip.icon = DataRegistry.get_temp_asset_texture("icon_gold")
 	skip.custom_minimum_size = Vector2(150, 44)
 	UIStyleScript.style_button(skip)
 	skip.pressed.connect(_on_skip_pressed)

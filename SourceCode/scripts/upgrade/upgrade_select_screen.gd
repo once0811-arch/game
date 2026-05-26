@@ -63,9 +63,21 @@ func _make_option_button(option: Dictionary, index: int) -> Button:
 	var button := Button.new()
 	button.custom_minimum_size = Vector2(250, 138)
 	button.text = "%s\n%s" % [option.get("title", "Upgrade"), option.get("description", "")]
+	button.icon = _option_icon(option)
 	UIStyleScript.style_card_button(button, "primary")
 	button.pressed.connect(_on_option_pressed.bind(index))
 	return button
+
+
+func _option_icon(option: Dictionary) -> Texture2D:
+	match String(option.get("id", "")):
+		"field_conditioning":
+			return DataRegistry.get_temp_asset_texture("icon_health")
+		"shared_watch":
+			return DataRegistry.get_temp_asset_texture("node_companion_contract")
+		"sharpen_plan":
+			return DataRegistry.get_temp_asset_texture("node_upgrade")
+	return DataRegistry.get_temp_asset_texture("node_upgrade")
 
 
 func _on_option_pressed(index: int) -> void:

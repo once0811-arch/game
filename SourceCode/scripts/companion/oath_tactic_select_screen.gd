@@ -95,7 +95,7 @@ func _make_oath_card(oath: Dictionary) -> PanelContainer:
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size = Vector2(0, 92)
 	panel.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	panel.add_theme_stylebox_override("panel", _oath_panel_style())
+	UIStyleScript.style_asset_panel(panel, "primary", true, false)
 	panel.gui_input.connect(_on_oath_card_input.bind(oath_id))
 	panel.add_child(content)
 

@@ -77,13 +77,14 @@ func _refresh() -> void:
 
 func _make_product_button(product: Dictionary, index: int) -> Button:
 	var button := Button.new()
-	button.custom_minimum_size = Vector2(270, 126)
+	button.custom_minimum_size = Vector2(190, 132)
 	var price := int(product.get("price", 0))
 	button.text = "%s\n%d gold\n%s" % [
 		product.get("title", "Product"),
 		price,
 		product.get("description", ""),
 	]
+	button.icon = _product_icon(product)
 	button.disabled = bool(product.get("purchased", false)) or RunState.gold < price
 	UIStyleScript.style_card_button(button, "primary" if not button.disabled else "locked")
 	button.pressed.connect(_on_product_pressed.bind(index))
@@ -91,7 +92,37 @@ func _make_product_button(product: Dictionary, index: int) -> Button:
 
 
 func _shop_column_count() -> int:
-	return 6 if get_viewport_rect().size.x >= 1600.0 else 4
+	if get_viewport_rect().size.x >= 1200.0:
+		return 6
+	return 4
+
+
+func _product_icon(product: Dictionary) -> Texture2D:
+	match String(product.get("type", "")):
+		"card":
+			var card := DataRegistry.get_card(String(product.get("card_id", "")))
+			return DataRegistry.get_temp_asset_texture(String(card.get("asset_id", "")))
+		"equipment":
+			var equipment := DataRegistry.get_equipment(String(product.get("equipment_id", "")))
+			match String(equipment.get("slot", "")):
+				"weapon":
+					return DataRegistry.get_temp_asset_texture("icon_weapon_slot")
+				"armor":
+					return DataRegistry.get_temp_asset_texture("icon_armor_slot")
+				"helmet":
+					return DataRegistry.get_temp_asset_texture("icon_helmet_slot")
+			return DataRegistry.get_temp_asset_texture("node_treasure")
+		"service":
+			match String(product.get("service", "")):
+				"remove":
+					return DataRegistry.get_temp_asset_texture("icon_exhaust_pile")
+				"upgrade":
+					return DataRegistry.get_temp_asset_texture("node_upgrade")
+				"transform":
+					return DataRegistry.get_temp_asset_texture("icon_draw_pile")
+				"copy":
+					return DataRegistry.get_temp_asset_texture("icon_discard_pile")
+	return DataRegistry.get_temp_asset_texture("icon_gold")
 
 
 func _on_product_pressed(index: int) -> void:
