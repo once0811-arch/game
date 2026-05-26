@@ -1,1 +1,1 @@
-Kenney UI Pack CC0 source for node_companion_trace. Original PNG: PNG/Green/Double/star_outline.png. Source page: https://kenney.nl/assets/ui-pack
+Kenney Board Game Icons CC0 source for node_companion_trace. Original PNG: PNG/Default (64px)/pawns.png. Source page: https://kenney.nl/assets/board-game-icons

@@ -1,1 +1,1 @@
-Kenney UI Pack CC0 source for node_shop. Original PNG: PNG/Yellow/Double/button_round_depth_gradient.png. Source page: https://kenney.nl/assets/ui-pack
+Kenney Board Game Icons CC0 source for node_shop. Original PNG: PNG/Default (64px)/pouch.png. Source page: https://kenney.nl/assets/board-game-icons

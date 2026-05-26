@@ -26,13 +26,21 @@ func _build_ui() -> void:
 	status_label = UIStyleScript.label("", 18, UIStyleScript.MUTED)
 	layout.add_child(status_label)
 
+	var content_layout := VBoxContainer.new()
+	content_layout.add_theme_constant_override("separation", 12)
+	var content_panel := UIStyleScript.panel(content_layout, Vector2(0, 420), true)
+	content_panel.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	layout.add_child(content_panel)
+
 	companion_header = HBoxContainer.new()
+	companion_header.custom_minimum_size = Vector2(0, 102)
 	companion_header.add_theme_constant_override("separation", 12)
-	layout.add_child(UIStyleScript.panel(companion_header, Vector2(0, 112), true))
+	content_layout.add_child(companion_header)
 
 	option_box = VBoxContainer.new()
 	option_box.add_theme_constant_override("separation", 12)
-	layout.add_child(option_box)
+	option_box.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	content_layout.add_child(option_box)
 
 
 func _populate_options() -> void:
@@ -52,13 +60,16 @@ func _populate_companion_header(companion: Dictionary) -> void:
 	var portrait := TextureRect.new()
 	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	portrait.custom_minimum_size = Vector2(82, 82)
-	portrait.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+	portrait.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	portrait.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	portrait.texture = DataRegistry.get_temp_asset_texture(String(companion.get("portrait_asset_id", "")))
 	companion_header.add_child(portrait)
 
 	var text_box := VBoxContainer.new()
 	text_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	text_box.add_theme_constant_override("separation", 3)
 	companion_header.add_child(text_box)
 

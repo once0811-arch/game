@@ -1,1 +1,1 @@
-Kenney UI Pack CC0 source for node_treasure. Original PNG: PNG/Yellow/Double/star.png. Source page: https://kenney.nl/assets/ui-pack
+Kenney Board Game Icons CC0 source for node_treasure. Original PNG: PNG/Default (64px)/token_add.png. Source page: https://kenney.nl/assets/board-game-icons

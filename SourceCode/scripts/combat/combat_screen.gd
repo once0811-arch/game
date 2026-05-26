@@ -37,10 +37,10 @@ func _ready() -> void:
 
 func _build_ui() -> void:
 	UIStyleScript.add_background(self, "bg_battle_act1_road_ruin", 0.68)
-	var root := UIStyleScript.page_root(self, 24)
+	var root := UIStyleScript.page_root(self, 16)
 
 	var layout := VBoxContainer.new()
-	layout.add_theme_constant_override("separation", 12)
+	layout.add_theme_constant_override("separation", 8)
 	root.add_child(layout)
 
 	target_arc = Line2D.new()
@@ -61,85 +61,136 @@ func _build_ui() -> void:
 	header.add_theme_constant_override("separation", 12)
 	layout.add_child(header)
 
-	var title := UIStyleScript.label("Contract Combat", 30)
+	var title := UIStyleScript.label("Road Ambush", 24)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
 
-	var battlefield := HBoxContainer.new()
+	pile_label = UIStyleScript.label("", 15, UIStyleScript.MUTED)
+	pile_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	pile_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	header.add_child(pile_label)
+
+	var battlefield := Control.new()
+	battlefield.custom_minimum_size = Vector2(0, 342)
+	battlefield.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	battlefield.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	battlefield.add_theme_constant_override("separation", 14)
 	layout.add_child(battlefield)
 
 	var player_box := VBoxContainer.new()
+	player_box.anchor_left = 0.03
+	player_box.anchor_top = 0.13
+	player_box.anchor_right = 0.03
+	player_box.anchor_bottom = 0.13
+	player_box.offset_left = 0
+	player_box.offset_top = 0
+	player_box.offset_right = 232
+	player_box.offset_bottom = 282
+	player_box.custom_minimum_size = Vector2(232, 282)
 	player_box.add_theme_constant_override("separation", 8)
-	var player_panel := UIStyleScript.panel(player_box, Vector2(260, 0), true)
-	battlefield.add_child(player_panel)
+	battlefield.add_child(player_box)
 
 	var protagonist := TextureRect.new()
-	protagonist.custom_minimum_size = Vector2(210, 210)
+	protagonist.custom_minimum_size = Vector2(214, 214)
 	protagonist.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
 	protagonist.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	protagonist.texture = DataRegistry.get_temp_asset_texture("protagonist_mercenary_idle")
 	player_box.add_child(protagonist)
 
-	player_label = UIStyleScript.label("", 17)
-	player_box.add_child(player_label)
+	var player_hud := PanelContainer.new()
+	player_hud.custom_minimum_size = Vector2(224, 66)
+	player_hud.add_theme_stylebox_override("panel", _battle_overlay_style(UIStyleScript.BORDER))
+	player_box.add_child(player_hud)
 
-	var stage_box := VBoxContainer.new()
-	stage_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	stage_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	stage_box.add_theme_constant_override("separation", 10)
-	var stage_panel := UIStyleScript.panel(stage_box, Vector2(0, 0), true)
-	stage_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	stage_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	battlefield.add_child(stage_panel)
-
-	pile_label = UIStyleScript.label("", 15, UIStyleScript.MUTED)
-	stage_box.add_child(pile_label)
+	player_label = UIStyleScript.label("", 16)
+	player_hud.add_child(player_label)
 
 	companion_box = HBoxContainer.new()
+	companion_box.position = Vector2(284, 12)
 	companion_box.add_theme_constant_override("separation", 8)
-	stage_box.add_child(companion_box)
+	companion_box.custom_minimum_size = Vector2(420, 74)
+	battlefield.add_child(companion_box)
 
 	enemy_box = HBoxContainer.new()
+	enemy_box.anchor_left = 0.38
+	enemy_box.anchor_top = 0.16
+	enemy_box.anchor_right = 0.78
+	enemy_box.anchor_bottom = 0.92
 	enemy_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	enemy_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	enemy_box.alignment = BoxContainer.ALIGNMENT_CENTER
 	enemy_box.add_theme_constant_override("separation", 14)
-	stage_box.add_child(enemy_box)
+	battlefield.add_child(enemy_box)
 
 	var log_box := VBoxContainer.new()
-	log_box.add_theme_constant_override("separation", 8)
-	var log_panel := UIStyleScript.panel(log_box, Vector2(310, 0), true)
-	log_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	log_box.add_theme_constant_override("separation", 6)
+	var log_panel := PanelContainer.new()
+	log_panel.anchor_left = 0.765
+	log_panel.anchor_top = 0.08
+	log_panel.anchor_right = 0.985
+	log_panel.anchor_bottom = 0.48
+	log_panel.add_theme_stylebox_override("panel", _battle_overlay_style(UIStyleScript.BORDER))
+	log_panel.add_child(log_box)
+	log_panel.visible = false
 	battlefield.add_child(log_panel)
 
-	log_box.add_child(UIStyleScript.label("Battle Log", 18))
-	log_label = UIStyleScript.label("", 14, UIStyleScript.MUTED)
+	log_box.add_child(UIStyleScript.label("Last Moves", 16))
+	log_label = UIStyleScript.label("", 13, UIStyleScript.MUTED)
 	log_box.add_child(log_label)
-
-	hand_area = Control.new()
-	hand_area.custom_minimum_size = Vector2(0, 252)
-	hand_area.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	layout.add_child(hand_area)
-
-	var controls := HBoxContainer.new()
-	controls.add_theme_constant_override("separation", 10)
-	layout.add_child(controls)
 
 	end_turn_button = Button.new()
 	end_turn_button.text = "End Turn"
-	end_turn_button.custom_minimum_size = Vector2(180, 46)
+	end_turn_button.anchor_left = 1.0
+	end_turn_button.anchor_top = 0.70
+	end_turn_button.anchor_right = 1.0
+	end_turn_button.anchor_bottom = 0.70
+	end_turn_button.offset_left = -260
+	end_turn_button.offset_top = 0
+	end_turn_button.offset_right = -40
+	end_turn_button.offset_bottom = 58
 	UIStyleScript.style_button(end_turn_button, "primary")
 	end_turn_button.pressed.connect(_on_end_turn_pressed)
-	controls.add_child(end_turn_button)
+	battlefield.add_child(end_turn_button)
 
 	claim_reward_button = Button.new()
 	claim_reward_button.text = "Claim Reward"
-	claim_reward_button.custom_minimum_size = Vector2(180, 46)
+	claim_reward_button.anchor_left = 1.0
+	claim_reward_button.anchor_top = 0.70
+	claim_reward_button.anchor_right = 1.0
+	claim_reward_button.anchor_bottom = 0.70
+	claim_reward_button.offset_left = -260
+	claim_reward_button.offset_top = 0
+	claim_reward_button.offset_right = -40
+	claim_reward_button.offset_bottom = 58
 	UIStyleScript.style_button(claim_reward_button, "success")
 	claim_reward_button.pressed.connect(_on_claim_reward_pressed)
-	controls.add_child(claim_reward_button)
+	battlefield.add_child(claim_reward_button)
+
+	hand_area = Control.new()
+	hand_area.custom_minimum_size = Vector2(0, 208)
+	hand_area.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	layout.add_child(hand_area)
+
+
+func _battle_overlay_style(border_color: Color) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.030, 0.030, 0.028, 0.70)
+	style.border_color = border_color
+	style.border_width_left = 1
+	style.border_width_top = 1
+	style.border_width_right = 1
+	style.border_width_bottom = 1
+	style.corner_radius_top_left = 6
+	style.corner_radius_top_right = 6
+	style.corner_radius_bottom_left = 6
+	style.corner_radius_bottom_right = 6
+	style.shadow_color = Color(0, 0, 0, 0.45)
+	style.shadow_size = 8
+	style.shadow_offset = Vector2(0, 4)
+	style.content_margin_left = 10
+	style.content_margin_top = 8
+	style.content_margin_right = 10
+	style.content_margin_bottom = 8
+	return style
 
 
 func _restart_combat() -> void:
@@ -156,7 +207,7 @@ func _restart_combat() -> void:
 
 
 func _refresh() -> void:
-	player_label.text = "HP %d/%d | Block %d | Energy %d/%d | Turn %d" % [
+	player_label.text = "HP %d/%d  Block %d\nEnergy %d/%d  Turn %d" % [
 		RunState.current_hp,
 		RunState.max_hp,
 		RunState.combat.player_block,
@@ -181,7 +232,11 @@ func _refresh() -> void:
 	_refresh_hand()
 	end_turn_button.disabled = RunState.combat.outcome != "active"
 	claim_reward_button.visible = RunState.combat.outcome == "victory"
-	log_label.text = "\n".join(PackedStringArray(log_lines))
+	var recent_logs: Array[String] = []
+	var start_index := maxi(log_lines.size() - 5, 0)
+	for i in range(start_index, log_lines.size()):
+		recent_logs.append(log_lines[i])
+	log_label.text = "\n".join(PackedStringArray(recent_logs))
 
 
 func _refresh_enemy() -> void:
@@ -202,14 +257,18 @@ func _make_enemy_panel(enemy: Dictionary, enemy_index: int) -> PanelContainer:
 	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_theme_constant_override("separation", 6)
 	var panel := UIStyleScript.panel(content, Vector2(176, 284), true)
+	panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	panel.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	panel.gui_input.connect(_on_enemy_panel_gui_input.bind(enemy_index))
 	_style_enemy_panel(panel, enemy_index)
 
 	var portrait := TextureRect.new()
 	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	portrait.custom_minimum_size = Vector2(150, 150)
-	portrait.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+	portrait.custom_minimum_size = Vector2(128, 128)
+	portrait.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	portrait.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	portrait.texture = DataRegistry.get_temp_asset_texture(String(enemy.get("asset_id", "")))
 	content.add_child(portrait)
@@ -280,6 +339,7 @@ func _refresh_hand() -> void:
 
 func _on_card_pressed(hand_index: int) -> void:
 	if not _is_card_playable(hand_index):
+		_show_invalid_action("Not enough energy.")
 		return
 	if not _card_requires_target(hand_index):
 		_play_card_at_target(hand_index, -1)
@@ -320,6 +380,7 @@ func _input(event: InputEvent) -> void:
 				_play_card_at_target(hand_index, -1)
 			else:
 				selected_card_index = hand_index
+				_show_invalid_action("Choose an enemy target.")
 				_refresh()
 
 
@@ -332,6 +393,7 @@ func _on_enemy_panel_gui_input(event: InputEvent, enemy_index: int) -> void:
 
 func _on_enemy_pressed(enemy_index: int) -> void:
 	if not _enemy_can_target(enemy_index):
+		_show_invalid_action("That target is gone.")
 		return
 	selected_target_index = enemy_index
 	if selected_card_index >= 0 and _is_card_playable(selected_card_index):
@@ -342,8 +404,10 @@ func _on_enemy_pressed(enemy_index: int) -> void:
 
 func _play_card_at_target(hand_index: int, target_index: int) -> void:
 	if not _is_card_playable(hand_index):
+		_show_invalid_action("Not enough energy.")
 		return
 	if _card_requires_target(hand_index) and not _enemy_can_target(target_index):
+		_show_invalid_action("Choose an enemy target.")
 		return
 	var played_name := _card_name_for_hand_index(hand_index)
 	var feedback_position := _target_feedback_position(target_index)
@@ -370,7 +434,8 @@ func _layout_hand_cards() -> void:
 	var count: int = cards.size()
 	if count == 0:
 		return
-	var card_width: float = 164.0
+	var card_size: Vector2 = CombatCardViewScript.CARD_SIZE
+	var card_width: float = card_size.x
 	var available_width: float = maxf(hand_area.size.x, get_viewport_rect().size.x - 64.0)
 	var spread: float = minf(760.0, maxf(0.0, available_width - card_width - 48.0))
 	var step: float = 0.0 if count <= 1 else spread / float(count - 1)
@@ -380,13 +445,13 @@ func _layout_hand_cards() -> void:
 		if card == null:
 			continue
 		var t: float = 0.5 if count <= 1 else float(i) / float(count - 1)
-		var curve_y: float = 18.0 + absf(t - 0.5) * 34.0
-		var rotation: float = lerpf(-0.085, 0.085, t)
+		var curve_y: float = 2.0 + absf(t - 0.5) * 14.0
+		var rotation: float = lerpf(-0.075, 0.075, t)
 		var target_position := Vector2(start_x + step * i, curve_y)
 		if i == selected_card_index:
-			target_position.y -= 18.0
+			target_position.y -= 24.0
 		card.rotation = rotation
-		card.pivot_offset = Vector2(card_width * 0.5, 112.0)
+		card.pivot_offset = card_size * 0.5
 		var tween := create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 		tween.tween_property(card, "position", target_position, 0.16)
 
@@ -521,6 +586,10 @@ func _spawn_float_text(text: String, global_position: Vector2, color: Color) -> 
 	tween.finished.connect(label.queue_free)
 
 
+func _show_invalid_action(text: String) -> void:
+	_spawn_float_text(text, get_global_mouse_position(), UIStyleScript.RED)
+
+
 func _bar_style(color: Color) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
 	style.bg_color = color
@@ -626,7 +695,8 @@ func _make_companion_tile(companion: Dictionary) -> PanelContainer:
 	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_theme_constant_override("separation", 8)
 	var panel := UIStyleScript.panel(content, Vector2(0, 70), true)
-	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	panel.custom_minimum_size = Vector2(245, 70)
+	panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 
 	var portrait := TextureRect.new()
 	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -638,6 +708,8 @@ func _make_companion_tile(companion: Dictionary) -> PanelContainer:
 
 	var text_box := VBoxContainer.new()
 	text_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	text_box.custom_minimum_size = Vector2(155, 0)
+	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	text_box.add_theme_constant_override("separation", 1)
 	content.add_child(text_box)
 
@@ -646,14 +718,20 @@ func _make_companion_tile(companion: Dictionary) -> PanelContainer:
 			int(DataRegistry.get_companion(String(companion.get("id", ""))).get("base_attack", 0)),
 		], 14, UIStyleScript.TEXT)
 	name.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	name.autowrap_mode = TextServer.AUTOWRAP_OFF
+	name.clip_text = true
 	text_box.add_child(name)
 
 	var oath := UIStyleScript.label(String(companion.get("oath_name", "No Oath")), 12, UIStyleScript.GOLD)
 	oath.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	oath.autowrap_mode = TextServer.AUTOWRAP_OFF
+	oath.clip_text = true
 	text_box.add_child(oath)
 
 	var bond := UIStyleScript.label(bond_system.describe_bonuses(companion), 12, UIStyleScript.GREEN)
 	bond.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	bond.autowrap_mode = TextServer.AUTOWRAP_OFF
+	bond.clip_text = true
 	text_box.add_child(bond)
 	return panel
 

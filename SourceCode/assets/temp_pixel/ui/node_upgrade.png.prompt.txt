@@ -1,1 +1,1 @@
-Kenney UI Pack CC0 source for node_upgrade. Original PNG: PNG/Blue/Double/check_round_color.png. Source page: https://kenney.nl/assets/ui-pack
+Kenney Board Game Icons CC0 source for node_upgrade. Original PNG: PNG/Default (64px)/card_add.png. Source page: https://kenney.nl/assets/board-game-icons

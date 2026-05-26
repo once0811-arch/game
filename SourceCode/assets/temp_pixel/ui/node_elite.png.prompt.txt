@@ -1,1 +1,1 @@
-Kenney UI Pack CC0 source for node_elite. Original PNG: PNG/Yellow/Double/star_outline_depth.png. Source page: https://kenney.nl/assets/ui-pack
+Kenney Board Game Icons CC0 source for node_elite. Original PNG: PNG/Default (64px)/skull.png. Source page: https://kenney.nl/assets/board-game-icons

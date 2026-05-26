@@ -1,1 +1,1 @@
-Kenney UI Pack CC0 source for node_boss. Original PNG: PNG/Blue/Double/star_outline_depth.png. Source page: https://kenney.nl/assets/ui-pack
+Kenney Board Game Icons CC0 source for node_boss. Original PNG: PNG/Default (64px)/crown_b.png. Source page: https://kenney.nl/assets/board-game-icons

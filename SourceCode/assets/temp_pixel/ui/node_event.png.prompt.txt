@@ -1,1 +1,1 @@
-Kenney UI Pack CC0 source for node_event. Original PNG: PNG/Blue/Double/button_round_depth_gradient.png. Source page: https://kenney.nl/assets/ui-pack
+Kenney Board Game Icons CC0 source for node_event. Original PNG: PNG/Default (64px)/hexagon_question.png. Source page: https://kenney.nl/assets/board-game-icons

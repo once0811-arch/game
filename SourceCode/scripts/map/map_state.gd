@@ -52,7 +52,7 @@ func get_node_state(node: Dictionary) -> String:
 	if bool(node.get("completed", false)):
 		return "completed"
 	if int(node.get("depth", 0)) == get_available_depth():
-		return "available"
+		return "available" if _is_reachable(node) else "locked"
 	return "locked"
 
 
@@ -158,3 +158,26 @@ func _read_enemy_ids(node: Dictionary) -> Array[String]:
 		if not single_id.is_empty():
 			ids.append(single_id)
 	return ids
+
+
+func _is_reachable(node: Dictionary) -> bool:
+	var depth := int(node.get("depth", 0))
+	if depth <= 1:
+		return true
+	var previous_completed := _completed_nodes_at_depth(depth - 1)
+	if previous_completed.is_empty():
+		return true
+	var node_id := String(node.get("id", ""))
+	for previous in previous_completed:
+		for next_id in previous.get("next_ids", []):
+			if String(next_id) == node_id:
+				return true
+	return false
+
+
+func _completed_nodes_at_depth(depth: int) -> Array[Dictionary]:
+	var completed_nodes: Array[Dictionary] = []
+	for node in nodes:
+		if int(node.get("depth", 0)) == depth and bool(node.get("completed", false)):
+			completed_nodes.append(node)
+	return completed_nodes

@@ -1,1 +1,1 @@
-Kenney UI Pack CC0 source for node_inn. Original PNG: PNG/Green/Double/button_round_depth_gradient.png. Source page: https://kenney.nl/assets/ui-pack
+Kenney Board Game Icons CC0 source for node_inn. Original PNG: PNG/Default (64px)/campfire.png. Source page: https://kenney.nl/assets/board-game-icons

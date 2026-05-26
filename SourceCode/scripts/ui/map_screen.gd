@@ -5,11 +5,14 @@ const UIStyleScript := preload("res://scripts/ui/ui_style.gd")
 var run_label: Label
 var map_canvas: Control
 var map_log_label: Label
+var legend_box: VBoxContainer
 var equipment_label: Label
 var equipment_box: HBoxContainer
 var equipment_status_label: Label
 var node_buttons: Dictionary = {}
 var dragging_node_id := ""
+
+const MAP_NODE_SIZE := Vector2(46, 46)
 
 
 func _ready() -> void:
@@ -21,10 +24,10 @@ func _ready() -> void:
 
 func _build_ui() -> void:
 	UIStyleScript.add_background(self, "bg_map_act1_route", 0.70)
-	var root := UIStyleScript.page_root(self, 28)
+	var root := UIStyleScript.page_root(self, 18)
 
 	var layout := VBoxContainer.new()
-	layout.add_theme_constant_override("separation", 12)
+	layout.add_theme_constant_override("separation", 10)
 	root.add_child(layout)
 
 	var header := HBoxContainer.new()
@@ -36,7 +39,7 @@ func _build_ui() -> void:
 	title_box.add_theme_constant_override("separation", 2)
 	header.add_child(title_box)
 
-	var title := UIStyleScript.label("Act %d Route" % RunState.act, 34)
+	var title := UIStyleScript.label("Act %d Route" % RunState.act, 28)
 	title_box.add_child(title)
 
 	run_label = UIStyleScript.label("", 15, UIStyleScript.MUTED)
@@ -45,6 +48,7 @@ func _build_ui() -> void:
 	var save_button := Button.new()
 	save_button.text = "Save"
 	save_button.custom_minimum_size = Vector2(92, 42)
+	save_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	UIStyleScript.style_button(save_button, "primary")
 	save_button.pressed.connect(_on_save_pressed)
 	header.add_child(save_button)
@@ -52,6 +56,7 @@ func _build_ui() -> void:
 	var main := Button.new()
 	main.text = "Menu"
 	main.custom_minimum_size = Vector2(92, 42)
+	main.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	UIStyleScript.style_button(main)
 	main.pressed.connect(Callable(SceneRouter, "go_to_main"))
 	header.add_child(main)
@@ -64,27 +69,37 @@ func _build_ui() -> void:
 	var route_layout := VBoxContainer.new()
 	route_layout.add_theme_constant_override("separation", 10)
 	var map_area := UIStyleScript.panel(route_layout, Vector2(0, 0))
+	_style_route_panel(map_area)
 	map_area.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	map_area.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	body.add_child(map_area)
 
 	map_canvas = Control.new()
-	map_canvas.custom_minimum_size = Vector2(820, 430)
+	map_canvas.custom_minimum_size = Vector2(840, 512)
 	map_canvas.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	map_canvas.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	map_canvas.clip_contents = true
+	map_canvas.resized.connect(_on_map_canvas_resized)
 	route_layout.add_child(map_canvas)
 
-	map_log_label = UIStyleScript.label("", 16, UIStyleScript.stat_text())
+	map_log_label = UIStyleScript.label("", 14, UIStyleScript.stat_text())
+	map_log_label.custom_minimum_size = Vector2(0, 28)
 	route_layout.add_child(map_log_label)
 
 	var side := VBoxContainer.new()
-	side.custom_minimum_size = Vector2(305, 0)
+	side.custom_minimum_size = Vector2(270, 0)
 	side.add_theme_constant_override("separation", 12)
 	body.add_child(side)
 
+	legend_box = VBoxContainer.new()
+	legend_box.add_theme_constant_override("separation", 7)
+	var legend_panel := UIStyleScript.panel(legend_box, Vector2(0, 236), true)
+	side.add_child(legend_panel)
+	_build_legend()
+
 	var party_panel_layout := VBoxContainer.new()
 	party_panel_layout.add_theme_constant_override("separation", 8)
-	var party_panel := UIStyleScript.panel(party_panel_layout, Vector2(0, 150), true)
+	var party_panel := UIStyleScript.panel(party_panel_layout, Vector2(0, 118), true)
 	side.add_child(party_panel)
 
 	party_panel_layout.add_child(UIStyleScript.label("Party", 20))
@@ -93,7 +108,7 @@ func _build_ui() -> void:
 
 	var equipment_panel_layout := VBoxContainer.new()
 	equipment_panel_layout.add_theme_constant_override("separation", 8)
-	var equipment_panel := UIStyleScript.panel(equipment_panel_layout, Vector2(0, 190), true)
+	var equipment_panel := UIStyleScript.panel(equipment_panel_layout, Vector2(0, 112), true)
 	equipment_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	side.add_child(equipment_panel)
 
@@ -106,12 +121,78 @@ func _build_ui() -> void:
 	equipment_panel_layout.add_child(equipment_status_label)
 
 
+func _build_legend() -> void:
+	if legend_box == null:
+		return
+	UIStyleScript.clear(legend_box)
+	legend_box.add_child(UIStyleScript.label("Legend", 20))
+	for entry in [
+		["combat", "Fight"],
+		["elite", "Elite"],
+		["midboss", "Midboss"],
+		["boss", "Boss"],
+		["event", "Unknown"],
+		["inn", "Camp"],
+		["shop", "Shop"],
+		["companion_contract", "Ally Contract"],
+		["upgrade", "Upgrade"],
+	]:
+		legend_box.add_child(_make_legend_row(String(entry[0]), String(entry[1])))
+
+
+func _make_legend_row(node_type: String, label_text: String) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_theme_constant_override("separation", 8)
+
+	var icon := TextureRect.new()
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	icon.custom_minimum_size = Vector2(24, 24)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	var icon_path := DataRegistry.get_temp_asset_path(_node_icon_asset_id(node_type))
+	if not icon_path.is_empty():
+		icon.texture = load(icon_path)
+	icon.modulate = _node_accent_color(node_type, "available")
+	row.add_child(icon)
+
+	var label := UIStyleScript.label(label_text, 14, UIStyleScript.stat_text())
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.custom_minimum_size = Vector2(170, 0)
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	label.clip_text = true
+	row.add_child(label)
+	return row
+
+
+func _style_route_panel(panel_node: PanelContainer) -> void:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.50, 0.48, 0.39, 0.82)
+	style.border_color = Color(0.25, 0.20, 0.13, 0.98)
+	style.border_width_left = 2
+	style.border_width_top = 2
+	style.border_width_right = 2
+	style.border_width_bottom = 2
+	style.corner_radius_top_left = 6
+	style.corner_radius_top_right = 6
+	style.corner_radius_bottom_left = 6
+	style.corner_radius_bottom_right = 6
+	style.shadow_color = Color(0, 0, 0, 0.48)
+	style.shadow_size = 10
+	style.shadow_offset = Vector2(0, 5)
+	style.content_margin_left = 14
+	style.content_margin_top = 12
+	style.content_margin_right = 14
+	style.content_margin_bottom = 12
+	panel_node.add_theme_stylebox_override("panel", style)
+
+
 func _refresh_run_info() -> void:
 	if not RunState.is_run_active:
 		run_label.text = "No active run. Return to Main Menu and start a new run."
 		return
-	run_label.text = "Seed %d  |  Depth %d/12  |  HP %d/%d  |  Gold %d\n%s" % [
-		RunState.run_seed,
+	run_label.text = "Depth %d/12  |  HP %d/%d  |  Gold %d\n%s" % [
 		MapState.current_depth,
 		RunState.current_hp,
 		RunState.max_hp,
@@ -145,27 +226,26 @@ func _refresh_nodes() -> void:
 		}
 
 
+func _on_map_canvas_resized() -> void:
+	if map_canvas == null or map_canvas.get_child_count() == 0:
+		return
+	_refresh_nodes.call_deferred()
+
+
 func _make_node_button(node: Dictionary) -> Button:
 	var button := Button.new()
 	var state := MapState.get_node_state(node)
-	var prefix := "D%d" % int(node.get("depth", 0))
 	var node_type := String(node.get("type", "?"))
-	button.custom_minimum_size = Vector2(98, 72)
-	button.text = "%s\n%s\n%s" % [prefix, _node_type_label(node_type), String(node.get("label", ""))]
+	button.custom_minimum_size = MAP_NODE_SIZE
+	button.size = MAP_NODE_SIZE
+	button.text = ""
+	button.tooltip_text = _describe_node(node)
 	var icon_path := DataRegistry.get_temp_asset_path(_node_icon_asset_id(node_type))
 	if not icon_path.is_empty():
 		button.icon = load(icon_path)
 		button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	button.disabled = state != "available"
-	if state == "completed":
-		button.text = "%s\nCLEARED\n%s" % [prefix, String(node.get("label", ""))]
-	elif state == "locked":
-		button.text = "%s\nLOCKED\n%s" % [prefix, String(node.get("label", ""))]
-	var variant := _node_variant(node_type, state)
-	if state == "completed":
-		variant = "success"
-	UIStyleScript.style_card_button(button, variant)
-	button.add_theme_font_size_override("font_size", 13)
+	_style_map_node_button(button, node_type, state)
 	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	button.gui_input.connect(_on_node_button_gui_input.bind(String(node.get("id", "")), state))
 	button.mouse_entered.connect(_on_node_hovered.bind(node))
@@ -219,41 +299,166 @@ func _node_id_at_position(global_position: Vector2) -> String:
 
 
 func _draw_route_lines() -> void:
-	var by_depth: Dictionary = {}
+	var by_id: Dictionary = {}
 	for node in MapState.nodes:
-		var depth := int(node.get("depth", 0))
-		if not by_depth.has(depth):
-			by_depth[depth] = []
-		by_depth[depth].append(node)
-	for depth in range(1, 12):
-		if not by_depth.has(depth) or not by_depth.has(depth + 1):
-			continue
-		for from_node in by_depth[depth]:
-			for to_node in by_depth[depth + 1]:
-				if abs(int(from_node.get("lane", 1)) - int(to_node.get("lane", 1))) > 1:
-					continue
-				var line := Line2D.new()
-				line.width = 3.0
-				line.default_color = _line_color(from_node, to_node)
-				line.add_point(_node_position(from_node) + Vector2(49, 36))
-				line.add_point(_node_position(to_node) + Vector2(49, 36))
-				map_canvas.add_child(line)
+		by_id[String(node.get("id", ""))] = node
+	for from_node in MapState.nodes:
+		for next_id in _node_next_ids(from_node):
+			if not by_id.has(next_id):
+				continue
+			var to_node: Dictionary = by_id[next_id]
+			_add_dashed_line(
+				_node_position(from_node) + MAP_NODE_SIZE * 0.5,
+				_node_position(to_node) + MAP_NODE_SIZE * 0.5,
+				_line_color(from_node, to_node)
+			)
 
 
 func _node_position(node: Dictionary) -> Vector2:
 	var depth := int(node.get("depth", 1))
 	var lane := int(node.get("lane", 1))
-	return Vector2(12 + (depth - 1) * 62, 42 + lane * 112)
+	var canvas_size := Vector2(840, 472)
+	if map_canvas != null:
+		canvas_size = Vector2(
+			maxf(map_canvas.size.x, map_canvas.custom_minimum_size.x),
+			maxf(map_canvas.size.y, map_canvas.custom_minimum_size.y)
+		)
+	var side_margin: float = maxf(110.0, canvas_size.x * 0.14)
+	var x_positions := [
+		side_margin,
+		canvas_size.x * 0.5,
+		canvas_size.x - side_margin,
+	]
+	var x := float(x_positions[clampi(lane, 0, 2)])
+	var y_margin := 30.0
+	var usable_height := maxf(420.0, canvas_size.y - 92.0)
+	var depth_count := 12.0
+	var climb_index := depth_count - float(depth)
+	var y := y_margin + climb_index * (usable_height / maxf(depth_count - 1.0, 1.0))
+	return Vector2(x, y)
+
+
+func _node_next_ids(node: Dictionary) -> Array[String]:
+	var ids: Array[String] = []
+	for next_id in node.get("next_ids", []):
+		var id_text := String(next_id)
+		if not id_text.is_empty():
+			ids.append(id_text)
+	return ids
+
+
+func _add_dashed_line(start: Vector2, end: Vector2, color: Color) -> void:
+	var delta := end - start
+	var distance := delta.length()
+	if distance <= 1.0:
+		return
+	var direction := delta / distance
+	var dash := 8.0
+	var gap := 7.0
+	var cursor := 0.0
+	while cursor < distance:
+		var segment_end := minf(cursor + dash, distance)
+		var line := Line2D.new()
+		line.width = 3.0 if color.a >= 0.78 else 1.5
+		line.default_color = color
+		line.begin_cap_mode = Line2D.LINE_CAP_ROUND
+		line.end_cap_mode = Line2D.LINE_CAP_ROUND
+		line.add_point(start + direction * cursor)
+		line.add_point(start + direction * segment_end)
+		map_canvas.add_child(line)
+		cursor += dash + gap
 
 
 func _line_color(from_node: Dictionary, to_node: Dictionary) -> Color:
 	var from_state := MapState.get_node_state(from_node)
 	var to_state := MapState.get_node_state(to_node)
 	if from_state == "completed" and to_state == "available":
-		return Color(0.90, 0.58, 0.24, 0.82)
+		return Color(0.96, 0.62, 0.24, 0.90)
 	if from_state == "completed":
 		return Color(0.48, 0.54, 0.46, 0.60)
-	return Color(0.22, 0.22, 0.20, 0.60)
+	return Color(0.10, 0.12, 0.12, 0.34)
+
+
+func _style_map_node_button(button: Button, node_type: String, state: String) -> void:
+	button.focus_mode = Control.FOCUS_NONE
+	button.alignment = HORIZONTAL_ALIGNMENT_CENTER
+	button.expand_icon = true
+	button.add_theme_constant_override("icon_max_width", 31)
+	button.add_theme_color_override("icon_normal_color", _node_accent_color(node_type, state))
+	button.add_theme_color_override("icon_hover_color", Color.WHITE)
+	button.add_theme_color_override("icon_pressed_color", Color.WHITE)
+	button.add_theme_color_override("icon_disabled_color", _node_accent_color(node_type, state))
+	button.add_theme_stylebox_override("normal", _node_button_style(node_type, state, false))
+	button.add_theme_stylebox_override("hover", _node_button_style(node_type, state, true))
+	button.add_theme_stylebox_override("pressed", _node_button_style(node_type, state, true))
+	button.add_theme_stylebox_override("disabled", _node_button_style(node_type, state, false))
+
+
+func _node_button_style(node_type: String, state: String, hover: bool) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	var accent := _node_accent_color(node_type, state)
+	var bg := Color(0.055, 0.052, 0.046, 0.94)
+	var border := Color(0.14, 0.14, 0.13, 0.90)
+	var shadow := 5
+	if state == "available":
+		bg = accent.darkened(0.52)
+		border = accent.lightened(0.25)
+		shadow = 9
+	elif state == "completed":
+		bg = Color(0.10, 0.18, 0.13, 0.94)
+		border = UIStyleScript.GREEN
+	else:
+		bg = Color(0.045, 0.045, 0.042, 0.70)
+		border = Color(0.12, 0.12, 0.11, 0.72)
+	if hover and state == "available":
+		bg = accent.darkened(0.34)
+		border = Color.WHITE
+	style.bg_color = bg
+	style.border_color = border
+	style.border_width_left = 2
+	style.border_width_top = 2
+	style.border_width_right = 2
+	style.border_width_bottom = 2
+	style.corner_radius_top_left = 21
+	style.corner_radius_top_right = 21
+	style.corner_radius_bottom_left = 21
+	style.corner_radius_bottom_right = 21
+	style.shadow_color = Color(0, 0, 0, 0.52)
+	style.shadow_size = shadow
+	style.shadow_offset = Vector2(0, 3)
+	style.content_margin_left = 6
+	style.content_margin_top = 6
+	style.content_margin_right = 6
+	style.content_margin_bottom = 6
+	return style
+
+
+func _node_accent_color(node_type: String, state: String = "available") -> Color:
+	var color := UIStyleScript.BLUE
+	match node_type:
+		"combat":
+			color = Color(0.52, 0.66, 0.72, 1.0)
+		"elite":
+			color = Color(0.88, 0.25, 0.19, 1.0)
+		"midboss":
+			color = Color(0.82, 0.43, 0.17, 1.0)
+		"boss":
+			color = Color(0.92, 0.66, 0.20, 1.0)
+		"inn":
+			color = Color(0.49, 0.78, 0.55, 1.0)
+		"shop":
+			color = Color(0.92, 0.70, 0.26, 1.0)
+		"event":
+			color = Color(0.56, 0.64, 0.76, 1.0)
+		"upgrade":
+			color = Color(0.48, 0.76, 0.70, 1.0)
+		"companion_contract":
+			color = Color(0.76, 0.50, 0.90, 1.0)
+	if state == "locked":
+		return Color(0.45, 0.45, 0.42, 0.58)
+	if state == "completed":
+		return UIStyleScript.GREEN
+	return color
 
 
 func _node_type_label(node_type: String) -> String:

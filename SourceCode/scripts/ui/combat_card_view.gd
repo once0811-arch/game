@@ -7,7 +7,7 @@ const UIStyleScript := preload("res://scripts/ui/ui_style.gd")
 signal card_pressed(hand_index: int)
 signal card_drag_started(hand_index: int, card_name: String)
 
-const CARD_SIZE := Vector2(164, 224)
+const CARD_SIZE := Vector2(150, 202)
 
 var hand_index := -1
 var card_name := ""
@@ -66,15 +66,15 @@ func _rebuild(card: Dictionary, instance: Dictionary) -> void:
 
 	var margin := MarginContainer.new()
 	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	margin.add_theme_constant_override("margin_left", 12)
-	margin.add_theme_constant_override("margin_top", 12)
-	margin.add_theme_constant_override("margin_right", 12)
-	margin.add_theme_constant_override("margin_bottom", 12)
+	margin.add_theme_constant_override("margin_left", 10)
+	margin.add_theme_constant_override("margin_top", 10)
+	margin.add_theme_constant_override("margin_right", 10)
+	margin.add_theme_constant_override("margin_bottom", 10)
 	add_child(margin)
 
 	var layout := VBoxContainer.new()
 	layout.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	layout.add_theme_constant_override("separation", 6)
+	layout.add_theme_constant_override("separation", 4)
 	margin.add_child(layout)
 
 	var top := HBoxContainer.new()
@@ -82,18 +82,18 @@ func _rebuild(card: Dictionary, instance: Dictionary) -> void:
 	top.add_theme_constant_override("separation", 7)
 	layout.add_child(top)
 
-	var cost := UIStyleScript.label(str(CardDataScript.card_cost(card)), 21, Color.WHITE if playable else UIStyleScript.MUTED)
-	cost.custom_minimum_size = Vector2(32, 32)
+	var cost := UIStyleScript.label(str(CardDataScript.card_cost(card)), 19, Color.WHITE if playable else UIStyleScript.MUTED)
+	cost.custom_minimum_size = Vector2(30, 30)
 	cost.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	cost.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	var cost_wrap := PanelContainer.new()
 	cost_wrap.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	cost_wrap.custom_minimum_size = Vector2(34, 34)
+	cost_wrap.custom_minimum_size = Vector2(32, 32)
 	cost_wrap.add_theme_stylebox_override("panel", _cost_style(playable))
 	cost_wrap.add_child(cost)
 	top.add_child(cost_wrap)
 
-	var name_label := UIStyleScript.label("%s%s" % [card_name, "+" if bool(instance.get("upgraded", false)) else ""], 14, body_color)
+	var name_label := UIStyleScript.label("%s%s" % [card_name, "+" if bool(instance.get("upgraded", false)) else ""], 13, body_color)
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	name_label.clip_text = true
@@ -101,7 +101,7 @@ func _rebuild(card: Dictionary, instance: Dictionary) -> void:
 
 	var art := PanelContainer.new()
 	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	art.custom_minimum_size = Vector2(0, 78)
+	art.custom_minimum_size = Vector2(0, 50)
 	art.add_theme_stylebox_override("panel", _art_style(card_type))
 	layout.add_child(art)
 
@@ -116,19 +116,21 @@ func _rebuild(card: Dictionary, instance: Dictionary) -> void:
 		var art_texture := TextureRect.new()
 		art_texture.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		art_texture.texture = load(art_path)
-		art_texture.custom_minimum_size = Vector2(0, 78)
+		art_texture.custom_minimum_size = Vector2(0, 50)
 		art_texture.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		art_texture.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		art_texture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		art_texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		art_texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		art.add_child(art_texture)
 
-	var type_label := UIStyleScript.label(card_type.to_upper(), 12, Color(0.42, 0.25, 0.08, 1.0) if uses_texture_frame else UIStyleScript.GOLD)
+	var type_label := UIStyleScript.label(card_name, 11, Color(0.42, 0.25, 0.08, 1.0) if uses_texture_frame else UIStyleScript.GOLD)
 	type_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	type_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	type_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	type_label.clip_text = true
 	layout.add_child(type_label)
 
-	var text := UIStyleScript.label(CardDataScript.card_rules_text(card), 13, body_color)
+	var text := UIStyleScript.label(CardDataScript.card_rules_text(card), 10, body_color)
 	text.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	text.vertical_alignment = VERTICAL_ALIGNMENT_TOP
@@ -141,8 +143,8 @@ func _on_mouse_entered() -> void:
 	hovered = true
 	z_index = 10
 	var tween := create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	tween.tween_property(self, "scale", Vector2(1.07, 1.07), 0.12)
-	tween.parallel().tween_property(self, "position:y", position.y - 14.0, 0.12)
+	tween.tween_property(self, "scale", Vector2(1.08, 1.08), 0.12)
+	tween.parallel().tween_property(self, "position:y", position.y - 22.0, 0.12)
 
 
 func _on_mouse_exited() -> void:
@@ -152,7 +154,7 @@ func _on_mouse_exited() -> void:
 	z_index = 0
 	var tween := create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	tween.tween_property(self, "scale", Vector2.ONE, 0.12)
-	tween.parallel().tween_property(self, "position:y", position.y + 14.0, 0.12)
+	tween.parallel().tween_property(self, "position:y", position.y + 22.0, 0.12)
 
 
 func _frame_style(card: Dictionary) -> StyleBox:

@@ -46,10 +46,13 @@ func _build_ui() -> void:
 	layout.add_child(gold_label)
 
 	product_grid = GridContainer.new()
-	product_grid.columns = 3
+	product_grid.columns = _shop_column_count()
+	product_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	product_grid.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	product_grid.add_theme_constant_override("h_separation", 12)
 	product_grid.add_theme_constant_override("v_separation", 12)
 	var product_panel := UIStyleScript.panel(product_grid, Vector2(0, 0))
+	product_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	product_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	layout.add_child(product_panel)
 
@@ -58,6 +61,7 @@ func _build_ui() -> void:
 
 
 func _refresh() -> void:
+	product_grid.columns = _shop_column_count()
 	gold_label.text = "Gold %d | Equipment %d" % [RunState.gold, RunState.equipment.owned_items.size()]
 	for child in product_grid.get_children():
 		child.queue_free()
@@ -67,7 +71,7 @@ func _refresh() -> void:
 
 func _make_product_button(product: Dictionary, index: int) -> Button:
 	var button := Button.new()
-	button.custom_minimum_size = Vector2(250, 134)
+	button.custom_minimum_size = Vector2(270, 126)
 	var price := int(product.get("price", 0))
 	button.text = "%s\n%d gold\n%s" % [
 		product.get("title", "Product"),
@@ -78,6 +82,10 @@ func _make_product_button(product: Dictionary, index: int) -> Button:
 	UIStyleScript.style_card_button(button, "primary" if not button.disabled else "locked")
 	button.pressed.connect(_on_product_pressed.bind(index))
 	return button
+
+
+func _shop_column_count() -> int:
+	return 6 if get_viewport_rect().size.x >= 1600.0 else 4
 
 
 func _on_product_pressed(index: int) -> void:
