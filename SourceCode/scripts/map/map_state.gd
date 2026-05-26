@@ -39,6 +39,7 @@ func start_next_act() -> void:
 	RunState.depth = 0
 	RunState.phase_note = "Act %d begins. The castle bends further from the old world." % RunState.act
 	start_act(RunState.act)
+	RunTelemetry.record_act_reached(RunState.act)
 
 
 func get_available_depth() -> int:

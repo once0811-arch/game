@@ -37,6 +37,7 @@ func start_new_run() -> void:
 	deck.build_starting_deck(DataRegistry.get_starter_deck_ids())
 	combat.reset()
 	equipment.reset()
+	RunTelemetry.reset_for_new_run(run_seed)
 
 
 func advance_depth() -> void:
@@ -86,4 +87,7 @@ func load_snapshot(snapshot: Dictionary) -> bool:
 	deck.from_dict(deck_data)
 	combat.from_dict(combat_data)
 	equipment.from_dict(equipment_data)
+	if RunTelemetry.run_id.is_empty():
+		RunTelemetry.reset_for_new_run(run_seed)
+	RunTelemetry.record_event("run_loaded")
 	return is_run_active

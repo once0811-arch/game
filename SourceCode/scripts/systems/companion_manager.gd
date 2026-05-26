@@ -59,6 +59,7 @@ func finalize_recruitment() -> bool:
 		return false
 	for card_id in selected_card_ids:
 		RunState.deck.add_card_to_discard(card_id)
+	RunTelemetry.record_companion_recruited(selected_companion_id, selected_oath_id)
 	_complete_pending()
 	return true
 

@@ -82,6 +82,7 @@ func _on_option_pressed(index: int) -> void:
 		return
 	var option: Dictionary = options[index]
 	var logs := upgrade_service.apply_option(option)
+	RunTelemetry.record_upgrade(UpgradeState.pending_source, String(option.get("id", "")))
 	status_label.text = "\n".join(PackedStringArray(logs))
 	UpgradeState.complete_pending()
 	for child in option_box.get_children():

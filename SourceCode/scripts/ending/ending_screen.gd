@@ -4,6 +4,7 @@ extends Control
 func _ready() -> void:
 	RunState.run_complete = true
 	RunState.phase_note = "The core is broken. The road back is finally real."
+	RunTelemetry.record_run_complete()
 	_build_ui()
 
 

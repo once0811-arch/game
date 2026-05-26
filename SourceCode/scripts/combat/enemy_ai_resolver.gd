@@ -44,6 +44,7 @@ func execute_enemy_turn() -> Array[String]:
 			"healing_down":
 				RunState.combat.healing_reduction_percent = int(intent.get("percent", 50))
 				RunState.combat.healing_reduction_turns = int(intent.get("turns", 2))
+				RunTelemetry.record_healing_down(RunState.combat.healing_reduction_percent, RunState.combat.healing_reduction_turns)
 				logs.append("%s applied Healing Down %d%% for %d turns." % [
 					enemy.get("name", "Enemy"),
 					RunState.combat.healing_reduction_percent,

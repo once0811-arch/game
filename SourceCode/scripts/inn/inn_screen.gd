@@ -117,6 +117,7 @@ func _on_room_pressed(index: int) -> void:
 	RunState.gold -= price
 	var logs := ["Paid %d gold for %s." % [price, room.get("name", "Room")]]
 	logs.append_array(event_resolver.apply_effects(room.get("effects", [])))
+	RunTelemetry.record_inn_room(String(inn_data.get("type", "")), String(room.get("id", "")), price)
 	status_label.text = "\n".join(PackedStringArray(logs))
 	_complete_node()
 	for child in room_box.get_children():

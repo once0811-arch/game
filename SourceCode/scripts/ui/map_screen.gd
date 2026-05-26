@@ -217,6 +217,7 @@ func _on_save_pressed() -> void:
 	var snapshot := RunState.to_snapshot()
 	snapshot["map"] = MapState.to_snapshot()
 	SaveService.write_run_snapshot(snapshot)
+	RunTelemetry.write_last_run_log()
 	_refresh()
 
 

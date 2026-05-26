@@ -108,6 +108,7 @@ func _on_choice_pressed(index: int) -> void:
 		status_label.text = "Not enough gold."
 		return
 	status_label.text = "\n".join(PackedStringArray(event_resolver.apply_effects(choice.get("effects", []))))
+	RunTelemetry.record_event_choice(String(event_data.get("id", "")), String(choice.get("label", "")))
 	if MapState.has_selected_node() and MapState.get_selected_node_type() == "event":
 		MapState.complete_selected_node()
 	for child in choice_box.get_children():

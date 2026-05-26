@@ -26,6 +26,7 @@ MapState="*res://scripts/map/map_state.gd"
 RewardState="*res://scripts/rewards/reward_state.gd"
 UpgradeState="*res://scripts/rewards/upgrade_state.gd"
 CompanionManager="*res://scripts/systems/companion_manager.gd"
+RunTelemetry="*res://scripts/telemetry/run_telemetry.gd"
 
 [physics]
 

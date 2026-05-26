@@ -35,6 +35,8 @@ func start_debug_combat(enemy_id: String) -> Array[String]:
 		return logs
 	RunState.combat.enemies.clear()
 	RunState.combat.enemies.append(enemy_ai.create_enemy(enemy_data))
+	var node_type := MapState.get_selected_node_type() if MapState.has_selected_node() else "debug_combat"
+	RunTelemetry.begin_combat(enemy_id, node_type)
 	var drawn: Array[Dictionary] = RunState.deck.draw_cards(int(DataRegistry.get_balance("combat.draw_per_turn", 6)))
 	logs.append("Combat started: %s." % enemy_data.get("name", enemy_id))
 	logs.append("Drew %d cards." % drawn.size())
@@ -60,6 +62,7 @@ func play_card(hand_index: int, target_index: int = 0) -> Array[String]:
 	RunState.combat.energy -= cost
 	RunState.deck.play_card(hand_index)
 	RunState.combat.cards_played_this_turn += 1
+	RunTelemetry.record_card_play(CardInstanceScript.get_card_id(instance))
 	logs.append("Played %s." % CardDataScript.card_name(card))
 	logs.append_array(card_effects.resolve(card, target_index, instance))
 	logs.append_array(oath_resolver.on_card_play(card, target_index))
@@ -115,10 +118,12 @@ func _update_outcome(logs: Array[String]) -> void:
 			RunState.gold += gold_gain
 			logs.append("Gained %d gold." % gold_gain)
 		logs.append_array(bond_system.award_for_victory(node_type))
+		RunTelemetry.end_combat("victory", RunState.combat.turn_index)
 	elif RunState.current_hp <= 0:
 		RunState.combat.outcome = "defeat"
 		RunState.combat.in_combat = false
 		logs.append("Defeat.")
+		RunTelemetry.end_combat("defeat", RunState.combat.turn_index)
 
 
 func _apply_equipment_start_bonuses(logs: Array[String]) -> void:

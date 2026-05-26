@@ -9,9 +9,11 @@ func on_combat_start() -> Array[String]:
 			"sera_smoke_step":
 				var block: int = RunState.deck.hand.size()
 				RunState.combat.player_block += block
+				RunTelemetry.record_oath_trigger("sera_smoke_step")
 				logs.append("%s oath Smoke Step: gained %d block." % [companion.get("name", "Sera"), block])
 			"eldric_oathwall":
 				RunState.combat.enemy_attack_reduction += 2
+				RunTelemetry.record_oath_trigger("eldric_oathwall")
 				logs.append("%s oath Oathwall: first enemy attack reduced by 2." % companion.get("name", "Eldric"))
 	return logs
 
@@ -23,19 +25,23 @@ func on_card_play(card: Dictionary, target_index: int) -> Array[String]:
 		match oath_id:
 			"sera_second_cut":
 				if RunState.combat.cards_played_this_turn == 2:
+					RunTelemetry.record_oath_trigger("sera_second_cut")
 					logs.append(_deal_oath_damage(companion, target_index, 3, "Second Cut"))
 			"sera_quick_claim":
 				if int(card.get("cost", 0)) == 0 and not bool(RunState.combat.oath_flags.get("sera_quick_claim_used", false)):
 					_add_mark(target_index, 1)
 					RunState.combat.oath_flags["sera_quick_claim_used"] = true
+					RunTelemetry.record_oath_trigger("sera_quick_claim")
 					logs.append("%s oath Quick Claim: applied 1 Tactical Mark." % companion.get("name", "Sera"))
 			"eldric_shared_guard":
 				if _card_has_effect(card, "block"):
 					RunState.combat.player_block += 2
+					RunTelemetry.record_oath_trigger("eldric_shared_guard")
 					logs.append("%s oath Shared Guard: gained 2 block." % companion.get("name", "Eldric"))
 			"eldric_last_stand":
 				if _card_has_effect(card, "block") and RunState.current_hp * 100 <= RunState.max_hp * 40:
 					RunState.combat.player_block += 2
+					RunTelemetry.record_oath_trigger("eldric_last_stand")
 					logs.append("%s oath Last Stand: gained 2 block." % companion.get("name", "Eldric"))
 	return logs
 
@@ -46,14 +52,17 @@ func on_companion_attack(companion: Dictionary, target_index: int) -> Array[Stri
 	match oath_id:
 		"rowan_red_pursuit":
 			if _target_mark(target_index) > 0:
+				RunTelemetry.record_oath_trigger("rowan_red_pursuit")
 				logs.append(_deal_oath_damage(companion, target_index, 2, "Red Pursuit"))
 		"rowan_first_blood":
 			var key: String = "rowan_first_blood_%s" % companion.get("id", "")
 			if _target_mark(target_index) > 0 and not bool(RunState.combat.oath_flags.get(key, false)):
 				RunState.combat.oath_flags[key] = true
+				RunTelemetry.record_oath_trigger("rowan_first_blood")
 				logs.append(_deal_oath_damage(companion, target_index, 3, "First Blood"))
 		"rowan_spear_line":
 			_add_mark(target_index, 1)
+			RunTelemetry.record_oath_trigger("rowan_spear_line")
 			logs.append("%s oath Spear Line: applied 1 Tactical Mark." % companion.get("name", "Rowan"))
 	return logs
 

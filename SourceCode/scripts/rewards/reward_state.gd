@@ -10,12 +10,14 @@ func begin_card_reward(source: String) -> void:
 func claim_card(card_id: String) -> void:
 	if not card_id.is_empty():
 		RunState.deck.add_card_to_discard(card_id)
-	_complete_pending()
+		RunTelemetry.record_card_reward("pick", card_id, 0)
+		_complete_pending()
 
 
 func skip_card_reward() -> int:
 	var gold := int(DataRegistry.get_balance("rewards.skip_gold", 15))
 	RunState.gold += gold
+	RunTelemetry.record_card_reward("skip", "", gold)
 	_complete_pending()
 	return gold
 

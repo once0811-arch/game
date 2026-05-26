@@ -45,6 +45,7 @@ func apply_effects(effects: Array) -> Array[String]:
 			"healing_down":
 				RunState.combat.healing_reduction_percent = int(effect.get("percent", 50))
 				RunState.combat.healing_reduction_turns = int(effect.get("turns", 2))
+				RunTelemetry.record_healing_down(RunState.combat.healing_reduction_percent, RunState.combat.healing_reduction_turns)
 				logs.append("Healing Down prepared: %d%% for %d turns." % [
 					RunState.combat.healing_reduction_percent,
 					RunState.combat.healing_reduction_turns,

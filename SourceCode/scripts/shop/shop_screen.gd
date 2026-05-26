@@ -125,6 +125,7 @@ func _on_product_pressed(index: int) -> void:
 			logs.append_array(_apply_service(String(product.get("service", ""))))
 		_:
 			logs.append("Nothing happened.")
+	RunTelemetry.record_shop_purchase(String(product.get("type", "")), String(product.get("id", "")), price)
 	product["purchased"] = true
 	stock[index] = product
 	status_label.text = "\n".join(PackedStringArray(logs))
