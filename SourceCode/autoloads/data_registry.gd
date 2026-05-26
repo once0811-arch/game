@@ -1,6 +1,7 @@
 extends Node
 
 const BALANCE_CONSTANTS_PATH := "res://data/balance_constants.json"
+const ASSET_MANIFEST_PATH := "res://data/assets/asset_manifest.json"
 const TEMP_ASSET_MANIFEST_PATH := "res://data/assets/temp_asset_manifest.json"
 const PROTAGONIST_CARDS_PATH := "res://data/cards/protagonist_cards.json"
 const COMPANION_CARDS_PATH := "res://data/cards/companion_cards.json"
@@ -44,7 +45,9 @@ func _ready() -> void:
 func load_all() -> bool:
 	load_errors.clear()
 	balance_constants = _load_dictionary(BALANCE_CONSTANTS_PATH)
-	temp_asset_manifest = _load_dictionary(TEMP_ASSET_MANIFEST_PATH)
+	temp_asset_manifest = _load_dictionary(ASSET_MANIFEST_PATH)
+	if temp_asset_manifest.is_empty():
+		temp_asset_manifest = _load_dictionary(TEMP_ASSET_MANIFEST_PATH)
 	protagonist_cards = _load_dictionary(PROTAGONIST_CARDS_PATH)
 	companion_cards = _load_dictionary(COMPANION_CARDS_PATH)
 	companions = _load_dictionary(COMPANIONS_PATH)

@@ -1,6 +1,7 @@
 class_name AssetRegistry
 extends RefCounted
 
+const MANIFEST_PATH := "res://data/assets/asset_manifest.json"
 const TEMP_MANIFEST_PATH := "res://data/assets/temp_asset_manifest.json"
 
 var manifest: Dictionary = {}
@@ -8,11 +9,13 @@ var assets_by_id: Dictionary = {}
 var assets_by_category: Dictionary = {}
 
 
-func load_temp_manifest(path: String = TEMP_MANIFEST_PATH) -> bool:
+func load_temp_manifest(path: String = MANIFEST_PATH) -> bool:
 	var file := FileAccess.open(path, FileAccess.READ)
 	if file == null:
-		push_error("Asset manifest not found: %s" % path)
-		return false
+		file = FileAccess.open(TEMP_MANIFEST_PATH, FileAccess.READ)
+		if file == null:
+			push_error("Asset manifest not found: %s" % path)
+			return false
 
 	var parsed = JSON.parse_string(file.get_as_text())
 	if typeof(parsed) != TYPE_DICTIONARY:
