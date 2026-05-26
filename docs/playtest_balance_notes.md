@@ -17,6 +17,16 @@ macOS observed path:
 ~/Library/Application Support/Godot/app_userdata/deckbuilding/telemetry_last_run.json
 ```
 
+Monte Carlo run simulation:
+
+```txt
+tools/balance_run_simulator.py
+docs/balance_run_simulation_report.md
+SourceCode/data/playtest_logs/balance_run_simulation_latest.json
+```
+
+Use the simulator before broad enemy/card tuning. It models current JSON data, card upgrades, companion recruitment, bond bonuses, equipment, shops, inns, events, and several enemy HP/attack profiles. It does not replace human playtests, but it is good at finding obvious imbalance directions before spending time in Godot.
+
 ## Recorded Metrics
 
 Current counters:
@@ -93,6 +103,33 @@ After each tuning patch:
 3. Compare turn count, HP loss, shop purchases, inn usage, oath triggers, and bond score.
 4. Compare wave count, HP lost by wave, and whether a safe branch existed before/after 3-wave nodes.
 5. Change one balance cluster at a time: enemy HP/damage, wave frequency, economy prices, bond gains, or card numbers.
+
+## Simulation Pass - 2026-05-26
+
+Command:
+
+```txt
+python3 tools/balance_run_simulator.py --runs 300 --policies balanced,safe,greedy --enemy-profiles current,plus6,spec_mid,spec_mid_attack10
+```
+
+Main findings:
+
+| Profile | Balanced win | Safe win | Greedy win | Read |
+| --- | ---: | ---: | ---: | --- |
+| current | 58.3% | 96.0% | 31.3% | Baseline is playable, but safe routes are too reliable. |
+| plus6 | 49.7% | 95.7% | 27.0% | Global +6% HP pressures balanced/greedy but barely touches safe. |
+| spec_mid | 21.0% | 74.3% | 7.3% | Full document HP midpoint is too steep if applied all at once. |
+| spec_mid_attack10 | 13.7% | 57.3% | 4.3% | Use as pressure-test or higher-difficulty reference, not baseline. |
+
+Tuning read:
+
+```txt
+Do not globally push every enemy to document midpoint HP yet.
+Raise Act 1 boss, Act 2+ single-enemy nodes, and late bosses in smaller steps.
+Safe route economy is too strong; tune inns/events/shops and safe-route rewards.
+Elites rarely cause direct defeats, so their reward and threat identity need work.
+Card rewards over-select Road Cleave, Breakthrough, and Sweeping Order while many utility cards are ignored.
+```
 
 ## Phase 9 Validation
 
