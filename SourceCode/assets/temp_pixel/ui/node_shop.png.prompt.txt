@@ -1,1 +1,1 @@
-Phase0 v2 polished pixel icon for node_shop; bevel, outline, readable silhouette.
+Kenney UI Pack CC0 source for node_shop. Original PNG: PNG/Yellow/Double/button_round_depth_gradient.png. Source page: https://kenney.nl/assets/ui-pack

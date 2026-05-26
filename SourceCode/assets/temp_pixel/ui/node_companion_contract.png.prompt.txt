@@ -1,1 +1,1 @@
-Phase0 v2 polished pixel icon for node_companion_contract; bevel, outline, readable silhouette.
+Kenney UI Pack CC0 source for node_companion_contract. Original PNG: PNG/Green/Double/star_outline_depth.png. Source page: https://kenney.nl/assets/ui-pack

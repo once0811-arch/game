@@ -113,7 +113,7 @@ func _build_ui() -> void:
 	log_box.add_child(log_label)
 
 	hand_area = Control.new()
-	hand_area.custom_minimum_size = Vector2(0, 218)
+	hand_area.custom_minimum_size = Vector2(0, 252)
 	hand_area.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	layout.add_child(hand_area)
 
@@ -366,7 +366,7 @@ func _layout_hand_cards() -> void:
 	var count: int = cards.size()
 	if count == 0:
 		return
-	var card_width: float = 154.0
+	var card_width: float = 164.0
 	var available_width: float = maxf(hand_area.size.x, get_viewport_rect().size.x - 64.0)
 	var spread: float = minf(760.0, maxf(0.0, available_width - card_width - 48.0))
 	var step: float = 0.0 if count <= 1 else spread / float(count - 1)
@@ -382,7 +382,7 @@ func _layout_hand_cards() -> void:
 		if i == selected_card_index:
 			target_position.y -= 18.0
 		card.rotation = rotation
-		card.pivot_offset = Vector2(card_width * 0.5, 95.0)
+		card.pivot_offset = Vector2(card_width * 0.5, 112.0)
 		var tween := create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 		tween.tween_property(card, "position", target_position, 0.16)
 
@@ -417,7 +417,7 @@ func _card_center_for_hand_index(hand_index: int) -> Vector2:
 	for child in hand_area.get_children():
 		if child.get("hand_index") != null and int(child.get("hand_index")) == hand_index:
 			var card := child as Control
-			return card.global_position + Vector2(77, 95)
+			return card.global_position + Vector2(82, 112)
 	return get_global_mouse_position()
 
 

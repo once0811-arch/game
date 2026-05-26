@@ -1,8 +1,8 @@
 extends Control
 
-const CardDataScript := preload("res://scripts/data/card_data.gd")
 const CompanionRewardGeneratorScript := preload("res://scripts/rewards/companion_reward_generator.gd")
 const UIStyleScript := preload("res://scripts/ui/ui_style.gd")
+const CombatCardViewScript := preload("res://scripts/ui/combat_card_view.gd")
 
 var generator = CompanionRewardGeneratorScript.new()
 var status_label: Label
@@ -34,7 +34,8 @@ func _build_ui() -> void:
 
 	option_box = HBoxContainer.new()
 	option_box.add_theme_constant_override("separation", 14)
-	var option_panel := UIStyleScript.panel(option_box, Vector2(0, 180))
+	option_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	var option_panel := UIStyleScript.panel(option_box, Vector2(0, 260))
 	layout.add_child(option_panel)
 
 	var actions := HBoxContainer.new()
@@ -76,25 +77,23 @@ func _refresh() -> void:
 	]
 	confirm_button.disabled = not CompanionManager.can_finalize()
 	for child in option_box.get_children():
-		if child is Button:
-			var card_id := String(child.get_meta("card_id", ""))
-			child.button_pressed = CompanionManager.selected_card_ids.has(card_id)
+		var card_id := String(child.get_meta("card_id", ""))
+		if not card_id.is_empty() and child.has_method("setup"):
+			var card := DataRegistry.get_card(card_id)
+			child.setup(card, {}, int(child.get("hand_index")), true, CompanionManager.selected_card_ids.has(card_id))
 
 
-func _make_card_button(card: Dictionary) -> Button:
-	var button := Button.new()
-	button.toggle_mode = true
-	button.custom_minimum_size = Vector2(230, 138)
-	button.set_meta("card_id", String(card.get("id", "")))
-	button.text = "%d  %s\n%s\n%s" % [
-		CardDataScript.card_cost(card),
-		CardDataScript.card_name(card),
-		CardDataScript.card_type(card),
-		CardDataScript.card_rules_text(card),
-	]
-	UIStyleScript.style_card_button(button, "primary")
-	button.pressed.connect(_on_card_pressed.bind(String(card.get("id", ""))))
-	return button
+func _make_card_button(card: Dictionary) -> Control:
+	var view := CombatCardViewScript.new()
+	var card_id := String(card.get("id", ""))
+	view.set_meta("card_id", card_id)
+	view.setup(card, {}, option_box.get_child_count(), true, CompanionManager.selected_card_ids.has(card_id))
+	view.card_pressed.connect(_on_card_view_pressed.bind(card_id))
+	return view
+
+
+func _on_card_view_pressed(_hand_index: int, card_id: String) -> void:
+	_on_card_pressed(card_id)
 
 
 func _on_card_pressed(card_id: String) -> void:

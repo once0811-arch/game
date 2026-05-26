@@ -1,1 +1,1 @@
-Phase0 v2 pixel card frame/motif for card_motif_skill_guard; bevel frame, readable cost coin and art panel.
+Kenney Playing Cards Pack CC0 source for card_motif_skill_guard. Original PNG: PNG/Cards (large)/card_clubs_K.png. Source page: https://kenney.nl/assets/playing-cards-pack

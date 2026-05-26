@@ -1,1 +1,1 @@
-Phase0 v2 polished pixel icon for node_treasure; bevel, outline, readable silhouette.
+Kenney UI Pack CC0 source for node_treasure. Original PNG: PNG/Yellow/Double/star.png. Source page: https://kenney.nl/assets/ui-pack

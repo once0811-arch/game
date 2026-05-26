@@ -1,1 +1,1 @@
-Phase0 v2 polished pixel icon for node_companion_trace; bevel, outline, readable silhouette.
+Kenney UI Pack CC0 source for node_companion_trace. Original PNG: PNG/Green/Double/star_outline.png. Source page: https://kenney.nl/assets/ui-pack

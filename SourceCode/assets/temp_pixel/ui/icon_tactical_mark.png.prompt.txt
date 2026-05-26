@@ -1,1 +1,1 @@
-Phase0 v2 polished pixel icon for icon_tactical_mark; bevel, outline, readable silhouette.
+Kenney UI Pack CC0 source for icon_tactical_mark. Original PNG: PNG/Yellow/Double/star_outline_depth.png. Source page: https://kenney.nl/assets/ui-pack

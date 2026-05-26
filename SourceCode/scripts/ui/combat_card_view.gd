@@ -7,7 +7,7 @@ const UIStyleScript := preload("res://scripts/ui/ui_style.gd")
 signal card_pressed(hand_index: int)
 signal card_drag_started(hand_index: int, card_name: String)
 
-const CARD_SIZE := Vector2(154, 190)
+const CARD_SIZE := Vector2(164, 224)
 
 var hand_index := -1
 var card_name := ""
@@ -60,14 +60,16 @@ func _gui_input(event: InputEvent) -> void:
 func _rebuild(card: Dictionary, instance: Dictionary) -> void:
 	UIStyleScript.clear(self)
 	var card_type := CardDataScript.card_type(card)
-	add_theme_stylebox_override("panel", _frame_style(card_type))
+	var uses_texture_frame := not DataRegistry.get_temp_asset_path(_frame_asset_id(card)).is_empty()
+	var body_color := _card_text_color(uses_texture_frame)
+	add_theme_stylebox_override("panel", _frame_style(card))
 
 	var margin := MarginContainer.new()
 	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	margin.add_theme_constant_override("margin_left", 10)
-	margin.add_theme_constant_override("margin_top", 10)
-	margin.add_theme_constant_override("margin_right", 10)
-	margin.add_theme_constant_override("margin_bottom", 10)
+	margin.add_theme_constant_override("margin_left", 12)
+	margin.add_theme_constant_override("margin_top", 12)
+	margin.add_theme_constant_override("margin_right", 12)
+	margin.add_theme_constant_override("margin_bottom", 12)
 	add_child(margin)
 
 	var layout := VBoxContainer.new()
@@ -91,7 +93,7 @@ func _rebuild(card: Dictionary, instance: Dictionary) -> void:
 	cost_wrap.add_child(cost)
 	top.add_child(cost_wrap)
 
-	var name_label := UIStyleScript.label("%s%s" % [card_name, "+" if bool(instance.get("upgraded", false)) else ""], 15)
+	var name_label := UIStyleScript.label("%s%s" % [card_name, "+" if bool(instance.get("upgraded", false)) else ""], 14, body_color)
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	name_label.clip_text = true
@@ -99,7 +101,7 @@ func _rebuild(card: Dictionary, instance: Dictionary) -> void:
 
 	var art := PanelContainer.new()
 	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	art.custom_minimum_size = Vector2(0, 56)
+	art.custom_minimum_size = Vector2(0, 78)
 	art.add_theme_stylebox_override("panel", _art_style(card_type))
 	layout.add_child(art)
 
@@ -114,19 +116,19 @@ func _rebuild(card: Dictionary, instance: Dictionary) -> void:
 		var art_texture := TextureRect.new()
 		art_texture.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		art_texture.texture = load(art_path)
-		art_texture.custom_minimum_size = Vector2(0, 56)
+		art_texture.custom_minimum_size = Vector2(0, 78)
 		art_texture.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		art_texture.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		art_texture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		art_texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 		art.add_child(art_texture)
 
-	var type_label := UIStyleScript.label(card_type.to_upper(), 12, UIStyleScript.GOLD)
+	var type_label := UIStyleScript.label(card_type.to_upper(), 12, Color(0.42, 0.25, 0.08, 1.0) if uses_texture_frame else UIStyleScript.GOLD)
 	type_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	type_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	layout.add_child(type_label)
 
-	var text := UIStyleScript.label(CardDataScript.card_rules_text(card), 13, UIStyleScript.stat_text() if playable else UIStyleScript.MUTED)
+	var text := UIStyleScript.label(CardDataScript.card_rules_text(card), 13, body_color)
 	text.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	text.vertical_alignment = VERTICAL_ALIGNMENT_TOP
@@ -153,7 +155,27 @@ func _on_mouse_exited() -> void:
 	tween.parallel().tween_property(self, "position:y", position.y + 14.0, 0.12)
 
 
-func _frame_style(card_type: String) -> StyleBoxFlat:
+func _frame_style(card: Dictionary) -> StyleBox:
+	var card_type := CardDataScript.card_type(card)
+	var frame_path := DataRegistry.get_temp_asset_path(_frame_asset_id(card))
+	if not frame_path.is_empty():
+		var texture_style := StyleBoxTexture.new()
+		texture_style.texture = load(frame_path)
+		texture_style.texture_margin_left = 12
+		texture_style.texture_margin_top = 12
+		texture_style.texture_margin_right = 12
+		texture_style.texture_margin_bottom = 12
+		texture_style.content_margin_left = 12
+		texture_style.content_margin_top = 12
+		texture_style.content_margin_right = 12
+		texture_style.content_margin_bottom = 12
+		if not playable:
+			texture_style.modulate_color = Color(0.48, 0.48, 0.48, 0.86)
+		elif selected:
+			texture_style.modulate_color = Color(1.0, 0.94, 0.72, 1.0)
+		else:
+			texture_style.modulate_color = Color(1, 1, 1, 1)
+		return texture_style
 	var style := StyleBoxFlat.new()
 	style.bg_color = _type_color(card_type)
 	style.border_color = UIStyleScript.BORDER_BRIGHT if selected else Color(0.22, 0.18, 0.13, 1.0)
@@ -172,6 +194,26 @@ func _frame_style(card_type: String) -> StyleBoxFlat:
 	style.shadow_size = 9
 	style.shadow_offset = Vector2(0, 4)
 	return style
+
+
+func _frame_asset_id(card: Dictionary) -> String:
+	var owner := String(card.get("owner", ""))
+	var owner_key := "companion" if not owner.is_empty() else "protagonist"
+	match CardDataScript.card_type(card).to_lower():
+		"attack":
+			return "card_frame_%s_attack_common" % owner_key
+		"skill":
+			return "card_frame_%s_skill_common" % owner_key
+		"power":
+			return "card_frame_%s_power_common" % owner_key
+		_:
+			return "card_frame_%s_skill_common" % owner_key
+
+
+func _card_text_color(uses_texture_frame: bool) -> Color:
+	if not uses_texture_frame:
+		return UIStyleScript.stat_text() if playable else UIStyleScript.MUTED
+	return Color(0.12, 0.11, 0.09, 1.0) if playable else Color(0.38, 0.36, 0.32, 1.0)
 
 
 func _cost_style(can_play: bool) -> StyleBoxFlat:

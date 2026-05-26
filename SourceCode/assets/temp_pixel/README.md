@@ -2,12 +2,14 @@
 
 Generated for Phase 0 as replaceable Godot integration art.
 
-Current pass: `temp_pixel_voxel_v2`
+Current pass: `temp_pixel_voxel_v2_kenney_cc0`
 
 - Stronger 2D pixel-art silhouettes with a pseudo-voxel 3/4 read.
 - Cold blue-gray survival palette with warm fire and late-game green/purple corruption accents.
 - Sprite sheets keep the same manifest IDs and Godot paths.
 - Generated sheets use agent-sprite-forge postprocessing for chroma-key cleanup and frame extraction.
+- Card frames, card motifs, route node icons, and core UI icons are replaced from Kenney's CC0 Playing Cards Pack and UI Pack.
+- Vendor license notes are stored in `vendor_licenses/`.
 - Final art can replace these files by preserving manifest IDs or updating the manifest.
 
 Phase 10 replacement rule:

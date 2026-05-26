@@ -152,6 +152,10 @@ func _make_node_button(node: Dictionary) -> Button:
 	var node_type := String(node.get("type", "?"))
 	button.custom_minimum_size = Vector2(98, 72)
 	button.text = "%s\n%s\n%s" % [prefix, _node_type_label(node_type), String(node.get("label", ""))]
+	var icon_path := DataRegistry.get_temp_asset_path(_node_icon_asset_id(node_type))
+	if not icon_path.is_empty():
+		button.icon = load(icon_path)
+		button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	button.disabled = state != "available"
 	if state == "completed":
 		button.text = "%s\nCLEARED\n%s" % [prefix, String(node.get("label", ""))]
@@ -274,6 +278,30 @@ func _node_type_label(node_type: String) -> String:
 			return "ALLY"
 		_:
 			return node_type.to_upper()
+
+
+func _node_icon_asset_id(node_type: String) -> String:
+	match node_type:
+		"combat":
+			return "node_combat"
+		"elite":
+			return "node_elite"
+		"midboss":
+			return "node_mid_boss"
+		"boss":
+			return "node_boss"
+		"inn":
+			return "node_inn"
+		"shop":
+			return "node_shop"
+		"event":
+			return "node_event"
+		"upgrade":
+			return "node_upgrade"
+		"companion_contract":
+			return "node_companion_contract"
+		_:
+			return "node_event"
 
 
 func _describe_node(node: Dictionary) -> String:

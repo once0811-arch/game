@@ -1,8 +1,8 @@
 {
-  "version": "0.1.1",
-  "style": "temp_pixel_voxel_v2",
+  "version": "0.2.1",
+  "style": "temp_pixel_voxel_v2_kenney_cc0",
   "generated_by": "tools/phase0_upgrade_pixel_assets.py",
-  "source_pipeline": "pixel/voxel-style redraw plus agent-sprite-forge magenta cleanup for sprite sheets",
+  "source_pipeline": "pixel/voxel-style redraw plus agent-sprite-forge magenta cleanup for sprite sheets; Kenney CC0 Playing Cards Pack and UI Pack replacements for card frames, card motifs, route nodes, and core UI icons",
   "assets": [
     {
       "id": "protagonist_mercenary_idle",
@@ -1763,5 +1763,15 @@
       "cols": 2,
       "anchor": "center"
     }
-  ]
+  ],
+  "external_sources": {
+    "kenney_playing_cards_pack": {
+      "license": "Creative Commons CC0",
+      "page": "https://kenney.nl/assets/playing-cards-pack"
+    },
+    "kenney_ui_pack": {
+      "license": "Creative Commons CC0",
+      "page": "https://kenney.nl/assets/ui-pack"
+    }
+  }
 }

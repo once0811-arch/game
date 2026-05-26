@@ -1,1 +1,1 @@
-Phase0 v2 pixel card frame/motif for card_motif_eldric_shield; bevel frame, readable cost coin and art panel.
+Kenney Playing Cards Pack CC0 source for card_motif_eldric_shield. Original PNG: PNG/Cards (medium)/color_green_reverse.png. Source page: https://kenney.nl/assets/playing-cards-pack

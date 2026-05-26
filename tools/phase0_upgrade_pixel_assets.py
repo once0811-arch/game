@@ -8,9 +8,14 @@ facets, rim highlights, cast shadows, and a pseudo-voxel 3/4 read.
 
 from __future__ import annotations
 
+import argparse
 import json
 import math
+import os
+import shutil
 import subprocess
+import urllib.request
+import zipfile
 from pathlib import Path
 from typing import Any
 
@@ -21,8 +26,17 @@ PROJECT = Path(__file__).resolve().parents[1]
 SOURCE = PROJECT / "SourceCode"
 ASSET_ROOT = SOURCE / "assets" / "temp_pixel"
 RAW_ROOT = ASSET_ROOT / "_raw"
+PRIMARY_MANIFEST_PATH = SOURCE / "data" / "assets" / "asset_manifest.json"
 MANIFEST_PATH = SOURCE / "data" / "assets" / "temp_asset_manifest.json"
 FORGE_SCRIPT = PROJECT / "agent-sprite-forge" / "skills" / "generate2dsprite" / "scripts" / "generate2dsprite.py"
+
+KENNEY_PLAYING_CARDS_PAGE = "https://kenney.nl/assets/playing-cards-pack"
+KENNEY_UI_PACK_PAGE = "https://kenney.nl/assets/ui-pack"
+KENNEY_PLAYING_CARDS_URL = "https://kenney.nl/media/pages/assets/playing-cards-pack/4b345a2a5a-1677495915/kenney_playing-cards-pack.zip"
+KENNEY_UI_PACK_URL = "https://kenney.nl/media/pages/assets/ui-pack/f651646eab-1718203990/kenney_ui-pack.zip"
+KENNEY_CACHE_ROOT = Path(os.environ.get("KENNEY_CACHE_DIR", "/tmp/deckbuilder_kenney"))
+KENNEY_CARDS_ROOT = KENNEY_CACHE_ROOT / "playing_cards_pack"
+KENNEY_UI_ROOT = KENNEY_CACHE_ROOT / "ui_pack"
 
 MAGENTA = (255, 0, 255, 255)
 TRANSPARENT = (0, 0, 0, 0)
@@ -51,6 +65,50 @@ PALETTES: dict[str, dict[str, tuple[int, int, int, int]]] = {
 }
 
 
+KENNEY_CARD_REPLACEMENTS: dict[str, list[str]] = {
+    "card_frame_protagonist_attack_common": ["PNG/Cards (large)/color_red_empty.png", "PNG/Cards (medium)/color_red_empty.png"],
+    "card_frame_protagonist_skill_common": ["PNG/Cards (large)/color_green_empty.png", "PNG/Cards (medium)/color_green_empty.png"],
+    "card_frame_protagonist_power_common": ["PNG/Cards (large)/color_purple_empty.png", "PNG/Cards (medium)/color_purple_empty.png"],
+    "card_frame_companion_attack_common": ["PNG/Cards (large)/color_yellow_empty.png", "PNG/Cards (medium)/color_yellow_empty.png"],
+    "card_frame_companion_skill_common": ["PNG/Cards (large)/color_green_empty.png", "PNG/Cards (medium)/color_green_empty.png"],
+    "card_frame_companion_power_common": ["PNG/Cards (large)/color_purple_empty.png", "PNG/Cards (medium)/color_purple_empty.png"],
+    "card_motif_attack_sword": ["PNG/Cards (large)/card_spades_A.png", "PNG/Cards (medium)/card_spades_A.png"],
+    "card_motif_skill_guard": ["PNG/Cards (large)/card_clubs_K.png", "PNG/Cards (medium)/card_clubs_K.png"],
+    "card_motif_power_oath": ["PNG/Cards (large)/color_purple_reverse.png", "PNG/Cards (medium)/color_purple_reverse.png"],
+    "card_motif_rowan_spear": ["PNG/Cards (large)/color_red_6.png", "PNG/Cards (medium)/color_red_6.png"],
+    "card_motif_sera_dagger": ["PNG/Cards (large)/card_spades_J.png", "PNG/Cards (medium)/card_spades_J.png"],
+    "card_motif_eldric_shield": ["PNG/Cards (large)/color_green_reverse.png", "PNG/Cards (medium)/color_green_reverse.png"],
+}
+
+
+KENNEY_UI_REPLACEMENTS: dict[str, list[str]] = {
+    "icon_energy": ["PNG/Yellow/Double/star.png", "PNG/Yellow/Default/star.png"],
+    "icon_health": ["PNG/Red/Double/icon_circle.png", "PNG/Red/Default/icon_circle.png"],
+    "icon_gold": ["PNG/Yellow/Double/icon_outline_circle.png", "PNG/Yellow/Default/icon_outline_circle.png"],
+    "icon_block": ["PNG/Blue/Double/icon_square.png", "PNG/Blue/Default/icon_square.png"],
+    "icon_draw_pile": ["PNG/Blue/Double/icon_arrow_up_outline.png", "PNG/Extra/Double/icon_arrow_up_outline.png"],
+    "icon_discard_pile": ["PNG/Grey/Double/icon_arrow_down_outline.png", "PNG/Extra/Double/icon_arrow_down_outline.png"],
+    "icon_exhaust_pile": ["PNG/Red/Double/icon_cross.png", "PNG/Red/Default/icon_cross.png"],
+    "icon_tactical_mark": ["PNG/Yellow/Double/star_outline_depth.png", "PNG/Yellow/Default/star_outline_depth.png"],
+    "icon_vulnerable": ["PNG/Red/Double/icon_outline_square.png", "PNG/Red/Default/icon_outline_square.png"],
+    "icon_weak": ["PNG/Grey/Double/icon_outline_circle.png", "PNG/Grey/Default/icon_outline_circle.png"],
+    "icon_poison": ["PNG/Green/Double/icon_circle.png", "PNG/Green/Default/icon_circle.png"],
+    "icon_heal": ["PNG/Green/Double/check_round_color.png", "PNG/Green/Default/check_round_color.png"],
+    "icon_healing_down": ["PNG/Purple/Double/icon_cross.png", "PNG/Red/Double/icon_cross.png"],
+    "node_combat": ["PNG/Red/Double/star_outline_depth.png", "PNG/Red/Default/star_outline_depth.png"],
+    "node_elite": ["PNG/Yellow/Double/star_outline_depth.png", "PNG/Yellow/Default/star_outline_depth.png"],
+    "node_mid_boss": ["PNG/Red/Double/button_round_depth_gradient.png", "PNG/Red/Default/button_round_depth_gradient.png"],
+    "node_boss": ["PNG/Blue/Double/star_outline_depth.png", "PNG/Blue/Default/star_outline_depth.png"],
+    "node_shop": ["PNG/Yellow/Double/button_round_depth_gradient.png", "PNG/Yellow/Default/button_round_depth_gradient.png"],
+    "node_inn": ["PNG/Green/Double/button_round_depth_gradient.png", "PNG/Green/Default/button_round_depth_gradient.png"],
+    "node_event": ["PNG/Blue/Double/button_round_depth_gradient.png", "PNG/Blue/Default/button_round_depth_gradient.png"],
+    "node_treasure": ["PNG/Yellow/Double/star.png", "PNG/Yellow/Default/star.png"],
+    "node_companion_trace": ["PNG/Green/Double/star_outline.png", "PNG/Green/Default/star_outline.png"],
+    "node_companion_contract": ["PNG/Green/Double/star_outline_depth.png", "PNG/Green/Default/star_outline_depth.png"],
+    "node_upgrade": ["PNG/Blue/Double/check_round_color.png", "PNG/Blue/Default/check_round_color.png"],
+}
+
+
 def clamp(v: int) -> int:
     return max(0, min(255, v))
 
@@ -66,6 +124,125 @@ def path_from_res(res_path: str) -> Path:
 def write_text(path: Path, text: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text.strip() + "\n", encoding="utf-8")
+
+
+def ensure_zip(url: str, zip_path: Path) -> None:
+    zip_path.parent.mkdir(parents=True, exist_ok=True)
+    if zip_path.exists() and zip_path.stat().st_size > 0:
+        return
+    print(f"downloading {url}")
+    try:
+        urllib.request.urlretrieve(url, zip_path)
+    except Exception:
+        subprocess.run(["curl", "-L", "--fail", "-o", str(zip_path), url], check=True)
+
+
+def extract_zip(zip_path: Path, out_dir: Path) -> None:
+    marker = out_dir / ".extracted"
+    if marker.exists():
+        return
+    if out_dir.exists():
+        shutil.rmtree(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(zip_path) as archive:
+        archive.extractall(out_dir)
+    marker.write_text(zip_path.name + "\n", encoding="utf-8")
+
+
+def prepare_kenney_sources() -> None:
+    ensure_zip(KENNEY_PLAYING_CARDS_URL, KENNEY_CACHE_ROOT / "kenney_playing-cards-pack.zip")
+    ensure_zip(KENNEY_UI_PACK_URL, KENNEY_CACHE_ROOT / "kenney_ui-pack.zip")
+    extract_zip(KENNEY_CACHE_ROOT / "kenney_playing-cards-pack.zip", KENNEY_CARDS_ROOT)
+    extract_zip(KENNEY_CACHE_ROOT / "kenney_ui-pack.zip", KENNEY_UI_ROOT)
+
+
+def resolve_first(root: Path, candidates: list[str]) -> Path:
+    for rel_path in candidates:
+        source = root / rel_path
+        if source.exists():
+            return source
+    raise FileNotFoundError(f"Missing Kenney source in {root}: {candidates}")
+
+
+def resize_pixel_asset(source: Path, target: Path, target_size: tuple[int, int], fit: bool = True) -> None:
+    img = Image.open(source).convert("RGBA")
+    bbox = img.getbbox()
+    if bbox is not None:
+        img = img.crop(bbox)
+    if fit:
+        scale = min(target_size[0] / img.width, target_size[1] / img.height)
+        size = (max(1, round(img.width * scale)), max(1, round(img.height * scale)))
+        resized = img.resize(size, Image.Resampling.NEAREST)
+        canvas = Image.new("RGBA", target_size, TRANSPARENT)
+        canvas.alpha_composite(resized, ((target_size[0] - size[0]) // 2, (target_size[1] - size[1]) // 2))
+        img = canvas
+    else:
+        img = img.resize(target_size, Image.Resampling.NEAREST)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    img.save(target)
+
+
+def target_size_for(asset: dict[str, Any]) -> tuple[int, int]:
+    frame_size = asset.get("frame_size", [])
+    if isinstance(frame_size, list) and len(frame_size) >= 2:
+        return (int(frame_size[0]), int(frame_size[1]))
+    out = path_from_res(str(asset.get("path", "")))
+    if out.exists():
+        with Image.open(out) as current:
+            return current.size
+    return (48, 48)
+
+
+def copy_kenney_license(source_root: Path, target_name: str, source_page: str) -> None:
+    license_source = source_root / "License.txt"
+    license_dir = ASSET_ROOT / "vendor_licenses"
+    license_dir.mkdir(parents=True, exist_ok=True)
+    license_target = license_dir / target_name
+    if license_source.exists():
+        license_text = license_source.read_text(encoding="utf-8", errors="replace").strip()
+    else:
+        license_text = "Kenney asset pack license file was not found in the extracted archive."
+    license_target.write_text(
+        f"{license_text}\n\nSource page: {source_page}\n",
+        encoding="utf-8",
+    )
+
+
+def asset_index(manifest: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    return {str(asset.get("id", "")): asset for asset in manifest.get("assets", [])}
+
+
+def apply_kenney_assets(manifest: dict[str, Any]) -> None:
+    prepare_kenney_sources()
+    by_id = asset_index(manifest)
+    replaced: list[str] = []
+    for asset_id, candidates in KENNEY_CARD_REPLACEMENTS.items():
+        asset = by_id.get(asset_id)
+        if asset is None:
+            continue
+        source = resolve_first(KENNEY_CARDS_ROOT, candidates)
+        target = path_from_res(str(asset["path"]))
+        resize_pixel_asset(source, target, target_size_for(asset), fit=True)
+        write_text(
+            path_from_res(str(asset["prompt_path"])),
+            f"Kenney Playing Cards Pack CC0 source for {asset_id}. Original PNG: {source.relative_to(KENNEY_CARDS_ROOT)}. Source page: {KENNEY_PLAYING_CARDS_PAGE}",
+        )
+        replaced.append(asset_id)
+    for asset_id, candidates in KENNEY_UI_REPLACEMENTS.items():
+        asset = by_id.get(asset_id)
+        if asset is None:
+            continue
+        source = resolve_first(KENNEY_UI_ROOT, candidates)
+        target = path_from_res(str(asset["path"]))
+        resize_pixel_asset(source, target, target_size_for(asset), fit=True)
+        write_text(
+            path_from_res(str(asset["prompt_path"])),
+            f"Kenney UI Pack CC0 source for {asset_id}. Original PNG: {source.relative_to(KENNEY_UI_ROOT)}. Source page: {KENNEY_UI_PACK_PAGE}",
+        )
+        replaced.append(asset_id)
+    copy_kenney_license(KENNEY_CARDS_ROOT, "Kenney_Playing_Cards_Pack_LICENSE.txt", KENNEY_PLAYING_CARDS_PAGE)
+    copy_kenney_license(KENNEY_UI_ROOT, "Kenney_UI_Pack_LICENSE.txt", KENNEY_UI_PACK_PAGE)
+    print(f"applied Kenney replacements: {len(replaced)} assets")
 
 
 def px_rect(draw: ImageDraw.ImageDraw, xy: tuple[int, int, int, int], fill: tuple[int, int, int, int]) -> None:
@@ -748,11 +925,35 @@ def draw_map_background() -> Image.Image:
 
 
 def update_manifest(manifest: dict[str, Any]) -> None:
-    manifest["version"] = "0.1.1"
-    manifest["style"] = "temp_pixel_voxel_v2"
+    manifest["version"] = "0.2.1"
+    manifest["style"] = "temp_pixel_voxel_v2_kenney_cc0"
     manifest["generated_by"] = "tools/phase0_upgrade_pixel_assets.py"
-    manifest["source_pipeline"] = "pixel/voxel-style redraw plus agent-sprite-forge magenta cleanup for sprite sheets"
+    manifest["source_pipeline"] = (
+        "pixel/voxel-style redraw plus agent-sprite-forge magenta cleanup for sprite sheets; "
+        "Kenney CC0 Playing Cards Pack and UI Pack replacements for card frames, card motifs, route nodes, and core UI icons"
+    )
+    manifest["external_sources"] = {
+        "kenney_playing_cards_pack": {
+            "license": "Creative Commons CC0",
+            "page": KENNEY_PLAYING_CARDS_PAGE,
+        },
+        "kenney_ui_pack": {
+            "license": "Creative Commons CC0",
+            "page": KENNEY_UI_PACK_PAGE,
+        },
+    }
     MANIFEST_PATH.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    if PRIMARY_MANIFEST_PATH.exists():
+        primary = json.loads(PRIMARY_MANIFEST_PATH.read_text(encoding="utf-8"))
+        primary.update({
+            "version": manifest["version"],
+            "style": manifest["style"],
+            "generated_by": manifest["generated_by"],
+            "source_pipeline": manifest["source_pipeline"],
+            "external_sources": manifest["external_sources"],
+            "assets": manifest["assets"],
+        })
+        PRIMARY_MANIFEST_PATH.write_text(json.dumps(primary, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
 def update_readme() -> None:
@@ -761,31 +962,50 @@ def update_readme() -> None:
 
 Generated for Phase 0 as replaceable Godot integration art.
 
-Current pass: `temp_pixel_voxel_v2`
+Current pass: `temp_pixel_voxel_v2_kenney_cc0`
 
 - Stronger 2D pixel-art silhouettes with a pseudo-voxel 3/4 read.
 - Cold blue-gray survival palette with warm fire and late-game green/purple corruption accents.
 - Sprite sheets keep the same manifest IDs and Godot paths.
 - Generated sheets use agent-sprite-forge postprocessing for chroma-key cleanup and frame extraction.
+- Card frames, card motifs, route node icons, and core UI icons are replaced from Kenney's CC0 Playing Cards Pack and UI Pack.
+- Vendor license notes are stored in `vendor_licenses/`.
 - Final art can replace these files by preserving manifest IDs or updating the manifest.
+
+Phase 10 replacement rule:
+
+- Game code should request art by `asset_id`, not by direct file path.
+- `SourceCode/data/assets/asset_manifest.json` is the production-facing manifest.
+- `SourceCode/data/assets/temp_asset_manifest.json` remains the temporary source/reference manifest.
+- Final art may either overwrite the temp paths during early production or point `asset_manifest.json` to a new final-art folder.
+- Preserve frame sizes, row/column counts, anchors, and transparent backgrounds unless a scene is deliberately updated.
 """,
         encoding="utf-8",
     )
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Upgrade Phase 0 Godot temp assets.")
+    parser.add_argument(
+        "--kenney-only",
+        action="store_true",
+        help="Only download/apply Kenney CC0 card and UI replacements without redrawing sprite sheets.",
+    )
+    args = parser.parse_args()
     manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
-    for asset in manifest["assets"]:
-        if asset["type"] == "sprite_sheet":
-            make_sprite_sheet(asset)
-        elif asset["type"] == "portrait":
-            make_portrait(asset)
-        elif asset["type"] == "background":
-            make_background(asset)
-        elif asset["category"] == "cards":
-            make_card(asset)
-        else:
-            make_icon(asset)
+    if not args.kenney_only:
+        for asset in manifest["assets"]:
+            if asset["type"] == "sprite_sheet":
+                make_sprite_sheet(asset)
+            elif asset["type"] == "portrait":
+                make_portrait(asset)
+            elif asset["type"] == "background":
+                make_background(asset)
+            elif asset["category"] == "cards":
+                make_card(asset)
+            else:
+                make_icon(asset)
+    apply_kenney_assets(manifest)
     update_manifest(manifest)
     update_readme()
     print(f"upgraded {len(manifest['assets'])} assets")

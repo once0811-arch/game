@@ -4,15 +4,15 @@
 
 ## 결과 요약
 
-Phase 0 임시 픽셀 에셋 생성을 완료했고, 1차 프록시 에셋의 시각 품질이 너무 낮아 `temp_pixel_voxel_v2` 아트 패스를 추가로 적용했다.
+Phase 0 임시 픽셀 에셋 생성을 완료했고, 1차 프록시 에셋의 시각 품질이 너무 낮아 `temp_pixel_voxel_v2` 아트 패스를 추가로 적용했다. 이후 카드/핵심 UI는 Kenney CC0 팩을 실제 파이프라인에 연결해 `temp_pixel_voxel_v2_kenney_cc0`로 갱신했다.
 
 ```txt
 생성 에셋 수: 135개
 에셋 루트: SourceCode/assets/temp_pixel/
 manifest: SourceCode/data/assets/temp_asset_manifest.json
-Godot 확인 씬: SourceCode/scenes/debug/asset_gallery.tscn
-현재 실행 메인 씬: res://scenes/debug/asset_gallery.tscn
-현재 스타일: temp_pixel_voxel_v2
+Godot 확인 씬: SourceCode/scenes/main/main.tscn, SourceCode/scenes/map/map_screen.tscn, SourceCode/scenes/combat/combat_screen.tscn
+현재 실행 메인 씬: res://scenes/main/main.tscn
+현재 스타일: temp_pixel_voxel_v2_kenney_cc0
 ```
 
 `agent-sprite-forge`는 프로젝트에 커밋하지 않는 외부 스킬 폴더로 유지한다. 생성된 애니메이션 시트는 `agent-sprite-forge/skills/generate2dsprite/scripts/generate2dsprite.py process`를 통해 magenta cleanup, 프레임 분리, 투명 sheet, GIF preview, pipeline metadata를 생성했다.
@@ -26,6 +26,16 @@ v2 패스는 아래 기준을 적용했다.
 4. Act 1의 차가운 청회색 + 모닥불색, 재난/후반 암시용 보라 + 진녹색 유지
 5. 장비 아이콘은 원형 UI 배지가 아니라 실제 물건 실루엣으로 분리
 6. 배경은 단순 테스트 패턴이 아니라 로드무비형 폐허/상점/여관/성문 장소감이 보이도록 재작성
+```
+
+Kenney 갱신 패스는 아래 기준을 적용했다.
+
+```txt
+1. Kenney Playing Cards Pack(CC0)에서 카드 프레임/카드 모티프를 복사 및 리사이즈
+2. Kenney UI Pack(CC0)에서 핵심 자원 아이콘과 맵 노드 아이콘을 복사 및 리사이즈
+3. 원본 PNG의 투명 여백을 크롭한 뒤 NEAREST로 확대해 픽셀 선명도 유지
+4. SourceCode/data/assets/asset_manifest.json과 temp_asset_manifest.json 모두 외부 출처/라이선스 메타데이터 기록
+5. SourceCode/assets/temp_pixel/vendor_licenses/에 Kenney 라이선스 노트 보관
 ```
 
 프리뷰:
@@ -60,15 +70,10 @@ tools/phase0_upgrade_pixel_assets.py
 ```txt
 1. Godot에서 SourceCode/project.godot을 연다.
 2. 실행 버튼을 누른다.
-3. Phase 0 Temp Pixel Asset Gallery가 뜨는지 확인한다.
-4. 탭별로 actors, companions, enemies, bosses, backgrounds, ui, cards, equipment, fx를 확인한다.
-5. 누락 에셋은 붉게 표시되므로 manifest 경로를 점검한다.
-```
-
-직접 씬을 열고 싶다면 아래 파일을 연다.
-
-```txt
-SourceCode/scenes/debug/asset_gallery.tscn
+3. 메인 메뉴에서 새 런을 시작한다.
+4. Route 화면에서 노드 아이콘과 버튼 가독성을 확인한다.
+5. 전투 화면에서 Kenney 카드 프레임, 카드 모티프, 클릭/드래그 타겟팅을 확인한다.
+6. 누락 에셋은 manifest 경로와 SourceCode/assets/temp_pixel/ 하위 파일을 점검한다.
 ```
 
 ## 교체 원칙
