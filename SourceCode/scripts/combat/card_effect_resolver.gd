@@ -20,6 +20,23 @@ func resolve(card: Dictionary, target_index: int, card_instance: Dictionary = {}
 				var attack_bonus := RunState.equipment.get_total_bonus("attack_damage", "protagonist")
 				var upgrade_bonus := 2 if upgraded else 0
 				logs.append(_deal_damage(card, target, int(effect.get("amount", 0)) + attack_bonus + upgrade_bonus))
+			"damage_all":
+				if has_target:
+					RunState.combat.enemies[target_index] = target
+				var attack_bonus := RunState.equipment.get_total_bonus("attack_damage", "protagonist")
+				var upgrade_bonus := 1 if upgraded else 0
+				var amount := int(effect.get("amount", 0)) + attack_bonus + upgrade_bonus
+				var hit_count := 0
+				for i in range(RunState.combat.enemies.size()):
+					var enemy: Dictionary = RunState.combat.enemies[i]
+					if int(enemy.get("hp", 0)) <= 0:
+						continue
+					_deal_damage(card, enemy, amount)
+					RunState.combat.enemies[i] = enemy
+					hit_count += 1
+				if has_target:
+					target = RunState.combat.enemies[target_index]
+				logs.append("%s hit %d enemies." % [CardDataScript.card_name(card), hit_count])
 			"block":
 				var block := int(effect.get("amount", 0)) + RunState.equipment.get_total_bonus("block_card_bonus", "protagonist")
 				if upgraded:
@@ -40,6 +57,10 @@ func resolve(card: Dictionary, target_index: int, card_instance: Dictionary = {}
 				var amount: int = int(effect.get("amount", 0))
 				RunState.combat.energy += amount
 				logs.append("Gained %d energy." % amount)
+			"gain_gold":
+				var amount: int = int(effect.get("amount", 0))
+				RunState.gold += amount
+				logs.append("Gained %d gold." % amount)
 			"lose_hp":
 				var amount: int = int(effect.get("amount", 0))
 				RunState.current_hp = max(RunState.current_hp - amount, 0)

@@ -6,12 +6,12 @@
     "p_strike",
     "p_strike",
     "p_strike",
+    "p_strike",
     "p_guard",
     "p_guard",
     "p_guard",
     "p_guard",
-    "p_tactical_prep",
-    "p_heavy_cut"
+    "p_tactical_prep"
   ],
   "cards": [
     {
@@ -39,16 +39,16 @@
       "name": "Tactical Prep",
       "type": "skill",
       "rarity": "starter",
-      "cost": 2,
+      "cost": 0,
       "asset_id": "card_motif_power_oath",
-      "rules_text": "Draw 2. Gain 1 Tactical Mark.",
-      "effects": [{"type": "draw", "amount": 2}, {"type": "tactical_mark", "amount": 1}]
+      "rules_text": "Draw 1. Apply 1 Tactical Mark.",
+      "effects": [{"type": "draw", "amount": 1}, {"type": "tactical_mark", "amount": 1}]
     },
     {
       "id": "p_heavy_cut",
       "name": "Heavy Cut",
       "type": "attack",
-      "rarity": "starter",
+      "rarity": "common",
       "cost": 2,
       "asset_id": "card_motif_attack_sword",
       "rules_text": "Deal 12 damage.",

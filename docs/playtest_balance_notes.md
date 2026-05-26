@@ -69,7 +69,8 @@ These are starting targets, not final truth:
 - Card service targets are automatic, so telemetry can show usage but not whether the choice felt satisfying.
 - Temporary art reuse may distort perceived difficulty because enemies are not visually distinct enough yet.
 - Combat logs count oath triggers, but not the value gained from each trigger.
-- Kyle's gambling economy is still design-only; telemetry has a placeholder target but no implementation-specific counter yet.
+- Kyle's gambling economy is now implemented as a 5-win wager payout. It needs focused testing because normal outcomes should be below average, while jackpot outcomes are allowed to make a run easier.
+- The current playable card pool is smaller than the final 40 protagonist / 80 companion target, so early balance should judge pacing and system clarity before judging final build variety.
 
 ## Next Tuning Loop
 

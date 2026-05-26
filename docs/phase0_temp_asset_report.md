@@ -55,8 +55,8 @@ tools/phase0_upgrade_pixel_assets.py
 | 카테고리 | 개수 | 내용 |
 |---|---:|---|
 | actors | 4 | 주인공 idle/attack/guard/portrait |
-| companions | 16 | MVP 동료 3명 시트/초상 + 예비 동료 7명 초상 |
-| ui/oaths | 9 | MVP 동료 3명 x 서약 전술 아이콘 3개 |
+| companions | 16 | 초기 검증 동료 3명 시트/초상 + 예비 동료 7명 초상 |
+| ui/oaths | 9 | 초기 검증 동료 3명 x 서약 전술 아이콘 3개 |
 | enemies | 12 | Act 1 일반 적 6종 idle/hurt |
 | bosses | 10 | Act 1 엘리트 3종, 중간 보스, 보스 idle/hurt |
 | backgrounds | 8 | 전투/맵/상점/여관/이벤트 배경 |

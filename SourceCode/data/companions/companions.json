@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "0.1.1",
   "companions": [
     {
       "id": "rowan",
@@ -9,9 +9,9 @@
       "portrait_asset_id": "companion_rowan_portrait",
       "sprite_asset_id": "companion_rowan_idle",
       "oath_tactics": [
-        {"id": "rowan_red_pursuit", "name": "Red Pursuit", "rules_text": "When Tactical Mark is applied, Rowan's next attack gains +2 damage."},
-        {"id": "rowan_first_blood", "name": "First Blood", "rules_text": "The first marked enemy each combat takes 3 extra damage."},
-        {"id": "rowan_spear_line", "name": "Spear Line", "rules_text": "Rowan prioritizes marked enemies and adds 1 Mark on hit."}
+        {"id": "rowan_red_pursuit", "name": "Red Pursuit", "rules_text": "When Rowan hits a marked enemy, deal 2 extra oath damage."},
+        {"id": "rowan_first_blood", "name": "First Blood", "rules_text": "The first marked target Rowan hits each combat takes 3 extra oath damage."},
+        {"id": "rowan_spear_line", "name": "Spear Line", "rules_text": "Rowan adds 1 Tactical Mark when he hits."}
       ]
     },
     {
@@ -22,8 +22,8 @@
       "portrait_asset_id": "companion_sera_portrait",
       "sprite_asset_id": "companion_sera_idle",
       "oath_tactics": [
-        {"id": "sera_second_cut", "name": "Second Cut", "rules_text": "After two cards are played in a turn, Sera's next hit gains +3 damage."},
-        {"id": "sera_smoke_step", "name": "Smoke Step", "rules_text": "At combat start, gain 1 temporary block for each card in hand."},
+        {"id": "sera_second_cut", "name": "Second Cut", "rules_text": "After the second card you play each turn, deal 3 oath damage to the target."},
+        {"id": "sera_smoke_step", "name": "Smoke Step", "rules_text": "At combat start, gain 1 block for each card in hand."},
         {"id": "sera_quick_claim", "name": "Quick Claim", "rules_text": "The first 0-cost card each combat applies 1 Tactical Mark."}
       ]
     },
@@ -35,9 +35,9 @@
       "portrait_asset_id": "companion_eldric_portrait",
       "sprite_asset_id": "companion_eldric_idle",
       "oath_tactics": [
-        {"id": "eldric_shared_guard", "name": "Shared Guard", "rules_text": "After you gain block from a card, Eldric stores 2 guard."},
+        {"id": "eldric_shared_guard", "name": "Shared Guard", "rules_text": "Block cards grant 2 extra block."},
         {"id": "eldric_oathwall", "name": "Oathwall", "rules_text": "The first enemy attack each combat is reduced by 2."},
-        {"id": "eldric_last_stand", "name": "Last Stand", "rules_text": "If HP is below 40%, Eldric's guard cards gain +2 block."}
+        {"id": "eldric_last_stand", "name": "Last Stand", "rules_text": "While HP is 40% or lower, block cards grant 2 extra block."}
       ]
     },
     {
@@ -48,9 +48,9 @@
       "portrait_asset_id": "companion_bram_portrait",
       "sprite_asset_id": "companion_rowan_idle",
       "oath_tactics": [
-        {"id": "bram_blood_wager", "name": "Blood Wager", "rules_text": "After you lose HP by card effect, Bram gains +2 damage this combat."},
+        {"id": "bram_blood_wager", "name": "Blood Wager", "rules_text": "After you lose HP from a card, deal 4 oath damage to the target."},
         {"id": "bram_hard_bargain", "name": "Hard Bargain", "rules_text": "The first self-damage card each combat refunds 1 energy."},
-        {"id": "bram_red_laugh", "name": "Red Laugh", "rules_text": "When an enemy is defeated, heal 2."}
+        {"id": "bram_red_laugh", "name": "Red Laugh", "rules_text": "The first time Bram helps defeat an enemy each combat, heal 2."}
       ]
     },
     {
@@ -61,9 +61,74 @@
       "portrait_asset_id": "companion_maren_portrait",
       "sprite_asset_id": "companion_eldric_idle",
       "oath_tactics": [
-        {"id": "maren_measured_care", "name": "Measured Care", "rules_text": "Healing cards also gain 2 block."},
-        {"id": "maren_no_free_debt", "name": "No Free Debt", "rules_text": "The first heal each combat costs 1 less but applies 1 Weak to you next turn."},
-        {"id": "maren_clean_bandage", "name": "Clean Bandage", "rules_text": "After a perfect block turn, heal 1."}
+        {"id": "maren_measured_care", "name": "Measured Care", "rules_text": "Healing cards also grant 2 block."},
+        {"id": "maren_no_free_debt", "name": "No Free Debt", "rules_text": "The first healing card each combat refunds 1 energy."},
+        {"id": "maren_clean_bandage", "name": "Clean Bandage", "rules_text": "The first block card each turn heals 1."}
+      ]
+    },
+    {
+      "id": "tor",
+      "name": "Tor",
+      "role": "Contract breaker in iron plates",
+      "base_attack": 4,
+      "portrait_asset_id": "companion_tor_portrait",
+      "sprite_asset_id": "companion_eldric_idle",
+      "oath_tactics": [
+        {"id": "tor_shield_rent", "name": "Shield Rent", "rules_text": "Block cards grant 3 extra block."},
+        {"id": "tor_low_stance", "name": "Low Stance", "rules_text": "At combat start, if HP is 50% or lower, gain 6 block."},
+        {"id": "tor_mark_break", "name": "Mark Break", "rules_text": "When Tor hits a marked enemy, deal 2 extra oath damage."}
+      ]
+    },
+    {
+      "id": "lina",
+      "name": "Lina",
+      "role": "Poacher guide with green-string traps",
+      "base_attack": 4,
+      "portrait_asset_id": "companion_lina_portrait",
+      "sprite_asset_id": "companion_sera_idle",
+      "oath_tactics": [
+        {"id": "lina_green_pin", "name": "Green Pin", "rules_text": "Tactical Mark cards apply 1 extra Mark."},
+        {"id": "lina_bitter_dose", "name": "Bitter Dose", "rules_text": "The first skill card each turn deals 2 oath damage to the target."},
+        {"id": "lina_last_leaf", "name": "Last Leaf", "rules_text": "Healing cards also apply 1 Tactical Mark to the target."}
+      ]
+    },
+    {
+      "id": "noa",
+      "name": "Noa",
+      "role": "Star-map scavenger",
+      "base_attack": 3,
+      "portrait_asset_id": "companion_noa_portrait",
+      "sprite_asset_id": "companion_sera_idle",
+      "oath_tactics": [
+        {"id": "noa_star_count", "name": "Star Count", "rules_text": "After your third card each turn, draw 1."},
+        {"id": "noa_first_read", "name": "First Read", "rules_text": "At combat start, draw 1."},
+        {"id": "noa_zero_map", "name": "Zero Map", "rules_text": "The first 0-cost card each combat grants 1 energy."}
+      ]
+    },
+    {
+      "id": "isol",
+      "name": "Isol",
+      "role": "Lantern bearer and oath witness",
+      "base_attack": 2,
+      "portrait_asset_id": "companion_isol_portrait",
+      "sprite_asset_id": "companion_eldric_idle",
+      "oath_tactics": [
+        {"id": "isol_white_guard", "name": "White Guard", "rules_text": "The first healing card each combat grants 5 block."},
+        {"id": "isol_lantern", "name": "Lantern", "rules_text": "At combat start, if HP is 50% or lower, heal 2."},
+        {"id": "isol_mercy_line", "name": "Mercy Line", "rules_text": "The first block card each turn heals 1."}
+      ]
+    },
+    {
+      "id": "kyle",
+      "name": "Kyle",
+      "role": "Road gambler and bad-odds quartermaster",
+      "base_attack": 3,
+      "portrait_asset_id": "companion_kyle_portrait",
+      "sprite_asset_id": "companion_rowan_idle",
+      "oath_tactics": [
+        {"id": "kyle_five_hand", "name": "Five Hand", "rules_text": "Every 5 combat wins with Kyle pays a random wager reward."},
+        {"id": "kyle_clean_exit", "name": "Clean Exit", "rules_text": "Victories at 70% HP or higher count twice toward Kyle's wager."},
+        {"id": "kyle_loaded_coin", "name": "Loaded Coin", "rules_text": "Kyle's wager has worse average payout but a bigger jackpot."}
       ]
     }
   ]

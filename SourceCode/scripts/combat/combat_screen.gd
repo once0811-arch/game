@@ -72,9 +72,7 @@ func _build_ui() -> void:
 	protagonist.custom_minimum_size = Vector2(210, 210)
 	protagonist.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
 	protagonist.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	var protagonist_path := DataRegistry.get_temp_asset_path("protagonist_mercenary_idle")
-	if not protagonist_path.is_empty():
-		protagonist.texture = load(protagonist_path)
+	protagonist.texture = DataRegistry.get_temp_asset_texture("protagonist_mercenary_idle")
 	player_box.add_child(protagonist)
 
 	player_label = UIStyleScript.label("", 17)
@@ -205,9 +203,7 @@ func _make_enemy_panel(enemy: Dictionary, enemy_index: int) -> PanelContainer:
 	portrait.custom_minimum_size = Vector2(150, 150)
 	portrait.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
 	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	var asset_path := DataRegistry.get_temp_asset_path(String(enemy.get("asset_id", "")))
-	if not asset_path.is_empty():
-		portrait.texture = load(asset_path)
+	portrait.texture = DataRegistry.get_temp_asset_texture(String(enemy.get("asset_id", "")))
 	content.add_child(portrait)
 
 	var statuses: Dictionary = enemy.get("statuses", {})

@@ -100,19 +100,12 @@ func _make_menu_button(label_text: String) -> Button:
 
 func _refresh_status() -> void:
 	continue_button.disabled = not SaveService.has_save()
-	var data_state := "Ready" if DataRegistry.is_ready_for_phase_8() else "Missing data"
-	status_label.text = "%s | Cards %d | Companions %d | Enemies %d | Equipment %d | Assets %d | Save %s" % [
-		data_state,
-		DataRegistry.get_card_count(),
-		DataRegistry.get_companion_count(),
-		DataRegistry.get_enemy_count(),
-		DataRegistry.get_equipment_count(),
-		DataRegistry.get_temp_asset_count(),
-		"found" if SaveService.has_save() else "none",
-	]
 	if not DataRegistry.load_errors.is_empty():
 		for error in DataRegistry.load_errors:
-			status_label.text += "\n" + error
+			push_warning(error)
+		status_label.text = "Some contract records are missing. Please restart the build."
+		return
+	status_label.text = "A saved contract waits." if SaveService.has_save() else "No active contract. Start a new run."
 
 
 func _on_new_run_pressed() -> void:

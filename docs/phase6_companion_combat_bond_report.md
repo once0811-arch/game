@@ -10,7 +10,8 @@ The goal of this phase is not to make companions a passive stat bonus, but to ma
 - Companions perform one basic attack after the player ends the turn.
 - Companion attacks prefer enemies with the highest Tactical Mark.
 - Companion base attack values are defined in `data/companions/companions.json`.
-- Rowan, Sera, and Eldric oath tactics now have combat hooks.
+- All 10 current companions have three selectable oath tactics with combat hooks.
+- Kyle's economy is a 5-win wager payout, not a fixed reward after every battle.
 - Bond score rises after combat victory and stays in the 0-100 range.
 - Bond bonuses at 30, 60, and 100 points are applied in combat.
 - The combat screen now shows a compact companion panel with oath and bond status.
@@ -29,6 +30,11 @@ Current base attacks:
 | Eldric | 3 |
 | Bram | 6 |
 | Maren | 2 |
+| Tor | 4 |
+| Lina | 4 |
+| Noa | 3 |
+| Isol | 2 |
+| Kyle | 3 |
 
 The current target rule is simple and readable:
 
@@ -43,7 +49,7 @@ This makes mark cards and Rowan-style tactics matter without adding a manual com
 The selected oath tactic is fixed after recruitment and has no upgrade path.
 Only the recruited companion's selected oath is active.
 
-Implemented examples:
+Implemented hooks:
 
 | Companion | Oath | Current Effect |
 | --- | --- | --- |
@@ -56,6 +62,27 @@ Implemented examples:
 | Eldric | Oathwall | Combat start reduces incoming enemy attack damage. |
 | Eldric | Shared Guard | Block cards grant additional block. |
 | Eldric | Last Stand | Block cards grant more block while player HP is low. |
+| Bram | Blood Wager | Self-damage cards deal extra oath damage. |
+| Bram | Hard Bargain | First self-damage card each combat refunds energy. |
+| Bram | Red Laugh | First kill assisted by Bram each combat heals HP. |
+| Maren | Measured Care | Healing cards also grant block. |
+| Maren | No Free Debt | First healing card each combat refunds energy. |
+| Maren | Clean Bandage | First block card each turn heals 1. |
+| Tor | Shield Rent | Block cards grant more block. |
+| Tor | Low Stance | Low-HP combat start grants block. |
+| Tor | Mark Break | Marked target companion hit deals extra oath damage. |
+| Lina | Green Pin | Tactical Mark cards apply an extra Mark. |
+| Lina | Bitter Dose | First skill card each turn deals small oath damage. |
+| Lina | Last Leaf | Healing cards also apply Tactical Mark. |
+| Noa | Star Count | Third card each turn draws a card. |
+| Noa | First Read | Combat start draws a card. |
+| Noa | Zero Map | First 0-cost card each combat grants energy. |
+| Isol | White Guard | First healing card each combat grants block. |
+| Isol | Lantern | Low-HP combat start heals. |
+| Isol | Mercy Line | First block card each turn heals 1. |
+| Kyle | Five Hand | Every 5 combat wins pays a random wager reward. |
+| Kyle | Clean Exit | High-HP victories count double toward the wager. |
+| Kyle | Loaded Coin | Wager average is worse but jackpot is larger. |
 
 The effects are intentionally modest.
 The oath should open a tactical lane, not replace deckbuilding.
@@ -93,7 +120,7 @@ What works:
 - Companion turns now create an end-turn payoff, so the player cares about whether an enemy is marked before ending.
 - Bond thresholds give a soft long-term reward without forcing grind behavior.
 - Oath tactics are tied to card usage, marks, or defense timing, which keeps them inside the deckbuilder loop.
-- Sera, Rowan, and Eldric now read differently in combat instead of being cosmetic roster entries.
+- All current companions now read differently in combat instead of being cosmetic roster entries.
 
 Risks:
 
@@ -101,6 +128,7 @@ Risks:
 - Some oath tactics are still numeric hooks rather than distinct animations or bespoke feedback.
 - Bond bonuses are intentionally mild; if playtests feel flat, the 60 or 100 thresholds may need more visible effects.
 - Healing and injury pressure are not fully tested until inn, event, and enemy status systems exist.
+- Kyle's wager needs telemetry follow-up because rare jackpot outcomes are intentionally allowed to make a run easier.
 
 Improvement applied in this phase:
 

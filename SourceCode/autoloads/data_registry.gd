@@ -86,6 +86,32 @@ func get_temp_asset_path(asset_id: String, default_path: String = "") -> String:
 	return String(asset.get("path", default_path))
 
 
+func get_temp_asset_texture(asset_id: String, frame_index: int = 0) -> Texture2D:
+	var asset := get_temp_asset(asset_id)
+	var path := String(asset.get("path", ""))
+	if path.is_empty():
+		return null
+	var texture := load(path) as Texture2D
+	if texture == null:
+		return null
+	if String(asset.get("type", "")) != "sprite_sheet":
+		return texture
+	var frame_size: Array = asset.get("frame_size", [])
+	if frame_size.size() < 2:
+		return texture
+	var frame_w := int(frame_size[0])
+	var frame_h := int(frame_size[1])
+	if frame_w <= 0 or frame_h <= 0:
+		return texture
+	var cols: int = max(int(asset.get("cols", 1)), 1)
+	var frame: int = max(frame_index, 0)
+	var row := floori(float(frame) / float(cols))
+	var atlas := AtlasTexture.new()
+	atlas.atlas = texture
+	atlas.region = Rect2((frame % cols) * frame_w, row * frame_h, frame_w, frame_h)
+	return atlas
+
+
 func get_temp_asset_count() -> int:
 	return temp_assets_by_id.size()
 

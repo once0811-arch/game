@@ -129,7 +129,7 @@ raw 생성 이미지는 agent-sprite-forge 원칙에 따라 solid #FF00FF 배경
 | `protagonist_mercenary_guard` | 4프레임 guard sheet | 방어 카드 |
 | `protagonist_portrait` | 1장 | UI, 대화, 보상 화면 |
 
-#### MVP 동료 3명
+#### 초기 검증 동료 3명
 
 | 동료 | 출력 | 핵심 실루엣 |
 |---|---|---|
@@ -663,7 +663,7 @@ asset id 기반 로딩 가능
 ```txt
 1. Phase 0 에셋 폴더 구조 생성.
 2. Phase 0 asset_manifest 초안 작성.
-3. 주인공, MVP 동료 3명, Act 1 적/보스, UI 아이콘, 배경 순서로 픽셀 에셋 생성.
+3. 주인공, 초기 검증 동료 3명, Act 1 적/보스, UI 아이콘, 배경 순서로 픽셀 에셋 생성.
 4. 생성 프롬프트와 후처리 결과를 에셋 옆에 저장.
 5. Godot asset_gallery로 모든 임시 에셋을 확인.
 6. Phase 1 프로젝트 뼈대 구현 시작.

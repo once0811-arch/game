@@ -4,8 +4,8 @@
   "run": {
     "starting_act": 1,
     "starting_depth": 0,
-    "starting_gold": 80,
-    "starting_max_hp": 75,
+    "starting_gold": 99,
+    "starting_max_hp": 76,
     "max_companions": 2
   },
   "combat": {
