@@ -91,6 +91,30 @@
 회복 카드는 방어/정화/피해 감소와 결합하되, 순수 회복량만으로 여관을 대체하면 안 됨
 ```
 
+### 2026-05-27 현재 구현 패치 기준
+
+현재 Godot JSON 카드풀은 최종 40장 설계가 아니라 전투 감각 검증용 20장 풀이다.
+
+```txt
+Road Cleave / Breakthrough / Sweeping Order는 과도한 자동 선택 쏠림을 낮추기 위해 피해를 소폭 낮춘다.
+Contract Mark / Oath Focus / Risk Advance는 전술 표식과 드로우를 붙여 동료/서약 빌드의 실제 선택 이유를 만든다.
+Field Medicine / Last Light는 순수 회복이 아니라 방어+약한 회복 카드로 유지해 여관 역할을 침범하지 않는다.
+Blood Price는 HP를 비용으로 에너지와 드로우를 당겨오는 고위험 템포 카드로 둔다.
+```
+
+구현 기준 핵심 변경:
+
+```txt
+Road Cleave: 3비용 피해 16
+Breakthrough: 3비용 피해 12 + 드로우 1
+Sweeping Order: 3비용 광역 피해 7 + 전술 표식 1
+Contract Mark: 1비용 전술 표식 2 + 드로우 1
+Oath Focus: 1비용 전술 표식 1 + 이후 전술 표식 +1
+Risk Advance: 0비용 드로우 2 + 전술 표식 1 + 체력 손실 2
+Blood Price: 0비용 에너지 2 + 드로우 1 + 체력 손실 3
+Field Medicine: 2비용 회복 2 + 방어도 10
+```
+
 ### 파워 카드 기준
 
 ```txt

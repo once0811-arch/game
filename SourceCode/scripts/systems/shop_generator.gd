@@ -96,11 +96,14 @@ func _equipment_products() -> Array[Dictionary]:
 
 func _service_products() -> Array[Dictionary]:
 	var remove_price: int = int(DataRegistry.get_balance("shop.remove_base_cost", 75)) + RunState.equipment.card_remove_count * int(DataRegistry.get_balance("shop.remove_cost_growth", 25))
+	var upgrade_price := int(DataRegistry.get_balance("shop.service_upgrade_cost", 110))
+	var transform_price := int(DataRegistry.get_balance("shop.service_transform_cost", 85))
+	var copy_price := int(DataRegistry.get_balance("shop.service_copy_cost", 125))
 	return [
 		{"id": "service_remove", "type": "service", "service": "remove", "title": "Remove Card", "price": price_after_discount(remove_price), "description": "Remove the first starter card found."},
-		{"id": "service_upgrade", "type": "service", "service": "upgrade", "title": "Upgrade Card", "price": price_after_discount(90), "description": "Upgrade the first unupgraded card."},
-		{"id": "service_transform", "type": "service", "service": "transform", "title": "Transform Card", "price": price_after_discount(70), "description": "Transform the first starter card into a reward card."},
-		{"id": "service_copy", "type": "service", "service": "copy", "title": "Copy Card", "price": price_after_discount(100), "description": "Copy the first non-starter card."},
+		{"id": "service_upgrade", "type": "service", "service": "upgrade", "title": "Upgrade Card", "price": price_after_discount(upgrade_price), "description": "Upgrade the first unupgraded card."},
+		{"id": "service_transform", "type": "service", "service": "transform", "title": "Transform Card", "price": price_after_discount(transform_price), "description": "Transform the first starter card into a reward card."},
+		{"id": "service_copy", "type": "service", "service": "copy", "title": "Copy Card", "price": price_after_discount(copy_price), "description": "Copy the first non-starter card."},
 	]
 
 

@@ -35,7 +35,7 @@ TARGET_HP_MIDPOINTS = {
 }
 
 CARD_RARITY_WEIGHTS = {"common": 70, "uncommon": 25, "rare": 5}
-BOND_GAINS = {"combat": 8, "elite": 12, "midboss": 12, "boss": 20, "combat_fallback": 6}
+BOND_GAINS = {"combat": 4, "elite": 7, "midboss": 8, "boss": 12, "combat_fallback": 3}
 STARTER_IDS: set[str] = set()
 
 
@@ -216,8 +216,20 @@ class BalanceSimulator:
                 node = self._choose_node(state, available, policy)
                 previous_node_id = str(node["id"])
                 completed_by_depth[depth] = previous_node_id
+                hp_before = state.hp
+                max_hp_before = state.max_hp
                 node_result = self._process_node(state, node, policy, enemy_profile)
-                state.node_history.append({"act": act, "depth": depth, "type": node.get("type"), "label": node.get("label"), **node_result})
+                state.node_history.append({
+                    "act": act,
+                    "depth": depth,
+                    "type": node.get("type"),
+                    "label": node.get("label"),
+                    "hp_before": hp_before,
+                    "hp_after": state.hp,
+                    "max_hp_before": max_hp_before,
+                    "max_hp_after": state.max_hp,
+                    **node_result,
+                })
                 if state.hp <= 0 or node_result.get("defeat"):
                     return {"won": False, "death_act": act, "death_depth": depth, "death_node": node.get("label", "?")}
                 if str(node.get("type")) == "boss":
@@ -243,6 +255,8 @@ class BalanceSimulator:
     def _choose_node(self, state: RunState, nodes: list[dict[str, Any]], policy: str) -> dict[str, Any]:
         scored = [(self._node_score(state, node, policy) + state.rng.uniform(-0.7, 0.7), node) for node in nodes]
         scored.sort(key=lambda item: item[0], reverse=True)
+        if policy == "novice" and len(scored) > 1 and state.rng.random() < 0.35:
+            return scored[min(len(scored) - 1, state.rng.randint(1, 2))][1]
         return scored[0][1]
 
     def _node_score(self, state: RunState, node: dict[str, Any], policy: str) -> float:
@@ -288,6 +302,8 @@ class BalanceSimulator:
             combat = self._simulate_combat(state, node, policy, enemy_profile)
             if combat["outcome"] == "defeat":
                 return {"defeat": True, **combat}
+            if node_type == "boss":
+                state.stats[f"boss_clear_act_{int(node.get('act', state.act))}"] += 1
             self._grant_combat_rewards(state, node_type)
             if node_type != "boss":
                 self._card_reward(state, policy, source=node_type)
@@ -567,6 +583,10 @@ class BalanceSimulator:
         zero_utility = [item for item in affordable if self._card_cost(item[2]) == 0 and self._has_any_effect(item[2], {"draw", "gain_energy"})]
         if zero_utility:
             return max(zero_utility, key=lambda item: self._card_tactical_value(item[2], item[1].upgraded))
+        if policy == "novice" and need_block < 8:
+            attacks = [item for item in affordable if self._has_any_effect(item[2], {"damage", "damage_all", "tactical_mark"})]
+            if attacks:
+                return max(attacks, key=lambda item: self._card_tactical_value(item[2], item[1].upgraded))
         if need_block > 0:
             blockers = [item for item in affordable if self._has_any_effect(item[2], {"block", "heal"})]
             if blockers:
@@ -833,11 +853,13 @@ class BalanceSimulator:
         deck_size = len(state.deck)
         scored = [(self._reward_card_score(state, card, policy), card) for card in options]
         scored.sort(key=lambda item: item[0], reverse=True)
-        threshold = 20 if deck_size < 16 else 25 if deck_size < 22 else 31
+        threshold = 20 if deck_size < 16 else 26 if deck_size < 22 else 33
         if policy == "greedy":
             threshold -= 4
         elif policy == "safe":
             threshold += 2
+        elif policy == "novice":
+            threshold -= 8
         if scored[0][0] < threshold:
             return None
         return scored[0][1]
@@ -850,11 +872,15 @@ class BalanceSimulator:
         if str(card.get("type")) == "attack" and deck_attack < deck_block:
             score += 5
         if self._has_any_effect(card, {"block", "heal"}) and deck_block <= deck_attack:
-            score += 4
+            score += 8
         if self._has_any_effect(card, {"draw", "gain_energy"}):
             score += 5
+        if self._has_any_effect(card, {"tactical_mark"}):
+            score += 3 + (6 if state.companions else 0)
+        if self._has_any_effect(card, {"power_tactical_mark_bonus"}):
+            score += 6 + (6 if state.companions else 0)
         if cost >= 3 and len([inst for inst in state.deck if self._card_cost(self.cards[inst.card_id]) >= 3]) >= 3:
-            score -= 6
+            score -= 8
         return score
 
     def _visit_shop(self, state: RunState, policy: str) -> None:
@@ -898,9 +924,9 @@ class BalanceSimulator:
         remove_price = int(self.balance.get("shop", {}).get("remove_base_cost", 75)) + state.remove_count * int(self.balance.get("shop", {}).get("remove_cost_growth", 25))
         products.extend([
             {"type": "service", "service": "remove", "price": self._discounted(state, remove_price)},
-            {"type": "service", "service": "upgrade", "price": self._discounted(state, 90)},
-            {"type": "service", "service": "transform", "price": self._discounted(state, 70)},
-            {"type": "service", "service": "copy", "price": self._discounted(state, 100)},
+            {"type": "service", "service": "upgrade", "price": self._discounted(state, int(self.balance.get("shop", {}).get("service_upgrade_cost", 110)))},
+            {"type": "service", "service": "transform", "price": self._discounted(state, int(self.balance.get("shop", {}).get("service_transform_cost", 85)))},
+            {"type": "service", "service": "copy", "price": self._discounted(state, int(self.balance.get("shop", {}).get("service_copy_cost", 125)))},
         ])
         return products
 
@@ -981,18 +1007,18 @@ class BalanceSimulator:
     @staticmethod
     def _normal_rooms() -> list[dict[str, Any]]:
         return [
-            {"id": "small_room", "price": 35, "effects": [{"type": "heal_percent", "percent": 22}]},
-            {"id": "good_room", "price": 80, "effects": [{"type": "heal_percent", "percent": 45}]},
-            {"id": "noble_room", "price": 125, "effects": [{"type": "heal_percent", "percent": 70}]},
+            {"id": "small_room", "price": 40, "effects": [{"type": "heal_percent", "percent": 20}]},
+            {"id": "good_room", "price": 90, "effects": [{"type": "heal_percent", "percent": 35}]},
+            {"id": "noble_room", "price": 145, "effects": [{"type": "heal_percent", "percent": 55}]},
         ]
 
     @staticmethod
     def _event_rooms() -> list[dict[str, Any]]:
         return [
-            {"id": "free_creaking_room", "price": 0, "effects": [{"type": "heal_percent", "percent": 20}, {"type": "heal_percent", "percent": 100, "chance": 25}]},
-            {"id": "red_curtain_room", "price": 25, "effects": [{"type": "heal_percent", "percent": 15}, {"type": "upgrade_card", "chance": 50}]},
-            {"id": "locked_side_room", "price": 45, "effects": [{"type": "heal_percent", "percent": 25}, {"type": "gain_equipment", "chance": 35, "rarities": ["common", "uncommon"]}]},
-            {"id": "banquet_bed", "price": 90, "effects": [{"type": "heal_percent", "percent": 60}]},
+            {"id": "free_creaking_room", "price": 0, "effects": [{"type": "heal_percent", "percent": 14}, {"type": "heal_percent", "percent": 100, "chance": 10}]},
+            {"id": "red_curtain_room", "price": 35, "effects": [{"type": "heal_percent", "percent": 12}, {"type": "upgrade_card", "chance": 35}]},
+            {"id": "locked_side_room", "price": 60, "effects": [{"type": "heal_percent", "percent": 18}, {"type": "gain_equipment", "chance": 25, "rarities": ["common", "uncommon"]}]},
+            {"id": "banquet_bed", "price": 105, "effects": [{"type": "heal_percent", "percent": 45}]},
         ]
 
     def _room_value(self, state: RunState, room: dict[str, Any], missing: int) -> float:
@@ -1091,7 +1117,7 @@ class BalanceSimulator:
             state.protagonist_upgrade_level += 1
         elif choice == "minor_companion_bond":
             for companion in state.companions:
-                companion.bond = min(100, companion.bond + 10)
+                companion.bond = min(100, companion.bond + 6)
         else:
             self._upgrade_first_unupgraded(state)
         state.stats["upgrades_taken"] += 1
@@ -1106,7 +1132,7 @@ class BalanceSimulator:
             state.protagonist_upgrade_level += 1
         elif choice == "major_companions":
             for companion in state.companions:
-                companion.bond = min(100, companion.bond + 20)
+                companion.bond = min(100, companion.bond + 12)
                 companion.attack_bonus += 1
         else:
             rare_ids = [item_id for item_id, item in self.equipment.items() if str(item.get("rarity")) == "rare"]
@@ -1331,7 +1357,8 @@ class BalanceSimulator:
     def _card_tactical_value(self, card: dict[str, Any], upgraded: bool) -> float:
         damage, aoe, block, draw, energy, heal, lose_hp, mark = self._card_effect_values(card, upgraded)
         cost = self._card_cost(card)
-        return damage * 2.0 + aoe * 4.3 + block * 1.15 + draw * 5.0 + energy * 8.0 + heal * 2.2 + mark * 3.0 - lose_hp * 2.1 - cost * 3.0
+        power = sum(int(effect.get("amount", 0)) for effect in card.get("effects", []) if str(effect.get("type", "")) == "power_tactical_mark_bonus")
+        return damage * 2.0 + aoe * 4.0 + block * 1.35 + draw * 5.0 + energy * 8.0 + heal * 2.4 + mark * 4.5 + power * 12.0 - lose_hp * 2.1 - cost * 3.0
 
     @staticmethod
     def _has_any_effect(card: dict[str, Any], effect_types: set[str]) -> bool:
@@ -1348,6 +1375,7 @@ class AggregateStats:
     reached_acts: Counter = field(default_factory=Counter)
     totals: Counter = field(default_factory=Counter)
     combat_rows: list[dict[str, Any]] = field(default_factory=list)
+    node_rows: list[dict[str, Any]] = field(default_factory=list)
     final_deck_sizes: list[int] = field(default_factory=list)
     final_hp: list[int] = field(default_factory=list)
     final_gold: list[int] = field(default_factory=list)
@@ -1369,6 +1397,7 @@ class AggregateStats:
         for key, value in state.stats.items():
             self.totals[key] += value
         self.combat_rows.extend(state.combat_summaries)
+        self.node_rows.extend(state.node_history)
         for card_id, counter in state.card_stats.items():
             self.card_stats[card_id].update(counter)
 
@@ -1385,6 +1414,7 @@ class AggregateStats:
             "runs": self.runs,
             "win_rate": self.wins / max(1, self.runs),
             "act_reach_rate": {str(act): self.reached_acts[act] / max(1, self.runs) for act in (1, 2, 3)},
+            "boss_clear_rate": {str(act): self.totals[f"boss_clear_act_{act}"] / max(1, self.runs) for act in (1, 2, 3)},
             "top_deaths": self.deaths.most_common(8),
             "avg_final_deck_size": mean(self.final_deck_sizes),
             "avg_final_hp": mean(self.final_hp),
@@ -1398,6 +1428,7 @@ class AggregateStats:
             "avg_shop_purchases": self.totals["shop_purchases"] / max(1, self.runs),
             "avg_inn_rooms": self.totals["inn_rooms_used"] / max(1, self.runs),
             "avg_oath_triggers": self.totals["oath_triggers"] / max(1, self.runs),
+            "route_hp": self._route_hp_summary(self.node_rows),
             "combat_by_type": {kind: self._combat_summary(rows) for kind, rows in by_node_type.items()},
             "combat_by_act": {str(act): self._combat_summary(rows) for act, rows in by_act.items()},
             "card_stats": {card_id: dict(counter) for card_id, counter in sorted(self.card_stats.items())},
@@ -1414,6 +1445,24 @@ class AggregateStats:
             "defeat_rate": sum(1 for row in rows if row.get("outcome") != "victory") / max(1, len(rows)),
         }
 
+    @staticmethod
+    def _route_hp_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
+        def _ratio(row: dict[str, Any], hp_key: str, max_key: str) -> float:
+            return float(row.get(hp_key, 0)) / max(1.0, float(row.get(max_key, 1)))
+
+        inn_rows = [row for row in rows if str(row.get("type", "")) == "inn"]
+        boss_rows = [row for row in rows if str(row.get("type", "")) == "boss"]
+        return {
+            "avg_inn_hp_before": mean([float(row.get("hp_before", 0)) for row in inn_rows]),
+            "avg_inn_hp_after": mean([float(row.get("hp_after", 0)) for row in inn_rows]),
+            "avg_inn_hp_ratio_before": mean([_ratio(row, "hp_before", "max_hp_before") for row in inn_rows]),
+            "avg_inn_hp_ratio_after": mean([_ratio(row, "hp_after", "max_hp_after") for row in inn_rows]),
+            "avg_boss_hp_ratio_before_by_act": {
+                str(act): mean([_ratio(row, "hp_before", "max_hp_before") for row in boss_rows if int(row.get("act", 0)) == act])
+                for act in (1, 2, 3)
+            },
+        }
+
 
 def card_balance_tables(sim: BalanceSimulator, report: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
     rows = []
@@ -1422,7 +1471,16 @@ def card_balance_tables(sim: BalanceSimulator, report: dict[str, Any]) -> dict[s
         played = int(stats.get("played", 0))
         offered = int(stats.get("offered", 0))
         picked = int(stats.get("picked", 0)) + int(stats.get("bought", 0))
-        output = int(stats.get("damage", 0)) + int(stats.get("block", 0)) + int(stats.get("heal", 0)) * 2 + int(stats.get("draw", 0)) * 4 + int(stats.get("energy", 0)) * 6 - int(stats.get("self_damage", 0)) * 2
+        output = (
+            int(stats.get("damage", 0))
+            + int(stats.get("block", 0))
+            + int(stats.get("heal", 0)) * 2
+            + int(stats.get("draw", 0)) * 4
+            + int(stats.get("energy", 0)) * 6
+            + int(stats.get("mark", 0)) * 3
+            + int(stats.get("power", 0)) * 10
+            - int(stats.get("self_damage", 0)) * 2
+        )
         rows.append({
             "id": card_id,
             "name": str(card.get("name", card_id)),
@@ -1463,12 +1521,19 @@ def write_report(sim: BalanceSimulator, reports: list[dict[str, Any]], output_js
         "",
         "## Summary",
         "",
-        "| Policy | Enemy profile | Runs | Win | Avg deck | Avg HP | Avg gold | Avg bond | Picked | Skipped | Upgraded | Removed | Gear | Oath triggers |",
-        "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+        "| Policy | Enemy profile | Runs | A1 Boss | A2 Boss | A3 Reach | Win | Inn in/out | Boss HP A1/A2/A3 | Avg deck | Avg HP | Avg gold | Avg bond | Picked | Skipped | Upgraded | Removed | Gear | Oath triggers |",
+        "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ]
     for report in reports:
+        boss_clear = report.get("boss_clear_rate", {})
+        act_reach = report.get("act_reach_rate", {})
+        route_hp = report.get("route_hp", {})
+        boss_hp = route_hp.get("avg_boss_hp_ratio_before_by_act", {})
+        inn_ratio = f"{float(route_hp.get('avg_inn_hp_ratio_before', 0))*100:.0f}/{float(route_hp.get('avg_inn_hp_ratio_after', 0))*100:.0f}%"
+        boss_ratio = f"{float(boss_hp.get('1', 0))*100:.0f}/{float(boss_hp.get('2', 0))*100:.0f}/{float(boss_hp.get('3', 0))*100:.0f}%"
         lines.append(
-            f"| {report['policy']} | {report['enemy_profile']} | {report['runs']} | {report['win_rate']*100:.1f}% | "
+            f"| {report['policy']} | {report['enemy_profile']} | {report['runs']} | "
+            f"{float(boss_clear.get('1', 0))*100:.1f}% | {float(boss_clear.get('2', 0))*100:.1f}% | {float(act_reach.get('3', 0))*100:.1f}% | {report['win_rate']*100:.1f}% | {inn_ratio} | {boss_ratio} | "
             f"{report['avg_final_deck_size']:.1f} | {report['avg_final_hp']:.1f} | {report['avg_final_gold']:.1f} | {report['avg_final_bond']:.1f} | "
             f"{report['avg_cards_picked']:.1f} | {report['avg_cards_skipped']:.1f} | {report['avg_cards_upgraded']:.1f} | {report['avg_cards_removed']:.1f} | "
             f"{report['avg_equipment_gained']:.1f} | {report['avg_oath_triggers']:.1f} |"
@@ -1476,6 +1541,7 @@ def write_report(sim: BalanceSimulator, reports: list[dict[str, Any]], output_js
     def _find(policy: str, profile: str) -> dict[str, Any]:
         return next((item for item in reports if item["policy"] == policy and item["enemy_profile"] == profile), {})
 
+    current_novice = _find("novice", "current")
     current_balanced = _find("balanced", "current")
     current_safe = _find("safe", "current")
     current_greedy = _find("greedy", "current")
@@ -1484,16 +1550,33 @@ def write_report(sim: BalanceSimulator, reports: list[dict[str, Any]], output_js
     spec_safe = _find("safe", "spec_mid")
     spec_attack_balanced = _find("balanced", "spec_mid_attack10")
 
+    lines.extend(["", "## Key Findings", ""])
+    if current_novice:
+        lines.append(f"- 신규 플레이어에 가까운 novice 자동 정책은 Act 1 보스 {current_novice.get('boss_clear_rate', {}).get('1', 0)*100:.1f}%, Act 2 보스 {current_novice.get('boss_clear_rate', {}).get('2', 0)*100:.1f}%, 최종 승리 {current_novice.get('win_rate', 0)*100:.1f}%다. 사람의 실수와 학습 비용은 더 크므로, 이 값은 신규 목표의 상한선으로 본다.")
+    if current_balanced or current_safe or current_greedy:
+        lines.append(f"- 현재 구현 데이터는 경로 성향에 따라 크게 갈린다. balanced {current_balanced.get('win_rate', 0)*100:.1f}%, safe {current_safe.get('win_rate', 0)*100:.1f}%, greedy {current_greedy.get('win_rate', 0)*100:.1f}%다.")
+    if plus_balanced:
+        lines.append(f"- 단순 +6% HP는 balanced를 {plus_balanced.get('win_rate', 0)*100:.1f}%까지 낮춘다. 전체 HP 상향은 최후 보정 수단으로만 쓴다.")
+    if spec_balanced or spec_safe:
+        lines.append(f"- 문서 목표 HP 중간값을 전부 적용하면 balanced {spec_balanced.get('win_rate', 0)*100:.1f}%, safe {spec_safe.get('win_rate', 0)*100:.1f}%가 된다. 문서 목표는 최종 목표선으로는 쓸 수 있지만, 현재 구현에 즉시 일괄 적용하면 너무 가파르다.")
+    if spec_attack_balanced:
+        lines.append(f"- 문서 목표 HP에 공격력 +10%까지 얹은 압박 테스트는 balanced {spec_attack_balanced.get('win_rate', 0)*100:.1f}%다. 이 수치는 상위 난이도나 후반 튜닝 검증용이지 기본 난이도 기준으로 쓰면 안 된다.")
+    lines.extend([
+        "- 이번 패치는 보스 HP만 올리는 방향을 피하고, 일반/엘리트의 공격 의도와 회복 경제를 조정해 길 위에서 체력이 점진적으로 깎이는 곡선을 만든다.",
+        "- safe 정책은 체력을 보존하지만 덱 품질과 최종 화력이 약해지도록 두고, greedy 정책은 강한 덱을 만들 수 있지만 여관 진입 체력이 낮아지는 구조로 본다.",
+    ])
     lines.extend([
         "",
-        "## Key Findings",
+        "## Target Bands",
         "",
-        f"- 현재 구현 데이터는 경로 성향에 따라 크게 갈린다. balanced {current_balanced.get('win_rate', 0)*100:.1f}%, safe {current_safe.get('win_rate', 0)*100:.1f}%, greedy {current_greedy.get('win_rate', 0)*100:.1f}%다.",
-        f"- 단순 +6% HP는 balanced를 {plus_balanced.get('win_rate', 0)*100:.1f}%까지 낮추지만, safe는 여전히 매우 높다. 즉 전체 HP 상향만으로는 안전 경로 문제를 해결하지 못한다.",
-        f"- 문서 목표 HP 중간값을 전부 적용하면 balanced {spec_balanced.get('win_rate', 0)*100:.1f}%, safe {spec_safe.get('win_rate', 0)*100:.1f}%가 된다. 문서 목표는 최종 목표선으로는 쓸 수 있지만, 현재 구현에 즉시 일괄 적용하면 너무 가파르다.",
-        f"- 문서 목표 HP에 공격력 +10%까지 얹은 압박 테스트는 balanced {spec_attack_balanced.get('win_rate', 0)*100:.1f}%다. 이 수치는 상위 난이도나 후반 튜닝 검증용이지 기본 난이도 기준으로 쓰면 안 된다.",
-        "- 엘리트 전투의 직접 패배율은 거의 0%에 가깝다. 엘리트는 길게 만들 수는 있지만, 현재 구조에서는 위험/보상 거래가 충분히 날카롭지 않다.",
-        "- safe 정책은 많은 골드와 장비를 남긴 채 높은 승률을 낸다. 안전 경로의 상점/여관/이벤트 경제가 너무 편하거나, 위험 경로 보상이 충분히 차별화되지 않은 신호다.",
+        "| Target profile | Act 1 boss clear | Act 2 boss clear | Act 3 reach | Act 3 boss clear | Use |",
+        "| --- | ---: | ---: | ---: | ---: | --- |",
+        "| Early general player | 65-75% | 25-35% | 12-18% | 6-10% | 신규/초기 런 체감 목표. 자동 러너와 직접 비교하지 않는다. |",
+        "| Automatic runner sanity | novice 75-90% | novice 30-45% | novice 25-45% | novice 6-12%, balanced 35-55%, safe 70-90%, greedy 20-40% | 수치 패치가 너무 쉬운지/가파른지 보는 내부 안전장치. |",
+        "",
+        "Steam achievements show many lifetime players eventually beat at least one character, while high Ascension completion is much rarer. 그래서 기본 난이도의 장기 목표를 10% 미만으로 두지 않고, 신규/초기 플레이어 목표와 숙련 플레이어 목표를 분리한다.",
+        "",
+        "체력 곡선은 별도 목표로 본다. 평균 여관 진입 체력은 35-60% 사이, 여관 퇴장 체력은 60-85% 사이가 좋다. 보스 진입 체력은 Act 1 55-80%, Act 2 45-75%, Act 3 40-70%를 1차 목표로 둔다. 이 값이 높게 고정되면 경로 선택의 긴장이 약하고, 너무 낮으면 여관을 못 찾은 런이 즉사한다.",
     ])
 
     lines.extend(["", "## Combat Pressure", ""])
@@ -1511,7 +1594,7 @@ def write_report(sim: BalanceSimulator, reports: list[dict[str, Any]], output_js
         lines.append("")
         lines.append("Top deaths: " + ", ".join([f"{name} {count}" for name, count in report.get("top_deaths", [])[:5]]))
         lines.append("")
-    chosen = next((r for r in reports if r["enemy_profile"] == "spec_mid_attack10" and r["policy"] == "balanced"), reports[-1])
+    chosen = next((r for r in reports if r["enemy_profile"] == "current" and r["policy"] == "balanced"), reports[-1])
     tables = card_balance_tables(sim, chosen)
     lines.extend(["", "## Card Balance Signals", "", f"기준 표본: `{chosen['policy']} / {chosen['enemy_profile']}`", ""])
     for title, key in [("High Pick", "high_pick"), ("Low Pick", "low_pick"), ("High Output", "high_output"), ("Low Output", "low_output")]:
@@ -1524,7 +1607,7 @@ def write_report(sim: BalanceSimulator, reports: list[dict[str, Any]], output_js
         "",
         "- 낮은 픽률 카드는 보상 후보를 흐리는 카드다. 높은 출력 카드는 코스트 대비 과한지 실제 카드 텍스트를 따로 검토한다.",
         "- 현재 자동 정책은 공격적으로 강한 카드를 선호하므로, 방어/유틸 카드의 실제 인간 가치가 과소평가될 수 있다. 그래도 0%에 가까운 픽률은 경고로 본다.",
-        "- 승률 목표는 자동 러너 기준 balanced 45~65%, safe 70~85%, greedy 25~45% 정도가 1차 기준으로 적당하다. safe 95% 이상은 너무 쉽고, balanced 20% 이하는 너무 가파르다.",
+        "- 승률 목표는 자동 러너 기준 novice 6~12%, balanced 35~55%, safe 70~90%, greedy 20~40% 정도가 1차 기준으로 적당하다. safe 95% 이상은 너무 쉽고, balanced 25% 이하는 너무 가파르다.",
         "",
         "## Next Balance Actions",
         "",
@@ -1541,7 +1624,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--runs", type=int, default=400)
     parser.add_argument("--seed", type=int, default=260526)
-    parser.add_argument("--policies", default="balanced,safe,greedy")
+    parser.add_argument("--policies", default="novice,balanced,safe,greedy")
     parser.add_argument("--enemy-profiles", default="current,plus6,spec_mid,spec_mid_attack10")
     parser.add_argument("--json-output", default="SourceCode/data/playtest_logs/balance_run_simulation_latest.json")
     parser.add_argument("--md-output", default="docs/balance_run_simulation_report.md")

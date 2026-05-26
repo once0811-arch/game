@@ -5,26 +5,26 @@
       "id": "boss_act2_oathless_regent",
       "name": "Oathless Regent",
       "act": 2,
-      "max_hp": 150,
+      "max_hp": 180,
       "asset_id": "boss_act1_blackprint_warlord_idle",
       "intents": [
-        {"type": "attack", "label": "Tax of Blood", "damage": 18},
+        {"type": "attack", "label": "Tax of Blood", "damage": 21},
         {"type": "healing_down", "label": "Royal Denial", "percent": 50, "turns": 2},
-        {"type": "block", "label": "Dead Court", "block": 22},
-        {"type": "attack", "label": "Unsigned Verdict", "damage": 24}
+        {"type": "block", "label": "Dead Court", "block": 24},
+        {"type": "attack", "label": "Unsigned Verdict", "damage": 29}
       ]
     },
     {
       "id": "boss_act3_unbound_core",
       "name": "Unbound Core",
       "act": 3,
-      "max_hp": 190,
+      "max_hp": 255,
       "asset_id": "boss_act1_blackprint_warlord_idle",
       "intents": [
         {"type": "healing_down", "label": "World Fray", "percent": 50, "turns": 2},
-        {"type": "attack", "label": "Core Pulse", "damage": 24},
-        {"type": "block", "label": "Impossible Wall", "block": 26},
-        {"type": "attack", "label": "Dimensional Tear", "damage": 30}
+        {"type": "attack", "label": "Core Pulse", "damage": 30},
+        {"type": "block", "label": "Impossible Wall", "block": 30},
+        {"type": "attack", "label": "Dimensional Tear", "damage": 39}
       ]
     }
   ]

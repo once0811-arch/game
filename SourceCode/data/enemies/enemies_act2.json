@@ -5,34 +5,34 @@
     {
       "id": "enemy_act2_heal_censor_scholar",
       "name": "Heal-Censor Scholar",
-      "max_hp": 56,
+      "max_hp": 60,
       "asset_id": "enemy_act1_mutated_scholar_idle",
       "intents": [
         {"type": "healing_down", "label": "Black Prescription", "percent": 50, "turns": 2},
-        {"type": "attack", "label": "Glass Scalpel", "damage": 10},
+        {"type": "attack", "label": "Glass Scalpel", "damage": 12},
         {"type": "block", "label": "Seal Notes", "block": 8}
       ]
     },
     {
       "id": "enemy_act2_oath_burned_mercenary",
       "name": "Oath-Burned Mercenary",
-      "max_hp": 68,
+      "max_hp": 72,
       "asset_id": "enemy_act1_mutated_mercenary_idle",
       "intents": [
-        {"type": "attack", "label": "Black Edge", "damage": 13},
-        {"type": "attack", "label": "Follow Through", "damage": 9},
+        {"type": "attack", "label": "Black Edge", "damage": 15},
+        {"type": "attack", "label": "Follow Through", "damage": 11},
         {"type": "block", "label": "Broken Guard", "block": 10}
       ]
     },
     {
       "id": "elite_act2_unsealed_caravan",
       "name": "Unsealed Caravan",
-      "max_hp": 92,
+      "max_hp": 104,
       "asset_id": "elite_act1_armored_caravan_guard_idle",
       "intents": [
-        {"type": "attack", "label": "Crushing Axle", "damage": 16},
+        {"type": "attack", "label": "Crushing Axle", "damage": 19},
         {"type": "healing_down", "label": "Sour Vapors", "percent": 50, "turns": 2},
-        {"type": "block", "label": "Iron Ring", "block": 14}
+        {"type": "block", "label": "Iron Ring", "block": 16}
       ]
     }
   ]

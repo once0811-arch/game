@@ -8,13 +8,13 @@
       "choices": [
         {
           "label": "Search the cargo",
-          "description": "Gain 35 gold.",
-          "effects": [{"type": "gain_gold", "amount": 35}]
+          "description": "Gain 22 gold.",
+          "effects": [{"type": "gain_gold", "amount": 22}]
         },
         {
           "label": "Repair the salvage",
-          "description": "Lose 5 HP. Gain a random common or uncommon equipment.",
-          "effects": [{"type": "lose_hp", "amount": 5}, {"type": "gain_equipment", "rarities": ["common", "uncommon"]}]
+          "description": "Lose 7 HP. Gain a random common or uncommon equipment.",
+          "effects": [{"type": "lose_hp", "amount": 7}, {"type": "gain_equipment", "rarities": ["common", "uncommon"]}]
         },
         {
           "label": "Leave it",
@@ -35,8 +35,8 @@
         },
         {
           "label": "Question them",
-          "description": "Gain 20 gold from nervous hush money.",
-          "effects": [{"type": "gain_gold", "amount": 20}]
+          "description": "Gain 10 gold from nervous hush money.",
+          "effects": [{"type": "gain_gold", "amount": 10}]
         },
         {
           "label": "Walk away",
@@ -52,18 +52,18 @@
       "choices": [
         {
           "label": "Work the bellows",
-          "description": "Lose 6 HP. Upgrade the first unupgraded card in your deck.",
-          "effects": [{"type": "lose_hp", "amount": 6}, {"type": "upgrade_card"}]
+          "description": "Lose 8 HP. Upgrade the first unupgraded card in your deck.",
+          "effects": [{"type": "lose_hp", "amount": 8}, {"type": "upgrade_card"}]
         },
         {
           "label": "Commission gear",
-          "description": "Pay 75 gold. Gain a random equipment.",
-          "effects": [{"type": "lose_gold", "amount": 75}, {"type": "gain_equipment"}]
+          "description": "Pay 95 gold. Gain a random equipment.",
+          "effects": [{"type": "lose_gold", "amount": 95}, {"type": "gain_equipment"}]
         },
         {
           "label": "Ask for road news",
-          "description": "Gain 15 gold.",
-          "effects": [{"type": "gain_gold", "amount": 15}]
+          "description": "Gain 8 gold.",
+          "effects": [{"type": "gain_gold", "amount": 8}]
         }
       ]
     },
@@ -74,18 +74,18 @@
       "choices": [
         {
           "label": "Follow the trace",
-          "description": "All companions gain 10 bond.",
-          "effects": [{"type": "bond_gain", "amount": 10}]
+          "description": "All companions gain 8 bond.",
+          "effects": [{"type": "bond_gain", "amount": 8}]
         },
         {
           "label": "Take the hidden purse",
-          "description": "Gain 30 gold.",
-          "effects": [{"type": "gain_gold", "amount": 30}]
+          "description": "Gain 14 gold.",
+          "effects": [{"type": "gain_gold", "amount": 14}]
         },
         {
           "label": "Mark the route",
-          "description": "Heal 8 HP.",
-          "effects": [{"type": "heal_amount", "amount": 8}]
+          "description": "Heal 6 HP.",
+          "effects": [{"type": "heal_amount", "amount": 6}]
         }
       ]
     }

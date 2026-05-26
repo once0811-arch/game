@@ -81,6 +81,9 @@ These are starting targets, not final truth:
 | 2-wave normal combat | HP loss no more than 15-25% above same-tier 1-wave combat. |
 | 3-wave normal combat | Appears at most once in Act 2 route and twice in Act 3 route. |
 | Multi-wave combat turn count | 2-wave normal 4-6 turns, 3-wave normal 5-7 turns. |
+| Inn entry HP | Average route should reach inns around 35-60% HP, not at full safety. |
+| Inn exit HP | A paid inn should leave the party around 60-85% HP, not fully reset every time. |
+| Boss entry HP | Act 1 55-80%, Act 2 45-75%, Act 3 40-70% before the boss. |
 
 ## Current Risks
 
@@ -93,6 +96,7 @@ These are starting targets, not final truth:
 - Combat now has visible oath/bond/wager/victory feedback. Verify that the toast timing helps rather than covering important card or enemy information.
 - Multi-wave combat is not implemented yet. When added, the danger is not a single overtuned wave but too many 2-3 wave nodes on one route.
 - Enemy total HP targets were raised by about 6%; do not also raise multi-wave frequency in the same tuning patch without telemetry.
+- The core route fun is attrition: HP should be gradually shaved down by normal and elite nodes, then stabilized by reaching an inn, event, shop, or upgrade at the right time. Prefer modest enemy attack pressure and recovery economy tuning over blunt HP inflation.
 
 ## Next Tuning Loop
 
@@ -129,6 +133,32 @@ Raise Act 1 boss, Act 2+ single-enemy nodes, and late bosses in smaller steps.
 Safe route economy is too strong; tune inns/events/shops and safe-route rewards.
 Elites rarely cause direct defeats, so their reward and threat identity need work.
 Card rewards over-select Road Cleave, Breakthrough, and Sweeping Order while many utility cards are ignored.
+```
+
+## Balance Patch - 2026-05-27
+
+Command:
+
+```txt
+python3 tools/balance_run_simulator.py --runs 500 --policies novice,balanced,safe,greedy --enemy-profiles current
+```
+
+Main result after the attrition patch:
+
+| Policy | Act 1 boss | Act 2 boss | Act 3 reach | Win | Inn in/out | Read |
+| --- | ---: | ---: | ---: | ---: | ---: | --- |
+| novice | 71.2% | 21.6% | 21.4% | 6.0% | 50/75% | Close to early-run target; Act 2 is still harsh but acceptable for the current small card pool. |
+| balanced | 98.6% | 76.4% | 76.4% | 39.2% | 33/67% | Inside automatic sanity band; skilled routing survives, but final boss and late Act 3 still matter. |
+| safe | 99.6% | 96.2% | 96.2% | 69.6% | 49/90% | Safe routing preserves HP but loses enough deck pressure to sit near the lower edge of target. |
+| greedy | 94.2% | 49.4% | 49.0% | 20.6% | 22/71% | Greedy routing is dangerous but viable, which fits the route-risk fantasy. |
+
+Patch direction:
+
+```txt
+Raised enemy attack intent more than HP so the main pressure is route attrition.
+Reduced safe-route free value through lower skip gold, weaker event gold, pricier gear/services, and less generous inns.
+Lowered bond gain pace so 100 bond is a strong investment outcome rather than a default Act 3 state.
+Reduced dominant high-cost attacks and improved mark/draw/utility cards so deckbuilding is less one-note.
 ```
 
 ## Phase 9 Validation

@@ -34,23 +34,23 @@ func _normal_rooms() -> Array[Dictionary]:
 		{
 			"id": "small_room",
 			"name": "Small Room",
-			"price": 35,
-			"description": "Recover 22% of max HP.",
-			"effects": [{"type": "heal_percent", "percent": 22}],
+			"price": 40,
+			"description": "Recover 20% of max HP.",
+			"effects": [{"type": "heal_percent", "percent": 20}],
 		},
 		{
 			"id": "good_room",
 			"name": "Good Room",
-			"price": 80,
-			"description": "Recover 45% of max HP.",
-			"effects": [{"type": "heal_percent", "percent": 45}],
+			"price": 90,
+			"description": "Recover 35% of max HP.",
+			"effects": [{"type": "heal_percent", "percent": 35}],
 		},
 		{
 			"id": "noble_room",
 			"name": "Noble Room",
-			"price": 125,
-			"description": "Recover 70% of max HP.",
-			"effects": [{"type": "heal_percent", "percent": 70}],
+			"price": 145,
+			"description": "Recover 55% of max HP.",
+			"effects": [{"type": "heal_percent", "percent": 55}],
 		},
 	]
 
@@ -61,37 +61,37 @@ func _event_rooms() -> Array[Dictionary]:
 			"id": "free_creaking_room",
 			"name": "Free Creaking Room",
 			"price": 0,
-			"description": "Recover 20% of max HP. 25% chance to recover fully.",
+			"description": "Recover 14% of max HP. 10% chance to recover fully.",
 			"effects": [
-				{"type": "heal_percent", "percent": 20},
-				{"type": "heal_percent", "percent": 100, "chance": 25}
+				{"type": "heal_percent", "percent": 14},
+				{"type": "heal_percent", "percent": 100, "chance": 10}
 			],
 		},
 		{
 			"id": "red_curtain_room",
 			"name": "Red Curtain Room",
-			"price": 25,
-			"description": "Recover 15% of max HP. 50% chance to upgrade a card.",
+			"price": 35,
+			"description": "Recover 12% of max HP. 35% chance to upgrade a card.",
 			"effects": [
-				{"type": "heal_percent", "percent": 15},
-				{"type": "upgrade_card", "chance": 50}
+				{"type": "heal_percent", "percent": 12},
+				{"type": "upgrade_card", "chance": 35}
 			],
 		},
 		{
 			"id": "locked_side_room",
 			"name": "Locked Side Room",
-			"price": 45,
-			"description": "Recover 25% of max HP. 35% chance to find equipment.",
+			"price": 60,
+			"description": "Recover 18% of max HP. 25% chance to find equipment.",
 			"effects": [
-				{"type": "heal_percent", "percent": 25},
-				{"type": "gain_equipment", "chance": 35, "rarities": ["common", "uncommon"]}
+				{"type": "heal_percent", "percent": 18},
+				{"type": "gain_equipment", "chance": 25, "rarities": ["common", "uncommon"]}
 			],
 		},
 		{
 			"id": "banquet_bed",
 			"name": "Banquet Bed",
-			"price": 90,
-			"description": "Recover 60% of max HP. The crowded hall leaves no room for quiet.",
-			"effects": [{"type": "heal_percent", "percent": 60}],
+			"price": 105,
+			"description": "Recover 45% of max HP. The crowded hall leaves no room for quiet.",
+			"effects": [{"type": "heal_percent", "percent": 45}],
 		},
 	]

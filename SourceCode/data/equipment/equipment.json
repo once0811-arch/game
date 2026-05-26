@@ -6,7 +6,7 @@
       "name": "Dented Salient Helm",
       "slot": "helmet",
       "rarity": "common",
-      "price": 105,
+      "price": 120,
       "rules_text": "Team starts combat with +2 block.",
       "effects": [{"scope": "team", "type": "start_block", "amount": 2}]
     },
@@ -15,7 +15,7 @@
       "name": "Bluegrey Coif",
       "slot": "helmet",
       "rarity": "uncommon",
-      "price": 165,
+      "price": 185,
       "rules_text": "Block cards grant +1 block.",
       "effects": [{"scope": "wearer", "type": "block_card_bonus", "amount": 1}]
     },
@@ -24,16 +24,16 @@
       "name": "Oath Tag Chain",
       "slot": "helmet",
       "rarity": "rare",
-      "price": 260,
-      "rules_text": "Shop prices are 10% lower.",
-      "effects": [{"scope": "team", "type": "shop_discount_percent", "amount": 10}]
+      "price": 295,
+      "rules_text": "Shop prices are 7% lower.",
+      "effects": [{"scope": "team", "type": "shop_discount_percent", "amount": 7}]
     },
     {
       "id": "eq_smoke_patched_coat",
       "name": "Smoke-Patched Coat",
       "slot": "armor",
       "rarity": "common",
-      "price": 115,
+      "price": 130,
       "rules_text": "Block cards grant +1 block.",
       "effects": [{"scope": "wearer", "type": "block_card_bonus", "amount": 1}]
     },
@@ -42,7 +42,7 @@
       "name": "Firelit Mail",
       "slot": "armor",
       "rarity": "uncommon",
-      "price": 185,
+      "price": 210,
       "rules_text": "Team starts combat with +4 block.",
       "effects": [{"scope": "team", "type": "start_block", "amount": 4}]
     },
@@ -51,7 +51,7 @@
       "name": "Blackprint Cuirass",
       "slot": "armor",
       "rarity": "rare",
-      "price": 285,
+      "price": 320,
       "rules_text": "Companion basic attacks deal +1 damage.",
       "effects": [{"scope": "team", "type": "companion_attack_damage", "amount": 1}]
     },
@@ -60,7 +60,7 @@
       "name": "Road Cleaver",
       "slot": "weapon",
       "rarity": "common",
-      "price": 120,
+      "price": 135,
       "rules_text": "Attack cards deal +1 damage.",
       "effects": [{"scope": "wearer", "type": "attack_damage", "amount": 1}]
     },
@@ -69,7 +69,7 @@
       "name": "Contract Spear",
       "slot": "weapon",
       "rarity": "uncommon",
-      "price": 195,
+      "price": 220,
       "rules_text": "Attack cards deal +2 damage.",
       "effects": [{"scope": "wearer", "type": "attack_damage", "amount": 2}]
     },
@@ -78,7 +78,7 @@
       "name": "Core-Cracked Blade",
       "slot": "weapon",
       "rarity": "rare",
-      "price": 310,
+      "price": 350,
       "rules_text": "Attack cards deal +2 damage. Companion basic attacks deal +1 damage.",
       "effects": [
         {"scope": "wearer", "type": "attack_damage", "amount": 2},

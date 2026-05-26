@@ -5,13 +5,13 @@
     {
       "id": "enemy_act1_mutated_merchant",
       "name": "Mutated Merchant",
-      "max_hp": 42,
+      "max_hp": 44,
       "asset_id": "enemy_act1_mutated_merchant_idle",
       "background_id": "bg_battle_act1_road_ruin",
       "intents": [
-        {"type": "attack", "damage": 6, "label": "Claw Ledger"},
+        {"type": "attack", "damage": 7, "label": "Claw Ledger"},
         {"type": "block", "block": 5, "label": "Hoard Scraps"},
-        {"type": "attack", "damage": 9, "label": "Black Receipt"}
+        {"type": "attack", "damage": 10, "label": "Black Receipt"}
       ]
     },
     {
@@ -21,33 +21,33 @@
       "asset_id": "enemy_act1_twisted_wolf_idle",
       "background_id": "bg_battle_act1_road_ruin",
       "intents": [
-        {"type": "attack", "damage": 7, "label": "Lunge"},
-        {"type": "attack", "damage": 7, "label": "Lunge"},
+        {"type": "attack", "damage": 8, "label": "Lunge"},
+        {"type": "attack", "damage": 8, "label": "Lunge"},
         {"type": "block", "block": 4, "label": "Circle"}
       ]
     },
     {
       "id": "enemy_act1_mutated_scholar",
       "name": "Mutated Scholar",
-      "max_hp": 38,
+      "max_hp": 40,
       "asset_id": "enemy_act1_mutated_scholar_idle",
       "background_id": "bg_battle_act1_outpost",
       "intents": [
         {"type": "block", "block": 6, "label": "Seal Notes"},
         {"type": "healing_down", "percent": 50, "turns": 2, "label": "Black Formula"},
-        {"type": "attack", "damage": 9, "label": "Bad Formula"}
+        {"type": "attack", "damage": 10, "label": "Bad Formula"}
       ]
     },
     {
       "id": "enemy_act1_mutated_mercenary",
       "name": "Mutated Mercenary",
-      "max_hp": 46,
+      "max_hp": 48,
       "asset_id": "enemy_act1_mutated_mercenary_idle",
       "background_id": "bg_battle_act1_outpost",
       "intents": [
-        {"type": "attack", "damage": 8, "label": "Contract Cut"},
+        {"type": "attack", "damage": 9, "label": "Contract Cut"},
         {"type": "block", "block": 7, "label": "Old Guard"},
-        {"type": "attack", "damage": 11, "label": "Paid in Blood"}
+        {"type": "attack", "damage": 12, "label": "Paid in Blood"}
       ]
     },
     {
@@ -57,57 +57,57 @@
       "asset_id": "enemy_act1_broken_packhorse_idle",
       "background_id": "bg_battle_act1_road_ruin",
       "intents": [
-        {"type": "attack", "damage": 6, "label": "Panic Kick"},
+        {"type": "attack", "damage": 7, "label": "Panic Kick"},
         {"type": "block", "block": 8, "label": "Tangled Harness"},
-        {"type": "attack", "damage": 10, "label": "Splinter Charge"}
+        {"type": "attack", "damage": 11, "label": "Splinter Charge"}
       ]
     },
     {
       "id": "enemy_act1_rooted_scavenger",
       "name": "Rooted Scavenger",
-      "max_hp": 48,
+      "max_hp": 50,
       "asset_id": "enemy_act1_rooted_scavenger_idle",
       "background_id": "bg_battle_act1_road_ruin",
       "intents": [
         {"type": "block", "block": 9, "label": "Root Down"},
-        {"type": "attack", "damage": 8, "label": "Hook Branch"},
-        {"type": "attack", "damage": 12, "label": "Pull Apart"}
+        {"type": "attack", "damage": 9, "label": "Hook Branch"},
+        {"type": "attack", "damage": 13, "label": "Pull Apart"}
       ]
     },
     {
       "id": "midboss_act1_blackened_guard",
       "name": "Blackened Guard",
-      "max_hp": 72,
+      "max_hp": 78,
       "asset_id": "midboss_act1_blackened_guard_idle",
       "background_id": "bg_battle_act1_outpost",
       "intents": [
-        {"type": "attack", "damage": 9, "label": "Broken Order"},
+        {"type": "attack", "damage": 10, "label": "Broken Order"},
         {"type": "block", "block": 8, "label": "Raise Shield"},
-        {"type": "attack", "damage": 13, "label": "Black Oath"}
+        {"type": "attack", "damage": 14, "label": "Black Oath"}
       ]
     },
     {
       "id": "elite_act1_blackprint_captain",
       "name": "Blackprint Captain",
-      "max_hp": 60,
+      "max_hp": 70,
       "asset_id": "elite_act1_blackprint_captain_idle",
       "background_id": "bg_battle_act1_outpost",
       "intents": [
-        {"type": "attack", "damage": 8, "label": "Command Cut"},
-        {"type": "attack", "damage": 10, "label": "Press"},
+        {"type": "attack", "damage": 9, "label": "Command Cut"},
+        {"type": "attack", "damage": 12, "label": "Press"},
         {"type": "block", "block": 7, "label": "Hold Line"}
       ]
     },
     {
       "id": "boss_act1_blackprint_warlord",
       "name": "Blackprint Warlord",
-      "max_hp": 96,
+      "max_hp": 118,
       "asset_id": "boss_act1_blackprint_warlord_idle",
       "background_id": "bg_battle_act1_boss_gate",
       "intents": [
-        {"type": "attack", "damage": 10, "label": "Gate Strike"},
-        {"type": "block", "block": 10, "label": "Iron Refusal"},
-        {"type": "attack", "damage": 16, "label": "Warlord's Mark"}
+        {"type": "attack", "damage": 12, "label": "Gate Strike"},
+        {"type": "block", "block": 12, "label": "Iron Refusal"},
+        {"type": "attack", "damage": 19, "label": "Warlord's Mark"}
       ]
     }
   ]

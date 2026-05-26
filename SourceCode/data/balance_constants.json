@@ -16,7 +16,14 @@
   },
   "bond": {
     "max_score": 100,
-    "thresholds": [30, 60, 100]
+    "thresholds": [30, 60, 100],
+    "gain_by_node_type": {
+      "combat": 4,
+      "elite": 7,
+      "midboss": 8,
+      "boss": 12,
+      "combat_fallback": 3
+    }
   },
   "map": {
     "act_1_midboss_depth": 6,
@@ -65,12 +72,12 @@
   },
   "rewards": {
     "card_options": 3,
-    "skip_gold": 15,
+    "skip_gold": 10,
     "gold_by_node_type": {
-      "combat": 22,
-      "elite": 45,
+      "combat": 18,
+      "elite": 50,
       "midboss": 40,
-      "boss": 80,
+      "boss": 75,
       "combat_fallback": 0
     },
     "companion_options": 3,
@@ -82,7 +89,10 @@
     "companion_cards": 2,
     "equipment_items": 3,
     "remove_base_cost": 75,
-    "remove_cost_growth": 25
+    "remove_cost_growth": 25,
+    "service_upgrade_cost": 110,
+    "service_transform_cost": 85,
+    "service_copy_cost": 125
   },
   "inn": {
     "normal_weight": 2,
@@ -92,5 +102,22 @@
   "equipment": {
     "slots": ["helmet", "armor", "weapon"],
     "protagonist_id": "protagonist"
+  },
+  "simulation_targets": {
+    "early_general_player": {
+      "act1_boss_clear": [0.65, 0.75],
+      "act2_boss_clear": [0.25, 0.35],
+      "act3_reach": [0.12, 0.18],
+      "act3_boss_clear": [0.06, 0.10]
+    },
+    "automatic_runner_sanity": {
+      "novice_act1_boss_clear": [0.75, 0.90],
+      "novice_act2_boss_clear": [0.30, 0.45],
+      "novice_act3_reach": [0.25, 0.45],
+      "novice_win": [0.06, 0.12],
+      "balanced_win": [0.35, 0.55],
+      "safe_win": [0.70, 0.90],
+      "greedy_win": [0.20, 0.40]
+    }
   }
 }

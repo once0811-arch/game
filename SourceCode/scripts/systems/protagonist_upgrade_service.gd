@@ -18,8 +18,8 @@ func get_options(source: String) -> Array[Dictionary]:
 			{
 				"id": "major_companions",
 				"title": "Shared Command",
-				"description": "All companions gain 20 bond and +1 basic attack.",
-				"effects": [{"type": "bond_gain", "amount": 20}, {"type": "companion_attack_bonus", "amount": 1}],
+				"description": "All companions gain 12 bond and +1 basic attack.",
+				"effects": [{"type": "bond_gain", "amount": 12}, {"type": "companion_attack_bonus", "amount": 1}],
 			},
 			{
 				"id": "major_armory",
@@ -38,8 +38,8 @@ func get_options(source: String) -> Array[Dictionary]:
 		{
 			"id": "minor_companion_bond",
 			"title": "Shared Watch",
-			"description": "All companions gain 10 bond.",
-			"effects": [{"type": "bond_gain", "amount": 10}],
+			"description": "All companions gain 6 bond.",
+			"effects": [{"type": "bond_gain", "amount": 6}],
 		},
 		{
 			"id": "minor_card_refine",

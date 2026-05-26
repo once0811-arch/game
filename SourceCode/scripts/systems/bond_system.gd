@@ -4,11 +4,11 @@ extends RefCounted
 const MAX_BOND := 100
 
 var gains_by_node_type := {
-	"combat": 8,
-	"elite": 12,
-	"midboss": 12,
-	"boss": 20,
-	"combat_fallback": 6,
+	"combat": 4,
+	"elite": 7,
+	"midboss": 8,
+	"boss": 12,
+	"combat_fallback": 3,
 }
 
 
@@ -16,7 +16,8 @@ func award_for_victory(node_type: String) -> Array[String]:
 	var logs: Array[String] = []
 	if RunState.party.companions.is_empty():
 		return logs
-	var gain := int(gains_by_node_type.get(node_type, gains_by_node_type["combat"]))
+	var default_gain := int(gains_by_node_type.get(node_type, gains_by_node_type["combat"]))
+	var gain := int(DataRegistry.get_balance("bond.gain_by_node_type.%s" % node_type, default_gain))
 	for i in range(RunState.party.companions.size()):
 		var companion: Dictionary = RunState.party.companions[i]
 		var before := int(companion.get("bond_score", 0))
