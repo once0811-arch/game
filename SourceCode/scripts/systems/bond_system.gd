@@ -48,16 +48,35 @@ func get_mark_bonus(companion: Dictionary) -> int:
 
 func describe_bonuses(companion: Dictionary) -> String:
 	var score := int(companion.get("bond_score", 0))
-	var active: Array[String] = []
-	if score >= 30:
-		active.append("+damage")
-	if score >= 60:
-		active.append("+start block")
-	if score >= 100:
-		active.append("+mark")
+	var active := get_active_bonus_lines(companion)
 	if active.is_empty():
 		return "bond %d/100" % score
 	return "bond %d/100 (%s)" % [score, ", ".join(PackedStringArray(active))]
+
+
+func get_active_bonus_lines(companion: Dictionary) -> Array[String]:
+	var score := int(companion.get("bond_score", 0))
+	var active: Array[String] = []
+	if int(companion.get("attack_bonus", 0)) > 0:
+		active.append("training +%d attack" % int(companion.get("attack_bonus", 0)))
+	if score >= 30:
+		active.append("bond 30: +1 companion attack")
+	if score >= 60:
+		active.append("bond 60: +2 start block")
+	if score >= 100:
+		active.append("bond 100: +1 Tactical Mark")
+	return active
+
+
+func get_next_threshold_text(companion: Dictionary) -> String:
+	var score := int(companion.get("bond_score", 0))
+	if score < 30:
+		return "%d to bond 30" % (30 - score)
+	if score < 60:
+		return "%d to bond 60" % (60 - score)
+	if score < 100:
+		return "%d to bond 100" % (100 - score)
+	return "max bond"
 
 
 func _award_kyle_wager(companion_index: int) -> Array[String]:

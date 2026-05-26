@@ -88,6 +88,9 @@ func _prepare_state(mode: String) -> void:
 	map_state.call("ensure_current_act")
 	if mode in ["combat_companion", "combat_card_preview", "combat_enemy_preview"]:
 		_recruit_demo_companion("rowan", "rowan_spear_line", ["c_rowan_pin", "c_rowan_banner"])
+	elif mode == "upgrade_companion_preview":
+		_recruit_demo_companion("rowan", "rowan_spear_line", ["c_rowan_pin", "c_rowan_banner"])
+		_prepare_upgrade_preview()
 	elif mode == "oath_rowan":
 		_prepare_companion_selection("rowan")
 	elif mode == "companion_cards_rowan":
@@ -282,6 +285,21 @@ func _prepare_companion_card_selection(companion_id: String, oath_id: String) ->
 	manager.call("begin_recruitment", "visual_capture")
 	manager.call("select_companion", companion_id)
 	manager.call("select_oath", oath_id)
+
+
+func _prepare_upgrade_preview() -> void:
+	var run_state := root.get_node_or_null("/root/RunState")
+	var upgrade_state := root.get_node_or_null("/root/UpgradeState")
+	if run_state == null:
+		return
+	var party = run_state.get("party")
+	for i in range(party.companions.size()):
+		var companion: Dictionary = party.companions[i]
+		companion["bond_score"] = 60
+		companion["attack_bonus"] = 1
+		party.companions[i] = companion
+	if upgrade_state != null:
+		upgrade_state.call("begin_upgrade", "act2_boss")
 
 
 func _dump_control_tree(node: Node, depth: int) -> void:

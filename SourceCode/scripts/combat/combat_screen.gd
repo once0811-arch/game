@@ -1467,22 +1467,48 @@ func _make_companion_tile(companion: Dictionary) -> PanelContainer:
 	content.add_theme_constant_override("margin_bottom", 5)
 	var panel := PanelContainer.new()
 	panel.add_child(content)
-	panel.custom_minimum_size = Vector2(54, 54)
+	panel.custom_minimum_size = Vector2(62, 76)
 	panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	panel.tooltip_text = "%s\n%s\nBond %d/100" % [
+	var bonuses := bond_system.describe_bonuses(companion)
+	panel.tooltip_text = "%s\n%s\n%s\n%s" % [
 		String(companion.get("name", "?")),
 		String(companion.get("oath_name", "No Oath")),
-		int(companion.get("bond_score", 0)),
+		bonuses,
+		bond_system.get_next_threshold_text(companion),
 	]
 	panel.add_theme_stylebox_override("panel", _companion_icon_style())
+
+	var column := VBoxContainer.new()
+	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	column.add_theme_constant_override("separation", 3)
+	content.add_child(column)
 
 	var portrait := TextureRect.new()
 	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	portrait.custom_minimum_size = Vector2(44, 44)
+	portrait.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	portrait.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
 	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	portrait.texture = DataRegistry.get_temp_asset_texture(String(companion.get("portrait_asset_id", "")))
-	content.add_child(portrait)
+	column.add_child(portrait)
+
+	var bar := ProgressBar.new()
+	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	bar.custom_minimum_size = Vector2(46, 5)
+	bar.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	bar.min_value = 0
+	bar.max_value = 100
+	bar.value = int(companion.get("bond_score", 0))
+	bar.show_percentage = false
+	bar.add_theme_stylebox_override("background", _bar_style(Color(0.035, 0.032, 0.028, 0.96)))
+	bar.add_theme_stylebox_override("fill", _bar_style(_bond_color(int(companion.get("bond_score", 0)))))
+	column.add_child(bar)
+
+	var score := UIStyleScript.label(str(int(companion.get("bond_score", 0))), 10, UIStyleScript.GOLD)
+	score.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	score.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	score.autowrap_mode = TextServer.AUTOWRAP_OFF
+	column.add_child(score)
 	return panel
 
 
@@ -1502,6 +1528,16 @@ func _companion_icon_style() -> StyleBoxFlat:
 	style.shadow_size = 7
 	style.shadow_offset = Vector2(0, 3)
 	return style
+
+
+func _bond_color(score: int) -> Color:
+	if score >= 100:
+		return Color(0.96, 0.72, 0.28, 1.0)
+	if score >= 60:
+		return Color(0.48, 0.76, 0.70, 1.0)
+	if score >= 30:
+		return Color(0.49, 0.78, 0.55, 1.0)
+	return Color(0.45, 0.55, 0.58, 1.0)
 
 
 func _show_feedback_for_message(message: String) -> void:
