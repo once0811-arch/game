@@ -2,8 +2,6 @@ extends Node
 
 const MAIN_SCENE := "res://scenes/main/main.tscn"
 const MAP_SCENE := "res://scenes/map/map_screen.tscn"
-const ASSET_GALLERY_SCENE := "res://scenes/debug/asset_gallery.tscn"
-const DECK_DEBUG_SCENE := "res://scenes/debug/deck_debug.tscn"
 const COMBAT_SCENE := "res://scenes/combat/combat_screen.tscn"
 const CARD_REWARD_SCENE := "res://scenes/reward/card_reward_screen.tscn"
 const COMPANION_REWARD_SCENE := "res://scenes/companion/companion_reward_screen.tscn"
@@ -24,15 +22,7 @@ func go_to_map() -> void:
 	_change_to(MAP_SCENE)
 
 
-func open_asset_gallery() -> void:
-	_change_to(ASSET_GALLERY_SCENE)
-
-
-func open_deck_debug() -> void:
-	_change_to(DECK_DEBUG_SCENE)
-
-
-func open_combat_test() -> void:
+func open_combat() -> void:
 	_change_to(COMBAT_SCENE)
 
 

@@ -12,7 +12,7 @@
     "energy_per_turn": 4,
     "draw_per_turn": 6,
     "starting_hand_size": 6,
-    "debug_enemy_id": "enemy_act1_mutated_merchant"
+    "fallback_enemy_id": "enemy_act1_mutated_merchant"
   },
   "bond": {
     "max_score": 100,
@@ -35,7 +35,7 @@
       "elite": 45,
       "midboss": 40,
       "boss": 80,
-      "debug_combat": 0
+      "combat_fallback": 0
     },
     "companion_options": 3,
     "companion_card_choices": 3,
@@ -56,9 +56,5 @@
   "equipment": {
     "slots": ["helmet", "armor", "weapon"],
     "protagonist_id": "protagonist"
-  },
-  "debug": {
-    "phase_1_map_nodes_enabled": false,
-    "phase_2_deck_debug_enabled": true
   }
 }

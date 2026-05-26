@@ -3,6 +3,7 @@ extends Control
 const CardDataScript := preload("res://scripts/data/card_data.gd")
 const RewardGeneratorScript := preload("res://scripts/systems/card_reward_generator.gd")
 const UIStyleScript := preload("res://scripts/ui/ui_style.gd")
+const CombatCardViewScript := preload("res://scripts/ui/combat_card_view.gd")
 
 var reward_generator = RewardGeneratorScript.new()
 var reward_options: Array[Dictionary] = []
@@ -33,7 +34,8 @@ func _build_ui() -> void:
 
 	reward_box = HBoxContainer.new()
 	reward_box.add_theme_constant_override("separation", 14)
-	var reward_panel := UIStyleScript.panel(reward_box, Vector2(0, 170))
+	reward_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	var reward_panel := UIStyleScript.panel(reward_box, Vector2(0, 240))
 	layout.add_child(reward_panel)
 
 	var actions := HBoxContainer.new()
@@ -64,18 +66,11 @@ func _generate_rewards() -> void:
 		reward_box.add_child(_make_reward_button(reward_options[i], i))
 
 
-func _make_reward_button(card: Dictionary, index: int) -> Button:
-	var button := Button.new()
-	button.custom_minimum_size = Vector2(230, 140)
-	button.text = "%d  %s\n%s\n%s" % [
-		CardDataScript.card_cost(card),
-		CardDataScript.card_name(card),
-		CardDataScript.card_rarity(card),
-		CardDataScript.card_rules_text(card),
-	]
-	UIStyleScript.style_card_button(button, "primary")
-	button.pressed.connect(_on_reward_pressed.bind(index))
-	return button
+func _make_reward_button(card: Dictionary, index: int) -> Control:
+	var view := CombatCardViewScript.new()
+	view.setup(card, {}, index, true, false)
+	view.card_pressed.connect(_on_reward_pressed)
+	return view
 
 
 func _on_reward_pressed(index: int) -> void:

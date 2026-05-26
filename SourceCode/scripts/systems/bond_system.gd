@@ -8,7 +8,7 @@ var gains_by_node_type := {
 	"elite": 12,
 	"midboss": 12,
 	"boss": 20,
-	"debug_combat": 6,
+	"combat_fallback": 6,
 }
 
 

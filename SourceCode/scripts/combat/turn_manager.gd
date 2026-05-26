@@ -16,7 +16,7 @@ var oath_resolver = OathTacticResolverScript.new()
 var bond_system = BondSystemScript.new()
 
 
-func start_debug_combat(enemy_id: String) -> Array[String]:
+func start_combat(enemy_id: String) -> Array[String]:
 	var logs: Array[String] = []
 	if not RunState.is_run_active:
 		RunState.start_new_run()
@@ -29,16 +29,22 @@ func start_debug_combat(enemy_id: String) -> Array[String]:
 	RunState.combat.energy = RunState.combat.max_energy
 	RunState.combat.cards_played_this_turn = 0
 
-	var enemy_data := DataRegistry.get_enemy(enemy_id)
-	if enemy_data.is_empty():
-		logs.append("Missing enemy data: %s" % enemy_id)
-		return logs
+	var enemy_ids := MapState.get_selected_enemy_ids(enemy_id)
 	RunState.combat.enemies.clear()
-	RunState.combat.enemies.append(enemy_ai.create_enemy(enemy_data))
-	var node_type := MapState.get_selected_node_type() if MapState.has_selected_node() else "debug_combat"
-	RunTelemetry.begin_combat(enemy_id, node_type)
+	var enemy_names: Array[String] = []
+	for selected_id in enemy_ids:
+		var enemy_data := DataRegistry.get_enemy(selected_id)
+		if enemy_data.is_empty():
+			logs.append("Missing enemy data: %s" % selected_id)
+			continue
+		RunState.combat.enemies.append(enemy_ai.create_enemy(enemy_data))
+		enemy_names.append(String(enemy_data.get("name", selected_id)))
+	if RunState.combat.enemies.is_empty():
+		return logs
+	var node_type := MapState.get_selected_node_type() if MapState.has_selected_node() else "combat_fallback"
+	RunTelemetry.begin_combat(enemy_ids[0], node_type)
 	var drawn: Array[Dictionary] = RunState.deck.draw_cards(int(DataRegistry.get_balance("combat.draw_per_turn", 6)))
-	logs.append("Combat started: %s." % enemy_data.get("name", enemy_id))
+	logs.append("Combat started: %s." % ", ".join(PackedStringArray(enemy_names)))
 	logs.append("Drew %d cards." % drawn.size())
 	_apply_equipment_start_bonuses(logs)
 	logs.append_array(oath_resolver.on_combat_start())
@@ -111,7 +117,7 @@ func _update_outcome(logs: Array[String]) -> void:
 		RunState.combat.outcome = "victory"
 		RunState.combat.in_combat = false
 		logs.append("Victory.")
-		var node_type := MapState.get_selected_node_type() if MapState.has_selected_node() else "debug_combat"
+		var node_type := MapState.get_selected_node_type() if MapState.has_selected_node() else "combat_fallback"
 		var gold_table: Dictionary = DataRegistry.get_balance("rewards.gold_by_node_type", {})
 		var gold_gain := int(gold_table.get(node_type, 0))
 		if gold_gain > 0:

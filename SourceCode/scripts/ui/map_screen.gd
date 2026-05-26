@@ -3,11 +3,13 @@ extends Control
 const UIStyleScript := preload("res://scripts/ui/ui_style.gd")
 
 var run_label: Label
-var node_grid: GridContainer
+var map_canvas: Control
 var map_log_label: Label
 var equipment_label: Label
 var equipment_box: HBoxContainer
 var equipment_status_label: Label
+var node_buttons: Dictionary = {}
+var dragging_node_id := ""
 
 
 func _ready() -> void:
@@ -66,16 +68,14 @@ func _build_ui() -> void:
 	map_area.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	body.add_child(map_area)
 
+	map_canvas = Control.new()
+	map_canvas.custom_minimum_size = Vector2(820, 430)
+	map_canvas.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	map_canvas.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	route_layout.add_child(map_canvas)
+
 	map_log_label = UIStyleScript.label("", 16, UIStyleScript.stat_text())
 	route_layout.add_child(map_log_label)
-
-	node_grid = GridContainer.new()
-	node_grid.columns = 4
-	node_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	node_grid.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	node_grid.add_theme_constant_override("h_separation", 12)
-	node_grid.add_theme_constant_override("v_separation", 12)
-	route_layout.add_child(node_grid)
 
 	var side := VBoxContainer.new()
 	side.custom_minimum_size = Vector2(305, 0)
@@ -127,15 +127,22 @@ func _refresh() -> void:
 
 
 func _refresh_nodes() -> void:
-	for child in node_grid.get_children():
-		child.queue_free()
+	UIStyleScript.clear(map_canvas)
+	node_buttons.clear()
 	if not RunState.is_run_active:
 		map_log_label.text = "Start a new run to generate the Act 1 route."
 		return
 	MapState.ensure_current_act()
-	map_log_label.text = "Next contract depth: %d / 12" % MapState.get_available_depth()
+	map_log_label.text = "Click or drag a lit contract token to choose the next route. Depth %d / 12 is open." % MapState.get_available_depth()
+	_draw_route_lines()
 	for node in MapState.nodes:
-		node_grid.add_child(_make_node_button(node))
+		var button := _make_node_button(node)
+		button.position = _node_position(node)
+		map_canvas.add_child(button)
+		node_buttons[String(node.get("id", ""))] = {
+			"button": button,
+			"state": MapState.get_node_state(node),
+		}
 
 
 func _make_node_button(node: Dictionary) -> Button:
@@ -143,19 +150,131 @@ func _make_node_button(node: Dictionary) -> Button:
 	var state := MapState.get_node_state(node)
 	var prefix := "D%d" % int(node.get("depth", 0))
 	var node_type := String(node.get("type", "?"))
-	button.custom_minimum_size = Vector2(176, 82)
-	button.text = "%s  %s\n%s" % [prefix, node_type.to_upper(), String(node.get("label", ""))]
+	button.custom_minimum_size = Vector2(98, 72)
+	button.text = "%s\n%s\n%s" % [prefix, _node_type_label(node_type), String(node.get("label", ""))]
 	button.disabled = state != "available"
 	if state == "completed":
-		button.text += "\nCLEARED"
+		button.text = "%s\nCLEARED\n%s" % [prefix, String(node.get("label", ""))]
 	elif state == "locked":
-		button.text += "\nLOCKED"
-	var variant := "primary" if state == "available" else "locked"
+		button.text = "%s\nLOCKED\n%s" % [prefix, String(node.get("label", ""))]
+	var variant := _node_variant(node_type, state)
 	if state == "completed":
 		variant = "success"
 	UIStyleScript.style_card_button(button, variant)
-	button.pressed.connect(_on_node_pressed.bind(String(node.get("id", ""))))
+	button.add_theme_font_size_override("font_size", 13)
+	button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	button.gui_input.connect(_on_node_button_gui_input.bind(String(node.get("id", "")), state))
 	return button
+
+
+func _input(event: InputEvent) -> void:
+	if dragging_node_id.is_empty():
+		return
+	if event is InputEventMouseMotion:
+		map_log_label.text = "Release over a lit contract token to travel."
+	elif event is InputEventMouseButton:
+		var mouse_event := event as InputEventMouseButton
+		if mouse_event.button_index == MOUSE_BUTTON_LEFT and not mouse_event.pressed:
+			var target_id := _node_id_at_position(get_global_mouse_position())
+			if target_id.is_empty():
+				target_id = dragging_node_id
+			dragging_node_id = ""
+			_on_node_pressed(target_id)
+
+
+func _on_node_button_gui_input(event: InputEvent, node_id: String, state: String) -> void:
+	if state != "available":
+		return
+	if event is InputEventMouseButton:
+		var mouse_event := event as InputEventMouseButton
+		if mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.pressed:
+			dragging_node_id = node_id
+			map_log_label.text = "Holding contract token. Drag to another lit token or release to travel."
+
+
+func _node_id_at_position(global_position: Vector2) -> String:
+	for node_id in node_buttons.keys():
+		var record: Dictionary = node_buttons[node_id]
+		if String(record.get("state", "")) != "available":
+			continue
+		var button := record.get("button") as Button
+		if button != null and button.get_global_rect().has_point(global_position):
+			return String(node_id)
+	return ""
+
+
+func _draw_route_lines() -> void:
+	var by_depth: Dictionary = {}
+	for node in MapState.nodes:
+		var depth := int(node.get("depth", 0))
+		if not by_depth.has(depth):
+			by_depth[depth] = []
+		by_depth[depth].append(node)
+	for depth in range(1, 12):
+		if not by_depth.has(depth) or not by_depth.has(depth + 1):
+			continue
+		for from_node in by_depth[depth]:
+			for to_node in by_depth[depth + 1]:
+				if abs(int(from_node.get("lane", 1)) - int(to_node.get("lane", 1))) > 1:
+					continue
+				var line := Line2D.new()
+				line.width = 3.0
+				line.default_color = _line_color(from_node, to_node)
+				line.add_point(_node_position(from_node) + Vector2(49, 36))
+				line.add_point(_node_position(to_node) + Vector2(49, 36))
+				map_canvas.add_child(line)
+
+
+func _node_position(node: Dictionary) -> Vector2:
+	var depth := int(node.get("depth", 1))
+	var lane := int(node.get("lane", 1))
+	return Vector2(12 + (depth - 1) * 62, 42 + lane * 112)
+
+
+func _line_color(from_node: Dictionary, to_node: Dictionary) -> Color:
+	var from_state := MapState.get_node_state(from_node)
+	var to_state := MapState.get_node_state(to_node)
+	if from_state == "completed" and to_state == "available":
+		return Color(0.90, 0.58, 0.24, 0.82)
+	if from_state == "completed":
+		return Color(0.48, 0.54, 0.46, 0.60)
+	return Color(0.22, 0.22, 0.20, 0.60)
+
+
+func _node_type_label(node_type: String) -> String:
+	match node_type:
+		"combat":
+			return "FIGHT"
+		"elite":
+			return "ELITE"
+		"midboss":
+			return "MID"
+		"boss":
+			return "BOSS"
+		"inn":
+			return "REST"
+		"shop":
+			return "SHOP"
+		"event":
+			return "EVENT"
+		"upgrade":
+			return "FORGE"
+		"companion_contract":
+			return "ALLY"
+		_:
+			return node_type.to_upper()
+
+
+func _node_variant(node_type: String, state: String) -> String:
+	if state == "locked":
+		return "locked"
+	if node_type in ["elite", "midboss", "boss"]:
+		return "danger"
+	if node_type in ["inn", "companion_contract", "upgrade"]:
+		return "success"
+	if node_type == "shop":
+		return "primary"
+	return "default"
 
 
 func _on_node_pressed(node_id: String) -> void:
@@ -163,7 +282,7 @@ func _on_node_pressed(node_id: String) -> void:
 		return
 	var node_type := MapState.get_selected_node_type()
 	if node_type in ["combat", "elite", "midboss", "boss"]:
-		SceneRouter.open_combat_test()
+		SceneRouter.open_combat()
 	elif node_type == "companion_contract":
 		CompanionManager.begin_recruitment("map_contract")
 		SceneRouter.open_companion_reward()

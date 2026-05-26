@@ -7,6 +7,7 @@ var map_act := 1
 var current_depth := 0
 var selected_node_id := ""
 var selected_enemy_id := ""
+var selected_enemy_ids: Array[String] = []
 
 
 func start_act1() -> void:
@@ -20,6 +21,7 @@ func start_act(act_number: int) -> void:
 	current_depth = 0
 	selected_node_id = ""
 	selected_enemy_id = ""
+	selected_enemy_ids.clear()
 
 
 func ensure_act1() -> void:
@@ -63,6 +65,7 @@ func choose_node(node_id: String) -> bool:
 			return false
 		selected_node_id = node_id
 		selected_enemy_id = String(node.get("enemy_id", ""))
+		selected_enemy_ids = _read_enemy_ids(node)
 		return true
 	return false
 
@@ -80,6 +83,7 @@ func complete_selected_node() -> void:
 			break
 	selected_node_id = ""
 	selected_enemy_id = ""
+	selected_enemy_ids.clear()
 
 
 func has_selected_node() -> bool:
@@ -90,6 +94,16 @@ func get_selected_enemy_id(default_enemy_id: String) -> String:
 	if selected_enemy_id.is_empty():
 		return default_enemy_id
 	return selected_enemy_id
+
+
+func get_selected_enemy_ids(default_enemy_id: String) -> Array[String]:
+	if selected_enemy_ids.is_empty():
+		var fallback := get_selected_enemy_id(default_enemy_id)
+		var fallback_ids: Array[String] = []
+		if not fallback.is_empty():
+			fallback_ids.append(fallback)
+		return fallback_ids
+	return selected_enemy_ids.duplicate()
 
 
 func get_selected_node_type() -> String:
@@ -106,6 +120,7 @@ func to_snapshot() -> Dictionary:
 		"current_depth": current_depth,
 		"selected_node_id": selected_node_id,
 		"selected_enemy_id": selected_enemy_id,
+		"selected_enemy_ids": selected_enemy_ids.duplicate(),
 	}
 
 
@@ -121,5 +136,25 @@ func from_snapshot(snapshot: Dictionary) -> void:
 	current_depth = int(snapshot.get("current_depth", 0))
 	selected_node_id = String(snapshot.get("selected_node_id", ""))
 	selected_enemy_id = String(snapshot.get("selected_enemy_id", ""))
+	selected_enemy_ids.clear()
+	for enemy_id in snapshot.get("selected_enemy_ids", []):
+		var id_text := String(enemy_id)
+		if not id_text.is_empty():
+			selected_enemy_ids.append(id_text)
+	if selected_enemy_ids.is_empty() and not selected_enemy_id.is_empty():
+		selected_enemy_ids.append(selected_enemy_id)
 	if nodes.is_empty():
 		start_act(RunState.act)
+
+
+func _read_enemy_ids(node: Dictionary) -> Array[String]:
+	var ids: Array[String] = []
+	for enemy_id in node.get("enemy_ids", []):
+		var id_text := String(enemy_id)
+		if not id_text.is_empty():
+			ids.append(id_text)
+	if ids.is_empty():
+		var single_id := String(node.get("enemy_id", ""))
+		if not single_id.is_empty():
+			ids.append(single_id)
+	return ids

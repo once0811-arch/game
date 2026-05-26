@@ -2,17 +2,45 @@
   "version": "0.1.0",
   "act": 1,
   "nodes": [
-    {"depth": 1, "type": "combat", "label": "Broken Road", "enemy_id": "enemy_act1_mutated_merchant"},
-    {"depth": 2, "type": "combat", "label": "Hungry Tracks", "enemy_id": "enemy_act1_twisted_wolf"},
-    {"depth": 3, "type": "event", "label": "Black Fingerprint"},
-    {"depth": 4, "type": "combat", "label": "Ransacked Camp", "enemy_id": "enemy_act1_mutated_merchant"},
-    {"depth": 5, "type": "inn", "label": "Cold Fire"},
-    {"depth": 6, "type": "midboss", "label": "Blackened Guard", "enemy_id": "midboss_act1_blackened_guard"},
-    {"depth": 7, "type": "companion_contract", "label": "First Contract"},
-    {"depth": 8, "type": "combat", "label": "Rooted Cart", "enemy_id": "enemy_act1_mutated_merchant"},
-    {"depth": 9, "type": "elite", "label": "Caravan Elite", "enemy_id": "elite_act1_blackprint_captain"},
-    {"depth": 10, "type": "shop", "label": "Rust Trader"},
-    {"depth": 11, "type": "combat", "label": "Castle Road", "enemy_id": "enemy_act1_twisted_wolf"},
-    {"depth": 12, "type": "boss", "label": "Gate Warlord", "enemy_id": "boss_act1_blackprint_warlord"}
+    {"depth": 1, "lane": 0, "type": "combat", "label": "Broken Road", "enemy_id": "enemy_act1_mutated_merchant"},
+    {"depth": 1, "lane": 1, "type": "combat", "label": "Hungry Tracks", "enemy_id": "enemy_act1_twisted_wolf"},
+    {"depth": 1, "lane": 2, "type": "combat", "label": "Ruined Cart", "enemy_id": "enemy_act1_broken_packhorse"},
+
+    {"depth": 2, "lane": 0, "type": "event", "label": "Black Fingerprint"},
+    {"depth": 2, "lane": 1, "type": "combat", "label": "Ransacked Camp", "enemy_ids": ["enemy_act1_mutated_merchant", "enemy_act1_twisted_wolf"]},
+    {"depth": 2, "lane": 2, "type": "inn", "label": "Cold Fire"},
+
+    {"depth": 3, "lane": 0, "type": "combat", "label": "Triage Camp", "enemy_id": "enemy_act1_mutated_scholar"},
+    {"depth": 3, "lane": 1, "type": "shop", "label": "Rust Trader"},
+    {"depth": 3, "lane": 2, "type": "combat", "label": "Scavenger Brush", "enemy_id": "enemy_act1_rooted_scavenger"},
+
+    {"depth": 4, "lane": 0, "type": "event", "label": "Toll Road"},
+    {"depth": 4, "lane": 1, "type": "combat", "label": "Bleeding Track", "enemy_id": "enemy_act1_mutated_mercenary"},
+    {"depth": 4, "lane": 2, "type": "combat", "label": "Old Kennel", "enemy_ids": ["enemy_act1_twisted_wolf", "enemy_act1_twisted_wolf"]},
+
+    {"depth": 5, "lane": 0, "type": "inn", "label": "Cold Fire"},
+    {"depth": 5, "lane": 1, "type": "elite", "label": "Caravan Elite", "enemy_id": "elite_act1_blackprint_captain"},
+    {"depth": 5, "lane": 2, "type": "shop", "label": "Rope Market"},
+
+    {"depth": 6, "lane": 1, "type": "midboss", "label": "Blackened Guard", "enemy_id": "midboss_act1_blackened_guard"},
+    {"depth": 7, "lane": 1, "type": "companion_contract", "label": "First Contract"},
+
+    {"depth": 8, "lane": 0, "type": "combat", "label": "Rooted Cart", "enemy_ids": ["enemy_act1_broken_packhorse", "enemy_act1_rooted_scavenger"]},
+    {"depth": 8, "lane": 1, "type": "event", "label": "Refused Inn"},
+    {"depth": 8, "lane": 2, "type": "combat", "label": "Castle Road", "enemy_id": "enemy_act1_mutated_mercenary"},
+
+    {"depth": 9, "lane": 0, "type": "elite", "label": "Blackprint Patrol", "enemy_id": "elite_act1_blackprint_captain"},
+    {"depth": 9, "lane": 1, "type": "combat", "label": "Ledger Ambush", "enemy_ids": ["enemy_act1_mutated_merchant", "enemy_act1_mutated_scholar"]},
+    {"depth": 9, "lane": 2, "type": "inn", "label": "Last Safe Roof"},
+
+    {"depth": 10, "lane": 0, "type": "shop", "label": "Rust Trader"},
+    {"depth": 10, "lane": 1, "type": "event", "label": "Wrong Promise"},
+    {"depth": 10, "lane": 2, "type": "combat", "label": "Ash Livestock", "enemy_ids": ["enemy_act1_broken_packhorse", "enemy_act1_twisted_wolf"]},
+
+    {"depth": 11, "lane": 0, "type": "combat", "label": "Gate Road", "enemy_id": "enemy_act1_mutated_mercenary"},
+    {"depth": 11, "lane": 1, "type": "combat", "label": "Castle Ditch", "enemy_ids": ["enemy_act1_rooted_scavenger", "enemy_act1_mutated_scholar"]},
+    {"depth": 11, "lane": 2, "type": "elite", "label": "Gate Captain", "enemy_id": "elite_act1_blackprint_captain"},
+
+    {"depth": 12, "lane": 1, "type": "boss", "label": "Gate Warlord", "enemy_id": "boss_act1_blackprint_warlord"}
   ]
 }
