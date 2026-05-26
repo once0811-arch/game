@@ -1,0 +1,65 @@
+{
+  "version": "0.1.0",
+  "companions": [
+    {
+      "id": "rowan",
+      "name": "Rowan",
+      "role": "Marked spear vanguard",
+      "portrait_asset_id": "companion_rowan_portrait",
+      "sprite_asset_id": "companion_rowan_idle",
+      "oath_tactics": [
+        {"id": "rowan_red_pursuit", "name": "Red Pursuit", "rules_text": "When Tactical Mark is applied, Rowan's next attack gains +2 damage."},
+        {"id": "rowan_first_blood", "name": "First Blood", "rules_text": "The first marked enemy each combat takes 3 extra damage."},
+        {"id": "rowan_spear_line", "name": "Spear Line", "rules_text": "Rowan prioritizes marked enemies and adds 1 Mark on hit."}
+      ]
+    },
+    {
+      "id": "sera",
+      "name": "Sera",
+      "role": "Knife scout and tempo finisher",
+      "portrait_asset_id": "companion_sera_portrait",
+      "sprite_asset_id": "companion_sera_idle",
+      "oath_tactics": [
+        {"id": "sera_second_cut", "name": "Second Cut", "rules_text": "After two cards are played in a turn, Sera's next hit gains +3 damage."},
+        {"id": "sera_smoke_step", "name": "Smoke Step", "rules_text": "At combat start, gain 1 temporary block for each card in hand."},
+        {"id": "sera_quick_claim", "name": "Quick Claim", "rules_text": "The first 0-cost card each combat applies 1 Tactical Mark."}
+      ]
+    },
+    {
+      "id": "eldric",
+      "name": "Eldric",
+      "role": "Old shield bearer",
+      "portrait_asset_id": "companion_eldric_portrait",
+      "sprite_asset_id": "companion_eldric_idle",
+      "oath_tactics": [
+        {"id": "eldric_shared_guard", "name": "Shared Guard", "rules_text": "After you gain block from a card, Eldric stores 2 guard."},
+        {"id": "eldric_oathwall", "name": "Oathwall", "rules_text": "The first enemy attack each combat is reduced by 2."},
+        {"id": "eldric_last_stand", "name": "Last Stand", "rules_text": "If HP is below 40%, Eldric's guard cards gain +2 block."}
+      ]
+    },
+    {
+      "id": "bram",
+      "name": "Bram",
+      "role": "Blood-price brawler",
+      "portrait_asset_id": "companion_bram_portrait",
+      "sprite_asset_id": "companion_rowan_idle",
+      "oath_tactics": [
+        {"id": "bram_blood_wager", "name": "Blood Wager", "rules_text": "After you lose HP by card effect, Bram gains +2 damage this combat."},
+        {"id": "bram_hard_bargain", "name": "Hard Bargain", "rules_text": "The first self-damage card each combat refunds 1 energy."},
+        {"id": "bram_red_laugh", "name": "Red Laugh", "rules_text": "When an enemy is defeated, heal 2."}
+      ]
+    },
+    {
+      "id": "maren",
+      "name": "Maren",
+      "role": "Road medic with a price",
+      "portrait_asset_id": "companion_maren_portrait",
+      "sprite_asset_id": "companion_eldric_idle",
+      "oath_tactics": [
+        {"id": "maren_measured_care", "name": "Measured Care", "rules_text": "Healing cards also gain 2 block."},
+        {"id": "maren_no_free_debt", "name": "No Free Debt", "rules_text": "The first heal each combat costs 1 less but applies 1 Weak to you next turn."},
+        {"id": "maren_clean_bandage", "name": "Clean Bandage", "rules_text": "After a perfect block turn, heal 1."}
+      ]
+    }
+  ]
+}

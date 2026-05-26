@@ -246,6 +246,10 @@ func _on_end_turn_pressed() -> void:
 
 
 func _on_claim_reward_pressed() -> void:
+	if MapState.has_selected_node() and MapState.get_selected_node_type() == "boss":
+		CompanionManager.begin_recruitment("map_boss")
+		SceneRouter.open_companion_reward()
+		return
 	var source := "map_combat" if MapState.has_selected_node() else "debug_combat"
 	RewardState.begin_card_reward(source)
 	SceneRouter.open_card_reward()

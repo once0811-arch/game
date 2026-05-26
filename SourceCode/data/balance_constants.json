@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "phase": 4,
+  "phase": 5,
   "run": {
     "starting_act": 1,
     "starting_depth": 0,
@@ -26,7 +26,10 @@
   },
   "rewards": {
     "card_options": 3,
-    "skip_gold": 15
+    "skip_gold": 15,
+    "companion_options": 3,
+    "companion_card_choices": 3,
+    "companion_card_picks": 2
   },
   "debug": {
     "phase_1_map_nodes_enabled": false,

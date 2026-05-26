@@ -107,7 +107,7 @@ func _refresh_run_info() -> void:
 	if not RunState.is_run_active:
 		run_label.text = "No active run. Return to Main Menu and start a new run."
 		return
-	run_label.text = "Seed %d | Act %d | Map Depth %d | HP %d/%d | Gold %d\n%s" % [
+	run_label.text = "Seed %d | Act %d | Map Depth %d | HP %d/%d | Gold %d\n%s\n%s" % [
 		RunState.run_seed,
 		RunState.act,
 		MapState.current_depth,
@@ -115,6 +115,7 @@ func _refresh_run_info() -> void:
 		RunState.max_hp,
 		RunState.gold,
 		RunState.phase_note,
+		RunState.party.get_companion_summary(),
 	]
 
 
@@ -156,6 +157,9 @@ func _on_node_pressed(node_id: String) -> void:
 	var node_type := MapState.get_selected_node_type()
 	if node_type in ["combat", "elite", "midboss", "boss"]:
 		SceneRouter.open_combat_test()
+	elif node_type == "companion_contract":
+		CompanionManager.begin_recruitment("map_contract")
+		SceneRouter.open_companion_reward()
 	else:
 		MapState.complete_selected_node()
 		_refresh()

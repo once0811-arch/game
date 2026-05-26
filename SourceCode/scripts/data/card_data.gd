@@ -34,4 +34,4 @@ static func card_rarity(card: Dictionary) -> String:
 
 
 static func is_reward_eligible(card: Dictionary) -> bool:
-	return card_rarity(card) != "starter"
+	return bool(card.get("reward_pool", true)) and card_rarity(card) != "starter"

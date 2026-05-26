@@ -6,6 +6,9 @@ const ASSET_GALLERY_SCENE := "res://scenes/debug/asset_gallery.tscn"
 const DECK_DEBUG_SCENE := "res://scenes/debug/deck_debug.tscn"
 const COMBAT_SCENE := "res://scenes/combat/combat_screen.tscn"
 const CARD_REWARD_SCENE := "res://scenes/reward/card_reward_screen.tscn"
+const COMPANION_REWARD_SCENE := "res://scenes/companion/companion_reward_screen.tscn"
+const OATH_TACTIC_SELECT_SCENE := "res://scenes/companion/oath_tactic_select_screen.tscn"
+const COMPANION_CARD_SELECT_SCENE := "res://scenes/companion/companion_card_select_screen.tscn"
 
 
 func go_to_main() -> void:
@@ -30,6 +33,18 @@ func open_combat_test() -> void:
 
 func open_card_reward() -> void:
 	_change_to(CARD_REWARD_SCENE)
+
+
+func open_companion_reward() -> void:
+	_change_to(COMPANION_REWARD_SCENE)
+
+
+func open_oath_tactic_select() -> void:
+	_change_to(OATH_TACTIC_SELECT_SCENE)
+
+
+func open_companion_card_select() -> void:
+	_change_to(COMPANION_CARD_SELECT_SCENE)
 
 
 func start_new_run() -> void:

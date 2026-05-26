@@ -3,6 +3,8 @@ extends Node
 const BALANCE_CONSTANTS_PATH := "res://data/balance_constants.json"
 const TEMP_ASSET_MANIFEST_PATH := "res://data/assets/temp_asset_manifest.json"
 const PROTAGONIST_CARDS_PATH := "res://data/cards/protagonist_cards.json"
+const COMPANION_CARDS_PATH := "res://data/cards/companion_cards.json"
+const COMPANIONS_PATH := "res://data/companions/companions.json"
 const ENEMIES_ACT1_PATH := "res://data/enemies/enemies_act1.json"
 const ACT1_ENCOUNTERS_PATH := "res://data/encounters/act1_encounters.json"
 
@@ -10,7 +12,10 @@ var balance_constants: Dictionary = {}
 var temp_asset_manifest: Dictionary = {}
 var temp_assets_by_id: Dictionary = {}
 var protagonist_cards: Dictionary = {}
+var companion_cards: Dictionary = {}
 var cards_by_id: Dictionary = {}
+var companions: Dictionary = {}
+var companions_by_id: Dictionary = {}
 var enemies_act1: Dictionary = {}
 var enemies_by_id: Dictionary = {}
 var act1_encounters: Dictionary = {}
@@ -26,10 +31,13 @@ func load_all() -> bool:
 	balance_constants = _load_dictionary(BALANCE_CONSTANTS_PATH)
 	temp_asset_manifest = _load_dictionary(TEMP_ASSET_MANIFEST_PATH)
 	protagonist_cards = _load_dictionary(PROTAGONIST_CARDS_PATH)
+	companion_cards = _load_dictionary(COMPANION_CARDS_PATH)
+	companions = _load_dictionary(COMPANIONS_PATH)
 	enemies_act1 = _load_dictionary(ENEMIES_ACT1_PATH)
 	act1_encounters = _load_dictionary(ACT1_ENCOUNTERS_PATH)
 	_index_temp_assets()
 	_index_cards()
+	_index_companions()
 	_index_enemies()
 	return load_errors.is_empty()
 
@@ -76,6 +84,30 @@ func get_card_count() -> int:
 	return cards_by_id.size()
 
 
+func get_companion(companion_id: String) -> Dictionary:
+	return companions_by_id.get(companion_id, {})
+
+
+func get_all_companions() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for companion in companions_by_id.values():
+		if typeof(companion) == TYPE_DICTIONARY:
+			result.append(companion)
+	return result
+
+
+func get_companion_cards(companion_id: String) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for card in companion_cards.get("cards", []):
+		if typeof(card) == TYPE_DICTIONARY and String(card.get("owner", "")) == companion_id:
+			result.append(card)
+	return result
+
+
+func get_companion_count() -> int:
+	return companions_by_id.size()
+
+
 func get_enemy(enemy_id: String) -> Dictionary:
 	return enemies_by_id.get(enemy_id, {})
 
@@ -102,6 +134,10 @@ func is_ready_for_phase_3() -> bool:
 
 func is_ready_for_phase_4() -> bool:
 	return is_ready_for_phase_3() and not act1_encounters.is_empty()
+
+
+func is_ready_for_phase_5() -> bool:
+	return is_ready_for_phase_4() and get_companion_count() >= 3
 
 
 func _load_dictionary(path: String) -> Dictionary:
@@ -136,6 +172,22 @@ func _index_cards() -> void:
 		var card_id := String(card.get("id", ""))
 		if not card_id.is_empty():
 			cards_by_id[card_id] = card
+	for card in companion_cards.get("cards", []):
+		if typeof(card) != TYPE_DICTIONARY:
+			continue
+		var card_id := String(card.get("id", ""))
+		if not card_id.is_empty():
+			cards_by_id[card_id] = card
+
+
+func _index_companions() -> void:
+	companions_by_id.clear()
+	for companion in companions.get("companions", []):
+		if typeof(companion) != TYPE_DICTIONARY:
+			continue
+		var companion_id := String(companion.get("id", ""))
+		if not companion_id.is_empty():
+			companions_by_id[companion_id] = companion
 
 
 func _index_enemies() -> void:
