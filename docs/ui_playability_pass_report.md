@@ -62,6 +62,39 @@ The current pass focused on making the normal playable loop showable inside the 
 - Visual captures passed at 1280x720 for main, map, combat, reward, companion recruitment, oath tactic, companion card selection, shop, inn, event, and upgrade.
 - Visual captures passed at 1920x1080 for map, combat, and shop.
 
+## Scene-First Rework After Screenshot Review
+
+The next review found that the screens were still too information-panel driven.
+The correction target is now closer to Slay the Spire's screen grammar without copying its exact art or trade dress.
+
+Combat rules from this pass:
+
+- The battlefield is the screen, not a panel inside the screen.
+- The player and enemies stand directly on the scene.
+- Enemy UI is limited to intent, name, HP bar, and HP value.
+- Enemy target frames are hidden during idle state and should only appear during card targeting feedback.
+- Companion data is collapsed into small contract/relic-style icons with hover text instead of a readable info card.
+- The top HUD shows only run-critical resources.
+- The hand is the dominant interactive object at the bottom, with energy and End Turn placed like permanent combat affordances.
+- Long logs and raw pile details are not part of the normal combat view.
+
+Map rules from this pass:
+
+- The parchment route is the screen's main object.
+- Node labels stay hidden until hover/tooltip.
+- The default footer prompt must stay short.
+- Future paths remain quiet; reachable paths use warm contract-token emphasis.
+- The side legend is allowed, but party/equipment/debug panels are not part of the route screen.
+
+Implemented in this pass:
+
+- Replaced the Act 1 battle background with a darker ruined-stage composition that provides a horizon, floor plane, warm torches, and readable actor silhouettes.
+- Replaced the map background with a darker table/route motif so the parchment reads as a physical map rather than a UI card on flat color.
+- Removed idle enemy panel framing from combat.
+- Increased combat card size and art area so cards read more like game cards than text buttons.
+- Reduced combat/map explanatory text and moved companion details into compact icon tooltips.
+- Captured and inspected combat and map at 1280x720 and 1920x1080 after the rework.
+
 ## Current Design Direction
 
 The UI is now using broad deckbuilder readability conventions:

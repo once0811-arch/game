@@ -7,7 +7,7 @@ const UIStyleScript := preload("res://scripts/ui/ui_style.gd")
 signal card_pressed(hand_index: int)
 signal card_drag_started(hand_index: int, card_name: String)
 
-const CARD_SIZE := Vector2(150, 202)
+const CARD_SIZE := Vector2(160, 232)
 
 var hand_index := -1
 var card_name := ""
@@ -66,10 +66,10 @@ func _rebuild(card: Dictionary, instance: Dictionary) -> void:
 
 	var margin := MarginContainer.new()
 	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	margin.add_theme_constant_override("margin_left", 10)
-	margin.add_theme_constant_override("margin_top", 10)
-	margin.add_theme_constant_override("margin_right", 10)
-	margin.add_theme_constant_override("margin_bottom", 10)
+	margin.add_theme_constant_override("margin_left", 11)
+	margin.add_theme_constant_override("margin_top", 11)
+	margin.add_theme_constant_override("margin_right", 11)
+	margin.add_theme_constant_override("margin_bottom", 11)
 	add_child(margin)
 
 	var layout := VBoxContainer.new()
@@ -93,7 +93,7 @@ func _rebuild(card: Dictionary, instance: Dictionary) -> void:
 	cost_wrap.add_child(cost)
 	top.add_child(cost_wrap)
 
-	var name_label := UIStyleScript.label("%s%s" % [card_name, "+" if bool(instance.get("upgraded", false)) else ""], 13, body_color)
+	var name_label := UIStyleScript.label("%s%s" % [card_name, "+" if bool(instance.get("upgraded", false)) else ""], 14, body_color)
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	name_label.clip_text = true
@@ -101,7 +101,7 @@ func _rebuild(card: Dictionary, instance: Dictionary) -> void:
 
 	var art := PanelContainer.new()
 	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	art.custom_minimum_size = Vector2(0, 50)
+	art.custom_minimum_size = Vector2(0, 76)
 	art.add_theme_stylebox_override("panel", _art_style(card_type))
 	layout.add_child(art)
 
@@ -116,21 +116,21 @@ func _rebuild(card: Dictionary, instance: Dictionary) -> void:
 		var art_texture := TextureRect.new()
 		art_texture.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		art_texture.texture = load(art_path)
-		art_texture.custom_minimum_size = Vector2(0, 50)
+		art_texture.custom_minimum_size = Vector2(0, 76)
 		art_texture.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		art_texture.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		art_texture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		art_texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		art.add_child(art_texture)
 
-	var type_label := UIStyleScript.label(card_name, 11, Color(0.42, 0.25, 0.08, 1.0) if uses_texture_frame else UIStyleScript.GOLD)
+	var type_label := UIStyleScript.label(_type_label(card_type), 11, Color(0.42, 0.25, 0.08, 1.0) if uses_texture_frame else UIStyleScript.GOLD)
 	type_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	type_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	type_label.autowrap_mode = TextServer.AUTOWRAP_OFF
 	type_label.clip_text = true
 	layout.add_child(type_label)
 
-	var text := UIStyleScript.label(CardDataScript.card_rules_text(card), 10, body_color)
+	var text := UIStyleScript.label(CardDataScript.card_rules_text(card), 11, body_color)
 	text.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	text.vertical_alignment = VERTICAL_ALIGNMENT_TOP
@@ -270,3 +270,15 @@ func _type_mark(card_type: String) -> String:
 			return "OATH"
 		_:
 			return "CARD"
+
+
+func _type_label(card_type: String) -> String:
+	match card_type.to_lower():
+		"attack":
+			return "Attack"
+		"skill":
+			return "Skill"
+		"power":
+			return "Power"
+		_:
+			return "Card"

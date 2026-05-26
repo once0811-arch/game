@@ -13,6 +13,9 @@ var bond_system = BondSystemScript.new()
 var log_lines: Array[String] = []
 
 var player_label: Label
+var player_hp_bar: ProgressBar
+var player_hp_label: Label
+var energy_label: Label
 var pile_label: Label
 var companion_box: HBoxContainer
 var hand_area: Control
@@ -36,17 +39,12 @@ func _ready() -> void:
 
 
 func _build_ui() -> void:
-	UIStyleScript.add_background(self, "bg_battle_act1_road_ruin", 0.68)
-	var root := UIStyleScript.page_root(self, 16)
-
-	var layout := VBoxContainer.new()
-	layout.add_theme_constant_override("separation", 8)
-	root.add_child(layout)
+	UIStyleScript.add_background(self, "bg_battle_act1_road_ruin", 0.22)
 
 	target_arc = Line2D.new()
-	target_arc.z_index = 60
-	target_arc.width = 4.0
-	target_arc.default_color = Color(0.96, 0.72, 0.28, 0.88)
+	target_arc.z_index = 90
+	target_arc.width = 5.0
+	target_arc.default_color = Color(1.0, 0.72, 0.24, 0.96)
 	target_arc.begin_cap_mode = Line2D.LINE_CAP_ROUND
 	target_arc.end_cap_mode = Line2D.LINE_CAP_ROUND
 	add_child(target_arc)
@@ -57,68 +55,101 @@ func _build_ui() -> void:
 	feedback_layer.z_index = 90
 	add_child(feedback_layer)
 
-	var header := HBoxContainer.new()
-	header.add_theme_constant_override("separation", 12)
-	layout.add_child(header)
+	var top_bar := PanelContainer.new()
+	top_bar.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	top_bar.offset_bottom = 54
+	top_bar.add_theme_stylebox_override("panel", _top_hud_style())
+	add_child(top_bar)
 
-	var title := UIStyleScript.label("Road Ambush", 24)
-	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	header.add_child(title)
+	var top_content := HBoxContainer.new()
+	top_content.add_theme_constant_override("separation", 18)
+	top_bar.add_child(top_content)
 
-	pile_label = UIStyleScript.label("", 15, UIStyleScript.MUTED)
-	pile_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var title := UIStyleScript.label("Mercenary", 24)
+	title.custom_minimum_size = Vector2(170, 0)
+	top_content.add_child(title)
+
+	player_label = UIStyleScript.label("", 17, UIStyleScript.TEXT)
+	player_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	player_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	top_content.add_child(player_label)
+
+	pile_label = UIStyleScript.label("", 15, UIStyleScript.GOLD)
+	pile_label.custom_minimum_size = Vector2(220, 0)
 	pile_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	header.add_child(pile_label)
+	pile_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	top_content.add_child(pile_label)
 
 	var battlefield := Control.new()
-	battlefield.custom_minimum_size = Vector2(0, 342)
-	battlefield.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	battlefield.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	layout.add_child(battlefield)
+	battlefield.set_anchors_preset(Control.PRESET_FULL_RECT)
+	battlefield.offset_top = 54
+	battlefield.offset_bottom = -190
+	add_child(battlefield)
+
+	var floor_shadow := ColorRect.new()
+	floor_shadow.anchor_left = 0.0
+	floor_shadow.anchor_top = 0.68
+	floor_shadow.anchor_right = 1.0
+	floor_shadow.anchor_bottom = 1.0
+	floor_shadow.color = Color(0.02, 0.018, 0.015, 0.30)
+	floor_shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	battlefield.add_child(floor_shadow)
 
 	var player_box := VBoxContainer.new()
-	player_box.anchor_left = 0.03
-	player_box.anchor_top = 0.13
-	player_box.anchor_right = 0.03
-	player_box.anchor_bottom = 0.13
+	player_box.anchor_left = 0.075
+	player_box.anchor_top = 0.35
+	player_box.anchor_right = 0.075
+	player_box.anchor_bottom = 0.35
 	player_box.offset_left = 0
 	player_box.offset_top = 0
-	player_box.offset_right = 232
-	player_box.offset_bottom = 282
-	player_box.custom_minimum_size = Vector2(232, 282)
+	player_box.offset_right = 280
+	player_box.offset_bottom = 310
+	player_box.custom_minimum_size = Vector2(280, 310)
 	player_box.add_theme_constant_override("separation", 8)
 	battlefield.add_child(player_box)
 
 	var protagonist := TextureRect.new()
-	protagonist.custom_minimum_size = Vector2(214, 214)
+	protagonist.custom_minimum_size = Vector2(250, 230)
+	protagonist.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	protagonist.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
 	protagonist.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	protagonist.texture = DataRegistry.get_temp_asset_texture("protagonist_mercenary_idle")
 	player_box.add_child(protagonist)
 
-	var player_hud := PanelContainer.new()
-	player_hud.custom_minimum_size = Vector2(224, 66)
-	player_hud.add_theme_stylebox_override("panel", _battle_overlay_style(UIStyleScript.BORDER))
-	player_box.add_child(player_hud)
+	player_hp_bar = ProgressBar.new()
+	player_hp_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	player_hp_bar.custom_minimum_size = Vector2(210, 15)
+	player_hp_bar.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	player_hp_bar.show_percentage = false
+	player_hp_bar.add_theme_stylebox_override("background", _bar_style(Color(0.05, 0.04, 0.04, 0.96)))
+	player_hp_bar.add_theme_stylebox_override("fill", _bar_style(Color(0.78, 0.09, 0.08, 0.98)))
+	player_box.add_child(player_hp_bar)
 
-	player_label = UIStyleScript.label("", 16)
-	player_hud.add_child(player_label)
+	player_hp_label = UIStyleScript.label("", 17, Color.WHITE)
+	player_hp_label.custom_minimum_size = Vector2(210, 24)
+	player_hp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	player_hp_label.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	player_hp_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	player_box.add_child(player_hp_label)
 
 	companion_box = HBoxContainer.new()
-	companion_box.position = Vector2(284, 12)
-	companion_box.add_theme_constant_override("separation", 8)
-	companion_box.custom_minimum_size = Vector2(420, 74)
+	companion_box.anchor_left = 0.018
+	companion_box.anchor_top = 0.055
+	companion_box.anchor_right = 0.42
+	companion_box.anchor_bottom = 0.055
+	companion_box.add_theme_constant_override("separation", 7)
+	companion_box.custom_minimum_size = Vector2(320, 54)
 	battlefield.add_child(companion_box)
 
 	enemy_box = HBoxContainer.new()
-	enemy_box.anchor_left = 0.38
-	enemy_box.anchor_top = 0.16
-	enemy_box.anchor_right = 0.78
-	enemy_box.anchor_bottom = 0.92
+	enemy_box.anchor_left = 0.54
+	enemy_box.anchor_top = 0.24
+	enemy_box.anchor_right = 0.90
+	enemy_box.anchor_bottom = 0.94
 	enemy_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	enemy_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	enemy_box.alignment = BoxContainer.ALIGNMENT_CENTER
-	enemy_box.add_theme_constant_override("separation", 14)
+	enemy_box.add_theme_constant_override("separation", 46)
 	battlefield.add_child(enemy_box)
 
 	var log_box := VBoxContainer.new()
@@ -137,38 +168,60 @@ func _build_ui() -> void:
 	log_label = UIStyleScript.label("", 13, UIStyleScript.MUTED)
 	log_box.add_child(log_label)
 
+	hand_area = Control.new()
+	hand_area.anchor_left = 0.0
+	hand_area.anchor_top = 1.0
+	hand_area.anchor_right = 1.0
+	hand_area.anchor_bottom = 1.0
+	hand_area.offset_top = -240
+	hand_area.offset_bottom = 0
+	hand_area.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(hand_area)
+
+	var energy_wrap := PanelContainer.new()
+	energy_wrap.anchor_left = 0.018
+	energy_wrap.anchor_top = 1.0
+	energy_wrap.anchor_right = 0.018
+	energy_wrap.anchor_bottom = 1.0
+	energy_wrap.offset_left = 0
+	energy_wrap.offset_top = -122
+	energy_wrap.offset_right = 96
+	energy_wrap.offset_bottom = -32
+	energy_wrap.add_theme_stylebox_override("panel", _energy_orb_style())
+	add_child(energy_wrap)
+
+	energy_label = UIStyleScript.label("", 25, Color.WHITE)
+	energy_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	energy_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	energy_wrap.add_child(energy_label)
+
 	end_turn_button = Button.new()
 	end_turn_button.text = "End Turn"
 	end_turn_button.anchor_left = 1.0
-	end_turn_button.anchor_top = 0.70
+	end_turn_button.anchor_top = 1.0
 	end_turn_button.anchor_right = 1.0
-	end_turn_button.anchor_bottom = 0.70
-	end_turn_button.offset_left = -260
-	end_turn_button.offset_top = 0
-	end_turn_button.offset_right = -40
-	end_turn_button.offset_bottom = 58
-	UIStyleScript.style_button(end_turn_button, "primary")
+	end_turn_button.anchor_bottom = 1.0
+	end_turn_button.offset_left = -290
+	end_turn_button.offset_top = -230
+	end_turn_button.offset_right = -54
+	end_turn_button.offset_bottom = -164
+	_style_end_turn_button(end_turn_button)
 	end_turn_button.pressed.connect(_on_end_turn_pressed)
-	battlefield.add_child(end_turn_button)
+	add_child(end_turn_button)
 
 	claim_reward_button = Button.new()
 	claim_reward_button.text = "Claim Reward"
 	claim_reward_button.anchor_left = 1.0
-	claim_reward_button.anchor_top = 0.70
+	claim_reward_button.anchor_top = 1.0
 	claim_reward_button.anchor_right = 1.0
-	claim_reward_button.anchor_bottom = 0.70
-	claim_reward_button.offset_left = -260
-	claim_reward_button.offset_top = 0
-	claim_reward_button.offset_right = -40
-	claim_reward_button.offset_bottom = 58
-	UIStyleScript.style_button(claim_reward_button, "success")
+	claim_reward_button.anchor_bottom = 1.0
+	claim_reward_button.offset_left = -290
+	claim_reward_button.offset_top = -230
+	claim_reward_button.offset_right = -54
+	claim_reward_button.offset_bottom = -164
+	_style_end_turn_button(claim_reward_button, true)
 	claim_reward_button.pressed.connect(_on_claim_reward_pressed)
-	battlefield.add_child(claim_reward_button)
-
-	hand_area = Control.new()
-	hand_area.custom_minimum_size = Vector2(0, 208)
-	hand_area.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	layout.add_child(hand_area)
+	add_child(claim_reward_button)
 
 
 func _battle_overlay_style(border_color: Color) -> StyleBoxFlat:
@@ -193,6 +246,78 @@ func _battle_overlay_style(border_color: Color) -> StyleBoxFlat:
 	return style
 
 
+func _top_hud_style() -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.035, 0.050, 0.054, 0.76)
+	style.border_color = Color(0.18, 0.24, 0.25, 0.70)
+	style.border_width_bottom = 2
+	style.shadow_color = Color(0, 0, 0, 0.40)
+	style.shadow_size = 8
+	style.content_margin_left = 18
+	style.content_margin_top = 8
+	style.content_margin_right = 18
+	style.content_margin_bottom = 8
+	return style
+
+
+func _energy_orb_style() -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.05, 0.32, 0.40, 0.94)
+	style.border_color = Color(0.64, 0.88, 0.92, 1.0)
+	style.border_width_left = 4
+	style.border_width_top = 4
+	style.border_width_right = 4
+	style.border_width_bottom = 4
+	style.corner_radius_top_left = 34
+	style.corner_radius_top_right = 34
+	style.corner_radius_bottom_left = 34
+	style.corner_radius_bottom_right = 34
+	style.shadow_color = Color(0.12, 0.78, 0.92, 0.35)
+	style.shadow_size = 12
+	style.shadow_offset = Vector2.ZERO
+	return style
+
+
+func _style_end_turn_button(button: Button, victory: bool = false) -> void:
+	button.focus_mode = Control.FOCUS_NONE
+	button.add_theme_font_size_override("font_size", 20)
+	button.add_theme_color_override("font_color", Color.WHITE)
+	button.add_theme_color_override("font_hover_color", Color.WHITE)
+	button.add_theme_stylebox_override("normal", _end_turn_style(victory, false))
+	button.add_theme_stylebox_override("hover", _end_turn_style(victory, true))
+	button.add_theme_stylebox_override("pressed", _end_turn_style(victory, true))
+	button.add_theme_stylebox_override("disabled", _end_turn_style(false, false, true))
+
+
+func _end_turn_style(victory: bool, hover: bool, disabled: bool = false) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.18, 0.35, 0.42, 0.95)
+	style.border_color = Color(0.68, 0.82, 0.82, 1.0)
+	if victory:
+		style.bg_color = Color(0.16, 0.42, 0.24, 0.96)
+		style.border_color = UIStyleScript.GREEN
+	if hover:
+		style.bg_color = style.bg_color.lightened(0.12)
+		style.border_color = Color.WHITE
+	if disabled:
+		style.bg_color = Color(0.08, 0.08, 0.08, 0.82)
+		style.border_color = Color(0.20, 0.20, 0.20, 1.0)
+	style.border_width_left = 3
+	style.border_width_top = 3
+	style.border_width_right = 3
+	style.border_width_bottom = 3
+	style.corner_radius_top_left = 14
+	style.corner_radius_top_right = 14
+	style.corner_radius_bottom_left = 14
+	style.corner_radius_bottom_right = 14
+	style.shadow_color = Color(0, 0, 0, 0.46)
+	style.shadow_size = 8
+	style.shadow_offset = Vector2(0, 4)
+	style.content_margin_left = 18
+	style.content_margin_right = 18
+	return style
+
+
 func _restart_combat() -> void:
 	if not RunState.is_run_active:
 		RunState.start_new_run()
@@ -207,26 +332,31 @@ func _restart_combat() -> void:
 
 
 func _refresh() -> void:
-	player_label.text = "HP %d/%d  Block %d\nEnergy %d/%d  Turn %d" % [
+	player_label.text = "HP %d/%d    Gold %d    Block %d" % [
 		RunState.current_hp,
 		RunState.max_hp,
+		RunState.gold,
 		RunState.combat.player_block,
+	]
+	energy_label.text = "%d/%d" % [
 		RunState.combat.energy,
 		RunState.combat.max_energy,
-		RunState.combat.turn_index,
 	]
+	if player_hp_bar != null:
+		player_hp_bar.max_value = max(RunState.max_hp, 1)
+		player_hp_bar.value = RunState.current_hp
+	if player_hp_label != null:
+		player_hp_label.text = "%d/%d" % [RunState.current_hp, RunState.max_hp]
 	if RunState.combat.healing_reduction_turns > 0:
-		player_label.text += "\nHealing Down %d%% / %d turns" % [
+		player_label.text += "    Healing Down %d%%/%d" % [
 			RunState.combat.healing_reduction_percent,
 			RunState.combat.healing_reduction_turns,
 		]
 	selected_target_index = _clamp_target_index(selected_target_index)
 	_refresh_enemy()
-	pile_label.text = "Draw %d | Hand %d | Discard %d | Exhaust %d" % [
+	pile_label.text = "Turn %d    Draw %d" % [
+		RunState.combat.turn_index,
 		RunState.deck.draw_pile.size(),
-		RunState.deck.hand.size(),
-		RunState.deck.discard_pile.size(),
-		RunState.deck.exhaust_pile.size(),
 	]
 	_refresh_companions()
 	_refresh_hand()
@@ -252,20 +382,58 @@ func _refresh_enemy() -> void:
 		enemy_controls.append(panel)
 
 
-func _make_enemy_panel(enemy: Dictionary, enemy_index: int) -> PanelContainer:
-	var content := VBoxContainer.new()
-	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	content.add_theme_constant_override("separation", 6)
-	var panel := UIStyleScript.panel(content, Vector2(176, 284), true)
+func _make_enemy_panel(enemy: Dictionary, enemy_index: int) -> Control:
+	var panel := Control.new()
+	panel.custom_minimum_size = Vector2(258, 326)
 	panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	panel.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	panel.gui_input.connect(_on_enemy_panel_gui_input.bind(enemy_index))
-	_style_enemy_panel(panel, enemy_index)
+
+	var margin := MarginContainer.new()
+	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
+	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	margin.add_theme_constant_override("margin_left", 10)
+	margin.add_theme_constant_override("margin_top", 6)
+	margin.add_theme_constant_override("margin_right", 10)
+	margin.add_theme_constant_override("margin_bottom", 6)
+	panel.add_child(margin)
+
+	var content := VBoxContainer.new()
+	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_theme_constant_override("separation", 5)
+	margin.add_child(content)
+
+	var intent: Dictionary = enemy.get("intent", {})
+	var intent_text := "Unknown"
+	var intent_kind := "?"
+	if String(intent.get("type", "")) == "attack":
+		intent_kind = "ATK"
+		intent_text = "%d" % int(intent.get("damage", 0))
+	elif String(intent.get("type", "")) == "block":
+		intent_kind = "BLK"
+		intent_text = "+%d" % int(intent.get("block", 0))
+	elif String(intent.get("type", "")) == "healing_down":
+		intent_kind = "HEX"
+		intent_text = "-%d%%" % int(intent.get("percent", 50))
+	if int(enemy.get("hp", 0)) <= 0:
+		intent_kind = "KO"
+		intent_text = "Defeated"
+	var intent_chip := PanelContainer.new()
+	intent_chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	intent_chip.add_theme_stylebox_override("panel", _intent_style(String(intent.get("type", ""))))
+	intent_chip.custom_minimum_size = Vector2(92, 40)
+	intent_chip.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	var intent_label := UIStyleScript.label("%s %s" % [intent_kind, intent_text], 18, UIStyleScript.GOLD)
+	intent_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	intent_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	intent_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	intent_chip.add_child(intent_label)
+	content.add_child(intent_chip)
 
 	var portrait := TextureRect.new()
 	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	portrait.custom_minimum_size = Vector2(128, 128)
+	portrait.custom_minimum_size = Vector2(220, 190)
 	portrait.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	portrait.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -273,54 +441,33 @@ func _make_enemy_panel(enemy: Dictionary, enemy_index: int) -> PanelContainer:
 	portrait.texture = DataRegistry.get_temp_asset_texture(String(enemy.get("asset_id", "")))
 	content.add_child(portrait)
 
-	var statuses: Dictionary = enemy.get("statuses", {})
-	var name_label := UIStyleScript.label("%s%s" % [
-		"> " if enemy_index == selected_target_index and int(enemy.get("hp", 0)) > 0 else "",
-		enemy.get("name", "Enemy"),
-	], 16)
+	var name_label := UIStyleScript.label(String(enemy.get("name", "Enemy")), 16, Color.WHITE)
+	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	name_label.clip_text = true
 	content.add_child(name_label)
-
-	var hp_label := UIStyleScript.label("HP %d/%d  Block %d  Mark %d" % [
-		int(enemy.get("hp", 0)),
-		int(enemy.get("max_hp", 0)),
-		int(enemy.get("block", 0)),
-		int(statuses.get("tactical_mark", 0)),
-	], 14, UIStyleScript.stat_text())
-	content.add_child(hp_label)
 
 	var hp_bar := ProgressBar.new()
 	hp_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hp_bar.custom_minimum_size = Vector2(0, 12)
+	hp_bar.custom_minimum_size = Vector2(196, 15)
+	hp_bar.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	hp_bar.min_value = 0
 	hp_bar.max_value = max(int(enemy.get("max_hp", 1)), 1)
 	hp_bar.value = int(enemy.get("hp", 0))
 	hp_bar.show_percentage = false
 	hp_bar.add_theme_stylebox_override("background", _bar_style(Color(0.045, 0.040, 0.036, 0.95)))
-	hp_bar.add_theme_stylebox_override("fill", _bar_style(Color(0.74, 0.18, 0.15, 0.95)))
+	hp_bar.add_theme_stylebox_override("fill", _bar_style(Color(0.78, 0.09, 0.08, 0.98)))
 	content.add_child(hp_bar)
 
-	var intent: Dictionary = enemy.get("intent", {})
-	var intent_text := "Intent: Unknown"
-	var intent_kind := "?"
-	if String(intent.get("type", "")) == "attack":
-		intent_kind = "ATK"
-		intent_text = "Intent: %s (%d damage)" % [intent.get("label", "Attack"), int(intent.get("damage", 0))]
-	elif String(intent.get("type", "")) == "block":
-		intent_kind = "BLK"
-		intent_text = "Intent: %s (+%d block)" % [intent.get("label", "Block"), int(intent.get("block", 0))]
-	elif String(intent.get("type", "")) == "healing_down":
-		intent_kind = "HEX"
-		intent_text = "Intent: %s (-%d%% healing)" % [intent.get("label", "Hex"), int(intent.get("percent", 50))]
-	if int(enemy.get("hp", 0)) <= 0:
-		intent_kind = "KO"
-		intent_text = "Defeated"
-	var intent_chip := PanelContainer.new()
-	intent_chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	intent_chip.add_theme_stylebox_override("panel", _intent_style(String(intent.get("type", ""))))
-	var intent_label := UIStyleScript.label("%s  %s" % [intent_kind, intent_text], 13, UIStyleScript.GOLD)
-	intent_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	intent_chip.add_child(intent_label)
-	content.add_child(intent_chip)
+	var statuses: Dictionary = enemy.get("statuses", {})
+	var stat_text := "%d/%d" % [int(enemy.get("hp", 0)), int(enemy.get("max_hp", 0))]
+	if int(enemy.get("block", 0)) > 0:
+		stat_text += "   Block %d" % int(enemy.get("block", 0))
+	if int(statuses.get("tactical_mark", 0)) > 0:
+		stat_text += "   Mark %d" % int(statuses.get("tactical_mark", 0))
+	var hp_label := UIStyleScript.label(stat_text, 14, Color.WHITE)
+	hp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	content.add_child(hp_label)
 	return panel
 
 
@@ -436,10 +583,14 @@ func _layout_hand_cards() -> void:
 		return
 	var card_size: Vector2 = CombatCardViewScript.CARD_SIZE
 	var card_width: float = card_size.x
-	var available_width: float = maxf(hand_area.size.x, get_viewport_rect().size.x - 64.0)
-	var spread: float = minf(760.0, maxf(0.0, available_width - card_width - 48.0))
+	var viewport_width: float = get_viewport_rect().size.x
+	var left_reserve := 150.0
+	var right_reserve := 330.0
+	var hand_width: float = maxf(hand_area.size.x, viewport_width)
+	var lane_width: float = maxf(520.0, hand_width - left_reserve - right_reserve)
+	var spread: float = minf(720.0, maxf(0.0, lane_width - card_width - 20.0))
 	var step: float = 0.0 if count <= 1 else spread / float(count - 1)
-	var start_x: float = (available_width - spread - card_width) * 0.5
+	var start_x: float = left_reserve + (lane_width - spread - card_width) * 0.5
 	for i in range(count):
 		var card := cards[i] as Control
 		if card == null:
@@ -486,7 +637,7 @@ func _card_center_for_hand_index(hand_index: int) -> Vector2:
 	for child in hand_area.get_children():
 		if child.get("hand_index") != null and int(child.get("hand_index")) == hand_index:
 			var card := child as Control
-			return card.global_position + Vector2(82, 112)
+			return card.global_position + CombatCardViewScript.CARD_SIZE * 0.5
 	return get_global_mouse_position()
 
 
@@ -633,14 +784,14 @@ func _intent_style(intent_type: String) -> StyleBoxFlat:
 func _style_enemy_panel(panel: PanelContainer, enemy_index: int) -> void:
 	var style := StyleBoxFlat.new()
 	var alive := _enemy_can_target(enemy_index)
-	style.bg_color = Color(0.085, 0.075, 0.065, 0.93)
-	style.border_color = UIStyleScript.BORDER
-	if enemy_index == selected_target_index and alive:
-		style.bg_color = Color(0.16, 0.105, 0.055, 0.96)
-		style.border_color = UIStyleScript.BORDER_BRIGHT
+	style.bg_color = Color(0, 0, 0, 0)
+	style.border_color = Color(0, 0, 0, 0)
+	if enemy_index == selected_target_index and alive and (selected_card_index >= 0 or dragging_card_index >= 0):
+		style.bg_color = Color(0.20, 0.12, 0.04, 0.04)
+		style.border_color = Color(1.0, 0.65, 0.22, 0.34)
 	elif not alive:
-		style.bg_color = Color(0.045, 0.045, 0.045, 0.84)
-		style.border_color = Color(0.16, 0.16, 0.15, 0.95)
+		style.bg_color = Color(0.02, 0.02, 0.02, 0.12)
+		style.border_color = Color(0.12, 0.12, 0.12, 0.28)
 	style.border_width_left = 2
 	style.border_width_top = 2
 	style.border_width_right = 2
@@ -649,10 +800,13 @@ func _style_enemy_panel(panel: PanelContainer, enemy_index: int) -> void:
 	style.corner_radius_top_right = 6
 	style.corner_radius_bottom_left = 6
 	style.corner_radius_bottom_right = 6
+	style.shadow_color = Color(0, 0, 0, 0)
+	style.shadow_size = 0
+	style.shadow_offset = Vector2.ZERO
 	style.content_margin_left = 10
-	style.content_margin_top = 10
+	style.content_margin_top = 6
 	style.content_margin_right = 10
-	style.content_margin_bottom = 10
+	style.content_margin_bottom = 6
 	panel.add_theme_stylebox_override("panel", style)
 
 
@@ -684,56 +838,55 @@ func _append_logs(messages: Array[String]) -> void:
 func _refresh_companions() -> void:
 	UIStyleScript.clear(companion_box)
 	if RunState.party.companions.is_empty():
-		companion_box.add_child(UIStyleScript.label("No companions under contract.", 15, UIStyleScript.MUTED))
 		return
 	for companion in RunState.party.companions:
 		companion_box.add_child(_make_companion_tile(companion))
 
 
 func _make_companion_tile(companion: Dictionary) -> PanelContainer:
-	var content := HBoxContainer.new()
+	var content := MarginContainer.new()
 	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	content.add_theme_constant_override("separation", 8)
-	var panel := UIStyleScript.panel(content, Vector2(0, 70), true)
-	panel.custom_minimum_size = Vector2(245, 70)
+	content.add_theme_constant_override("margin_left", 5)
+	content.add_theme_constant_override("margin_top", 5)
+	content.add_theme_constant_override("margin_right", 5)
+	content.add_theme_constant_override("margin_bottom", 5)
+	var panel := PanelContainer.new()
+	panel.add_child(content)
+	panel.custom_minimum_size = Vector2(54, 54)
 	panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	panel.tooltip_text = "%s\n%s\nBond %d/100" % [
+		String(companion.get("name", "?")),
+		String(companion.get("oath_name", "No Oath")),
+		int(companion.get("bond_score", 0)),
+	]
+	panel.add_theme_stylebox_override("panel", _companion_icon_style())
 
 	var portrait := TextureRect.new()
 	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	portrait.custom_minimum_size = Vector2(48, 48)
+	portrait.custom_minimum_size = Vector2(44, 44)
 	portrait.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
 	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	portrait.texture = DataRegistry.get_temp_asset_texture(String(companion.get("portrait_asset_id", "")))
 	content.add_child(portrait)
-
-	var text_box := VBoxContainer.new()
-	text_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	text_box.custom_minimum_size = Vector2(155, 0)
-	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	text_box.add_theme_constant_override("separation", 1)
-	content.add_child(text_box)
-
-	var name := UIStyleScript.label("%s  ATK %d" % [
-			String(companion.get("name", "?")),
-			int(DataRegistry.get_companion(String(companion.get("id", ""))).get("base_attack", 0)),
-		], 14, UIStyleScript.TEXT)
-	name.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	name.autowrap_mode = TextServer.AUTOWRAP_OFF
-	name.clip_text = true
-	text_box.add_child(name)
-
-	var oath := UIStyleScript.label(String(companion.get("oath_name", "No Oath")), 12, UIStyleScript.GOLD)
-	oath.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	oath.autowrap_mode = TextServer.AUTOWRAP_OFF
-	oath.clip_text = true
-	text_box.add_child(oath)
-
-	var bond := UIStyleScript.label(bond_system.describe_bonuses(companion), 12, UIStyleScript.GREEN)
-	bond.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	bond.autowrap_mode = TextServer.AUTOWRAP_OFF
-	bond.clip_text = true
-	text_box.add_child(bond)
 	return panel
+
+
+func _companion_icon_style() -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.025, 0.024, 0.022, 0.76)
+	style.border_color = Color(0.72, 0.48, 0.18, 0.92)
+	style.border_width_left = 1
+	style.border_width_top = 1
+	style.border_width_right = 1
+	style.border_width_bottom = 1
+	style.corner_radius_top_left = 8
+	style.corner_radius_top_right = 8
+	style.corner_radius_bottom_left = 8
+	style.corner_radius_bottom_right = 8
+	style.shadow_color = Color(0, 0, 0, 0.50)
+	style.shadow_size = 7
+	style.shadow_offset = Vector2(0, 3)
+	return style
 
 
 func _show_feedback_for_message(message: String) -> void:

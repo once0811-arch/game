@@ -23,27 +23,27 @@ func _ready() -> void:
 
 
 func _build_ui() -> void:
-	UIStyleScript.add_background(self, "bg_map_act1_route", 0.70)
-	var root := UIStyleScript.page_root(self, 18)
+	UIStyleScript.add_background(self, "bg_map_act1_route", 0.46)
 
-	var layout := VBoxContainer.new()
-	layout.add_theme_constant_override("separation", 10)
-	root.add_child(layout)
+	var top_bar := PanelContainer.new()
+	top_bar.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	top_bar.offset_bottom = 58
+	top_bar.add_theme_stylebox_override("panel", _map_top_style())
+	add_child(top_bar)
 
 	var header := HBoxContainer.new()
-	header.add_theme_constant_override("separation", 14)
-	layout.add_child(header)
+	header.add_theme_constant_override("separation", 16)
+	top_bar.add_child(header)
 
-	var title_box := VBoxContainer.new()
-	title_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title_box.add_theme_constant_override("separation", 2)
-	header.add_child(title_box)
+	var title := UIStyleScript.label("Act %d" % RunState.act, 24)
+	title.custom_minimum_size = Vector2(110, 0)
+	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	header.add_child(title)
 
-	var title := UIStyleScript.label("Act %d Route" % RunState.act, 28)
-	title_box.add_child(title)
-
-	run_label = UIStyleScript.label("", 15, UIStyleScript.MUTED)
-	title_box.add_child(run_label)
+	run_label = UIStyleScript.label("", 16, UIStyleScript.TEXT)
+	run_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	run_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	header.add_child(run_label)
 
 	var save_button := Button.new()
 	save_button.text = "Save"
@@ -61,21 +61,22 @@ func _build_ui() -> void:
 	main.pressed.connect(Callable(SceneRouter, "go_to_main"))
 	header.add_child(main)
 
-	var body := HBoxContainer.new()
-	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	body.add_theme_constant_override("separation", 14)
-	layout.add_child(body)
-
 	var route_layout := VBoxContainer.new()
 	route_layout.add_theme_constant_override("separation", 10)
 	var map_area := UIStyleScript.panel(route_layout, Vector2(0, 0))
 	_style_route_panel(map_area)
-	map_area.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	map_area.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	body.add_child(map_area)
+	map_area.anchor_left = 0.10
+	map_area.anchor_top = 0.10
+	map_area.anchor_right = 0.84
+	map_area.anchor_bottom = 0.94
+	map_area.offset_left = 0
+	map_area.offset_top = 0
+	map_area.offset_right = 0
+	map_area.offset_bottom = 0
+	add_child(map_area)
 
 	map_canvas = Control.new()
-	map_canvas.custom_minimum_size = Vector2(840, 512)
+	map_canvas.custom_minimum_size = Vector2(760, 520)
 	map_canvas.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	map_canvas.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	map_canvas.clip_contents = true
@@ -84,48 +85,34 @@ func _build_ui() -> void:
 
 	map_log_label = UIStyleScript.label("", 14, UIStyleScript.stat_text())
 	map_log_label.custom_minimum_size = Vector2(0, 28)
+	map_log_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	route_layout.add_child(map_log_label)
-
-	var side := VBoxContainer.new()
-	side.custom_minimum_size = Vector2(270, 0)
-	side.add_theme_constant_override("separation", 12)
-	body.add_child(side)
 
 	legend_box = VBoxContainer.new()
 	legend_box.add_theme_constant_override("separation", 7)
-	var legend_panel := UIStyleScript.panel(legend_box, Vector2(0, 236), true)
-	side.add_child(legend_panel)
+	var legend_panel := UIStyleScript.panel(legend_box, Vector2(206, 320), true)
+	legend_panel.anchor_left = 1.0
+	legend_panel.anchor_top = 0.18
+	legend_panel.anchor_right = 1.0
+	legend_panel.anchor_bottom = 0.18
+	legend_panel.offset_left = -236
+	legend_panel.offset_top = 0
+	legend_panel.offset_right = -28
+	legend_panel.offset_bottom = 320
+	legend_panel.add_theme_stylebox_override("panel", _legend_scroll_style())
+	add_child(legend_panel)
 	_build_legend()
 
-	var party_panel_layout := VBoxContainer.new()
-	party_panel_layout.add_theme_constant_override("separation", 8)
-	var party_panel := UIStyleScript.panel(party_panel_layout, Vector2(0, 118), true)
-	side.add_child(party_panel)
-
-	party_panel_layout.add_child(UIStyleScript.label("Party", 20))
-	equipment_label = UIStyleScript.label("", 14, UIStyleScript.MUTED)
-	party_panel_layout.add_child(equipment_label)
-
-	var equipment_panel_layout := VBoxContainer.new()
-	equipment_panel_layout.add_theme_constant_override("separation", 8)
-	var equipment_panel := UIStyleScript.panel(equipment_panel_layout, Vector2(0, 112), true)
-	equipment_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	side.add_child(equipment_panel)
-
-	equipment_panel_layout.add_child(UIStyleScript.label("Equipment", 20))
+	equipment_label = Label.new()
 	equipment_box = HBoxContainer.new()
-	equipment_box.add_theme_constant_override("separation", 8)
-	equipment_panel_layout.add_child(equipment_box)
-
-	equipment_status_label = UIStyleScript.label("", 14, UIStyleScript.MUTED)
-	equipment_panel_layout.add_child(equipment_status_label)
+	equipment_status_label = Label.new()
 
 
 func _build_legend() -> void:
 	if legend_box == null:
 		return
 	UIStyleScript.clear(legend_box)
-	legend_box.add_child(UIStyleScript.label("Legend", 20))
+	legend_box.add_child(UIStyleScript.label("Legend", 20, Color(0.08, 0.12, 0.12, 1.0)))
 	for entry in [
 		["combat", "Fight"],
 		["elite", "Elite"],
@@ -156,7 +143,7 @@ func _make_legend_row(node_type: String, label_text: String) -> HBoxContainer:
 	icon.modulate = _node_accent_color(node_type, "available")
 	row.add_child(icon)
 
-	var label := UIStyleScript.label(label_text, 14, UIStyleScript.stat_text())
+	var label := UIStyleScript.label(label_text, 14, Color(0.08, 0.10, 0.10, 1.0))
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	label.custom_minimum_size = Vector2(170, 0)
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -166,10 +153,46 @@ func _make_legend_row(node_type: String, label_text: String) -> HBoxContainer:
 	return row
 
 
+func _map_top_style() -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.050, 0.070, 0.075, 0.78)
+	style.border_color = Color(0.18, 0.24, 0.25, 0.92)
+	style.border_width_bottom = 2
+	style.shadow_color = Color(0, 0, 0, 0.42)
+	style.shadow_size = 8
+	style.content_margin_left = 18
+	style.content_margin_top = 8
+	style.content_margin_right = 18
+	style.content_margin_bottom = 8
+	return style
+
+
+func _legend_scroll_style() -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.78, 0.84, 0.82, 0.92)
+	style.border_color = Color(0.38, 0.48, 0.48, 0.96)
+	style.border_width_left = 2
+	style.border_width_top = 2
+	style.border_width_right = 2
+	style.border_width_bottom = 2
+	style.corner_radius_top_left = 8
+	style.corner_radius_top_right = 8
+	style.corner_radius_bottom_left = 8
+	style.corner_radius_bottom_right = 8
+	style.shadow_color = Color(0, 0, 0, 0.45)
+	style.shadow_size = 10
+	style.shadow_offset = Vector2(0, 5)
+	style.content_margin_left = 14
+	style.content_margin_top = 12
+	style.content_margin_right = 14
+	style.content_margin_bottom = 12
+	return style
+
+
 func _style_route_panel(panel_node: PanelContainer) -> void:
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.50, 0.48, 0.39, 0.82)
-	style.border_color = Color(0.25, 0.20, 0.13, 0.98)
+	style.bg_color = Color(0.66, 0.64, 0.52, 0.91)
+	style.border_color = Color(0.30, 0.24, 0.15, 0.98)
 	style.border_width_left = 2
 	style.border_width_top = 2
 	style.border_width_right = 2
@@ -181,10 +204,10 @@ func _style_route_panel(panel_node: PanelContainer) -> void:
 	style.shadow_color = Color(0, 0, 0, 0.48)
 	style.shadow_size = 10
 	style.shadow_offset = Vector2(0, 5)
-	style.content_margin_left = 14
-	style.content_margin_top = 12
-	style.content_margin_right = 14
-	style.content_margin_bottom = 12
+	style.content_margin_left = 24
+	style.content_margin_top = 18
+	style.content_margin_right = 24
+	style.content_margin_bottom = 18
 	panel_node.add_theme_stylebox_override("panel", style)
 
 
@@ -192,12 +215,11 @@ func _refresh_run_info() -> void:
 	if not RunState.is_run_active:
 		run_label.text = "No active run. Return to Main Menu and start a new run."
 		return
-	run_label.text = "Depth %d/12  |  HP %d/%d  |  Gold %d\n%s" % [
+	run_label.text = "Floor %d/12    HP %d/%d    Gold %d" % [
 		MapState.current_depth,
 		RunState.current_hp,
 		RunState.max_hp,
 		RunState.gold,
-		RunState.phase_note,
 	]
 
 
@@ -214,7 +236,7 @@ func _refresh_nodes() -> void:
 		map_log_label.text = "Start a new run to generate the Act 1 route."
 		return
 	MapState.ensure_current_act()
-	map_log_label.text = "Click or drag a lit contract token to choose the next route. Depth %d / 12 is open." % MapState.get_available_depth()
+	map_log_label.text = "Choose the next contract."
 	_draw_route_lines()
 	for node in MapState.nodes:
 		var button := _make_node_button(node)
@@ -257,7 +279,7 @@ func _input(event: InputEvent) -> void:
 	if dragging_node_id.is_empty():
 		return
 	if event is InputEventMouseMotion:
-		map_log_label.text = "Release over a lit contract token to travel."
+		map_log_label.text = "Release on a lit token."
 	elif event is InputEventMouseButton:
 		var mouse_event := event as InputEventMouseButton
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT and not mouse_event.pressed:
@@ -275,7 +297,7 @@ func _on_node_button_gui_input(event: InputEvent, node_id: String, state: String
 		var mouse_event := event as InputEventMouseButton
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.pressed:
 			dragging_node_id = node_id
-			map_log_label.text = "Holding contract token. Drag to another lit token or release to travel."
+			map_log_label.text = "Holding contract token."
 
 
 func _on_node_hovered(node: Dictionary) -> void:
@@ -284,7 +306,7 @@ func _on_node_hovered(node: Dictionary) -> void:
 
 func _on_node_unhovered() -> void:
 	if dragging_node_id.is_empty():
-		map_log_label.text = "Click or drag a lit contract token to choose the next route. Depth %d / 12 is open." % MapState.get_available_depth()
+		map_log_label.text = "Choose the next contract."
 
 
 func _node_id_at_position(global_position: Vector2) -> String:
@@ -330,6 +352,10 @@ func _node_position(node: Dictionary) -> Vector2:
 		canvas_size.x - side_margin,
 	]
 	var x := float(x_positions[clampi(lane, 0, 2)])
+	var jitter := sin(float(depth) * 1.73 + float(lane) * 2.31) * canvas_size.x * 0.038
+	if lane == 1:
+		jitter *= 0.52
+	x += jitter
 	var y_margin := 30.0
 	var usable_height := maxf(420.0, canvas_size.y - 92.0)
 	var depth_count := 12.0
