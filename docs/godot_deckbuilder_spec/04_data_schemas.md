@@ -157,6 +157,9 @@ upgraded_description_ko: 강화 표시 설명
   "recruited_act": 1,
   "selected_oath_tactic_id": "rowan_oath_red_pursuit",
   "bond_score": 18,
+  "runtime_counters": {
+    "kyle_wager_count": 0
+  },
   "owned_card_ids": [
     "rowan_piercing_lunge",
     "rowan_spear_wall"
@@ -170,6 +173,8 @@ upgraded_description_ko: 강화 표시 설명
 ```
 
 `bond_score`는 0~100 범위다. 30/60/100 보너스는 점수 기준으로 자동 적용하며, 서약 전술은 런 중 변경하거나 업그레이드하지 않는다. 세계관상 서약 전술은 동료와 증표에 맺은 전투 조항이지만, 기본 전투 데이터에는 계약 실패/검은 지문 패널티를 넣지 않는다. 검은 지문은 이벤트, 동료 후보, UI 연출용 소재로 사용한다.
+
+`runtime_counters`는 동료별 특수 런 상태를 저장한다. 현재 필수 사용처는 카일의 `kyle_wager_count`이며, 다른 동료는 빈 객체로 둬도 된다.
 
 ## 5. EquipmentData
 
@@ -312,11 +317,20 @@ shop
 inn
 treasure
 elite
+mid_boss
 boss
 companion_foreshadow
+companion_contract
+upgrade
 ```
 
-`companion_foreshadow`는 Act 1에서 동료 후보를 미리 보여주는 이벤트성 노드다. 구현상 normal event로 처리해도 되지만, 맵 생성 가중치와 저장에서 구분할 수 있으면 좋다.
+`companion_foreshadow`는 Act 1 depth 2~5에서 동료 후보를 미리 보여주는 이벤트성 노드다. 구현상 normal event로 처리해도 되지만, 맵 생성 가중치와 저장에서 구분할 수 있으면 좋다.
+
+`mid_boss`는 Act 1 depth 6의 중간 보스처럼 Act 보스보다 짧은 필수 전투를 표현한다.
+
+`companion_contract`는 중간 보스 승리 후 첫 동료 선택과 Act 1 보스 승리 후 두 번째 동료 선택 화면을 표현한다.
+
+`upgrade`는 Act 2 depth 6 중간 강화 노드처럼 전투 없이 주인공/동료 강화 선택을 제공하는 노드다.
 
 ## 11. EnemyData
 
@@ -329,10 +343,13 @@ companion_foreshadow
   "intent_patterns": [
     {"type": "attack", "damage": 7, "weight": 60},
     {"type": "block", "block": 6, "weight": 30},
-    {"type": "debuff", "status": "weak", "amount": 1, "weight": 10}
+    {"type": "debuff", "status": "weak", "amount": 1, "weight": 10},
+    {"type": "debuff", "status": "healing_down", "amount": 50, "duration": 2, "weight": 0}
   ]
 }
 ```
+
+`healing_down`은 받는 회복량을 비율로 줄이는 상태 효과다. Act 1 일반 적은 기본 weight 0으로 두고, Act 2 이후 특정 적에게만 명시적으로 가중치를 준다.
 
 ## 11.1 BossData
 
@@ -343,8 +360,8 @@ companion_foreshadow
   "id": "boss_act1_blackprint_captain",
   "name_ko": "검은 지문을 가진 용병대장",
   "act": 1,
-  "max_hp": 210,
-  "design_goal_ko": "동료 영입 전 덱 품질과 전술 표식의 필요성을 시험합니다.",
+  "max_hp": 240,
+  "design_goal_ko": "첫 동료와 서약 전술을 배운 뒤, 두 번째 동료를 받을 자격이 있는지 시험합니다.",
   "phase_thresholds": [],
   "intent_sequence": [
     {"turn": 1, "type": "attack", "damage": 10},
@@ -471,6 +488,23 @@ add_status_card
     "target_elite_turns": [5, 7],
     "target_boss_turns": [8, 11]
   },
+  "run_structure": {
+    "acts": 3,
+    "nodes_per_act": 12,
+    "act1_mid_boss_depth": 6,
+    "act2_upgrade_depth": 6,
+    "act1_mid_boss_reward": "first_companion_contract",
+    "act1_boss_reward": "second_companion_contract",
+    "act2_mid_reward": "minor_protagonist_or_companion_upgrade",
+    "act2_boss_reward": "major_protagonist_or_companion_upgrade"
+  },
+  "card_cost_distribution_target": {
+    "zero_cost_percent": [10, 12],
+    "one_cost_percent": [40, 45],
+    "two_cost_percent": [32, 38],
+    "three_or_x_cost_percent": [8, 12],
+    "target_cards_played_per_turn": [3, 4]
+  },
   "card_rewards": {
     "rarity_weights_by_act": {
       "1": {"common": 62, "uncommon": 35, "rare": 3},
@@ -493,7 +527,9 @@ add_status_card
       "first_companion_normal_act2_mid": 30,
       "first_companion_normal_act3_start": [50, 70],
       "first_companion_normal_act3_late": [70, 90],
-      "second_companion_normal_act3_late": [50, 70]
+      "second_companion_normal_act2_late": 30,
+      "second_companion_normal_act3_mid": [50, 70],
+      "second_companion_normal_act3_late": [70, 90]
     },
     "gain": {
       "normal_combat_win": 3,
@@ -505,8 +541,8 @@ add_status_card
       "elite_reward_bond_add": 10,
       "companion_event_min": 8,
       "companion_event_max": 12,
-      "act2_new_companion_start": 20,
-      "act2_existing_companion_pick": 20
+      "act2_mid_upgrade_pick": 10,
+      "act2_boss_companion_upgrade_pick": 20
     }
   },
   "oath_tactics": {
@@ -539,6 +575,21 @@ add_status_card
     "remove_card_increment": 25,
     "upgrade_normal_card": 90,
     "upgrade_companion_card": 120
+  },
+  "healing": {
+    "healing_down_multiplier": 0.5,
+    "healing_down_duration_turns": [1, 2],
+    "act1_common_enemy_healing_down": false
+  },
+  "kyle_wager": {
+    "threshold": 5,
+    "normal_win_add": 1,
+    "healthy_win_hp_percent": 70,
+    "healthy_win_add": 2,
+    "elite_or_boss_win_add": 2,
+    "max_add_per_combat": 2,
+    "reward_weights": {"low": 55, "mid": 30, "high": 12, "jackpot": 3},
+    "bond_60_reward_weight_delta": {"low": -10, "mid": 7, "high": 3, "jackpot": 0}
   },
   "inn_prices": {
     "small_room": {"gold": 35, "heal_percent": 22},
@@ -580,8 +631,12 @@ add_status_card
   "combat_turn_counts": [],
   "combat_hp_losses": [],
   "bond_score_gains": {},
+  "mid_boss_reached_count": 0,
+  "mid_boss_clear_count": 0,
   "oath_tactic_pick_counts": {},
   "oath_tactic_trigger_counts": {},
+  "healing_down_applied_counts": {},
+  "kyle_wager_reward_counts": {},
   "card_reward_seen_counts": {},
   "card_reward_pick_counts": {},
   "card_reward_skip_count": 0,
