@@ -89,6 +89,11 @@ func _build_ui() -> void:
 	deck_debug.pressed.connect(Callable(SceneRouter, "open_deck_debug"))
 	actions.add_child(deck_debug)
 
+	var combat_test := Button.new()
+	combat_test.text = "Combat Test"
+	combat_test.pressed.connect(Callable(SceneRouter, "open_combat_test"))
+	actions.add_child(combat_test)
+
 	var main := Button.new()
 	main.text = "Main Menu"
 	main.pressed.connect(Callable(SceneRouter, "go_to_main"))

@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "phase": 2,
+  "phase": 3,
   "run": {
     "starting_act": 1,
     "starting_depth": 0,
@@ -11,7 +11,8 @@
   "combat": {
     "energy_per_turn": 4,
     "draw_per_turn": 6,
-    "starting_hand_size": 6
+    "starting_hand_size": 6,
+    "debug_enemy_id": "enemy_act1_mutated_merchant"
   },
   "bond": {
     "max_score": 100,

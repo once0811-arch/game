@@ -1,0 +1,30 @@
+{
+  "version": "0.1.0",
+  "act": 1,
+  "enemies": [
+    {
+      "id": "enemy_act1_mutated_merchant",
+      "name": "Mutated Merchant",
+      "max_hp": 42,
+      "asset_id": "enemy_act1_mutated_merchant_idle",
+      "background_id": "bg_battle_act1_road_ruin",
+      "intents": [
+        {"type": "attack", "damage": 6, "label": "Claw Ledger"},
+        {"type": "block", "block": 5, "label": "Hoard Scraps"},
+        {"type": "attack", "damage": 9, "label": "Black Receipt"}
+      ]
+    },
+    {
+      "id": "enemy_act1_twisted_wolf",
+      "name": "Twisted Wolf",
+      "max_hp": 36,
+      "asset_id": "enemy_act1_twisted_wolf_idle",
+      "background_id": "bg_battle_act1_road_ruin",
+      "intents": [
+        {"type": "attack", "damage": 7, "label": "Lunge"},
+        {"type": "attack", "damage": 7, "label": "Lunge"},
+        {"type": "block", "block": 4, "label": "Circle"}
+      ]
+    }
+  ]
+}

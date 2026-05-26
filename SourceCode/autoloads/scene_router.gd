@@ -4,6 +4,8 @@ const MAIN_SCENE := "res://scenes/main/main.tscn"
 const MAP_SCENE := "res://scenes/map/map_screen.tscn"
 const ASSET_GALLERY_SCENE := "res://scenes/debug/asset_gallery.tscn"
 const DECK_DEBUG_SCENE := "res://scenes/debug/deck_debug.tscn"
+const COMBAT_SCENE := "res://scenes/combat/combat_screen.tscn"
+const CARD_REWARD_SCENE := "res://scenes/reward/card_reward_screen.tscn"
 
 
 func go_to_main() -> void:
@@ -20,6 +22,14 @@ func open_asset_gallery() -> void:
 
 func open_deck_debug() -> void:
 	_change_to(DECK_DEBUG_SCENE)
+
+
+func open_combat_test() -> void:
+	_change_to(COMBAT_SCENE)
+
+
+func open_card_reward() -> void:
+	_change_to(CARD_REWARD_SCENE)
 
 
 func start_new_run() -> void:

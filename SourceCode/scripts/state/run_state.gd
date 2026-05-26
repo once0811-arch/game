@@ -26,7 +26,7 @@ func start_new_run() -> void:
 	gold = int(starting.get("starting_gold", 80))
 	max_hp = int(starting.get("starting_max_hp", 75))
 	current_hp = max_hp
-	phase_note = "Phase 1 foundation run. Map and systems are placeholders."
+	phase_note = "A fresh contract begins. The road ahead is unstable."
 	party.reset()
 	deck.build_starting_deck(DataRegistry.get_starter_deck_ids())
 	combat.reset()

@@ -3,12 +3,15 @@ extends Node
 const BALANCE_CONSTANTS_PATH := "res://data/balance_constants.json"
 const TEMP_ASSET_MANIFEST_PATH := "res://data/assets/temp_asset_manifest.json"
 const PROTAGONIST_CARDS_PATH := "res://data/cards/protagonist_cards.json"
+const ENEMIES_ACT1_PATH := "res://data/enemies/enemies_act1.json"
 
 var balance_constants: Dictionary = {}
 var temp_asset_manifest: Dictionary = {}
 var temp_assets_by_id: Dictionary = {}
 var protagonist_cards: Dictionary = {}
 var cards_by_id: Dictionary = {}
+var enemies_act1: Dictionary = {}
+var enemies_by_id: Dictionary = {}
 var load_errors: Array[String] = []
 
 
@@ -21,8 +24,10 @@ func load_all() -> bool:
 	balance_constants = _load_dictionary(BALANCE_CONSTANTS_PATH)
 	temp_asset_manifest = _load_dictionary(TEMP_ASSET_MANIFEST_PATH)
 	protagonist_cards = _load_dictionary(PROTAGONIST_CARDS_PATH)
+	enemies_act1 = _load_dictionary(ENEMIES_ACT1_PATH)
 	_index_temp_assets()
 	_index_cards()
+	_index_enemies()
 	return load_errors.is_empty()
 
 
@@ -68,12 +73,24 @@ func get_card_count() -> int:
 	return cards_by_id.size()
 
 
+func get_enemy(enemy_id: String) -> Dictionary:
+	return enemies_by_id.get(enemy_id, {})
+
+
+func get_enemy_count() -> int:
+	return enemies_by_id.size()
+
+
 func is_ready_for_phase_1() -> bool:
 	return load_errors.is_empty() and not balance_constants.is_empty() and get_temp_asset_count() > 0
 
 
 func is_ready_for_phase_2() -> bool:
 	return is_ready_for_phase_1() and get_starter_deck_ids().size() == 10 and get_card_count() > 0
+
+
+func is_ready_for_phase_3() -> bool:
+	return is_ready_for_phase_2() and get_enemy_count() > 0
 
 
 func _load_dictionary(path: String) -> Dictionary:
@@ -108,3 +125,13 @@ func _index_cards() -> void:
 		var card_id := String(card.get("id", ""))
 		if not card_id.is_empty():
 			cards_by_id[card_id] = card
+
+
+func _index_enemies() -> void:
+	enemies_by_id.clear()
+	for enemy in enemies_act1.get("enemies", []):
+		if typeof(enemy) != TYPE_DICTIONARY:
+			continue
+		var enemy_id := String(enemy.get("id", ""))
+		if not enemy_id.is_empty():
+			enemies_by_id[enemy_id] = enemy
