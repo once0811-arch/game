@@ -27,10 +27,13 @@ var end_turn_button: Button
 var claim_reward_button: Button
 var enemy_controls: Array[Control] = []
 var feedback_layer: Control
+var combat_prompt_panel: PanelContainer
+var combat_prompt_label: Label
 var selected_target_index := 0
 var selected_card_index := -1
 var dragging_card_index := -1
-var drag_preview: Label
+var hovered_enemy_index := -1
+var drag_preview: Control
 var target_arc: Line2D
 var drag_start_position := Vector2.ZERO
 
@@ -213,6 +216,27 @@ func _build_ui() -> void:
 	end_turn_button.pressed.connect(_on_end_turn_pressed)
 	add_child(end_turn_button)
 
+	var prompt_panel := PanelContainer.new()
+	combat_prompt_panel = prompt_panel
+	prompt_panel.anchor_left = 0.5
+	prompt_panel.anchor_top = 0.0
+	prompt_panel.anchor_right = 0.5
+	prompt_panel.anchor_bottom = 0.0
+	prompt_panel.offset_left = -250
+	prompt_panel.offset_top = 66
+	prompt_panel.offset_right = 250
+	prompt_panel.offset_bottom = 110
+	prompt_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	prompt_panel.visible = false
+	prompt_panel.add_theme_stylebox_override("panel", _battle_overlay_style(Color(0.72, 0.48, 0.18, 0.78)))
+	add_child(prompt_panel)
+
+	combat_prompt_label = UIStyleScript.label("", 16, UIStyleScript.TEXT)
+	combat_prompt_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	combat_prompt_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	combat_prompt_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	prompt_panel.add_child(combat_prompt_label)
+
 	claim_reward_button = Button.new()
 	claim_reward_button.text = "Claim Reward"
 	claim_reward_button.anchor_left = 1.0
@@ -364,6 +388,7 @@ func _refresh() -> void:
 	]
 	_refresh_companions()
 	_refresh_hand()
+	_refresh_prompt()
 	end_turn_button.disabled = RunState.combat.outcome != "active"
 	claim_reward_button.visible = RunState.combat.outcome == "victory"
 	var recent_logs: Array[String] = []
@@ -371,6 +396,22 @@ func _refresh() -> void:
 	for i in range(start_index, log_lines.size()):
 		recent_logs.append(log_lines[i])
 	log_label.text = "\n".join(PackedStringArray(recent_logs))
+
+
+func _refresh_prompt() -> void:
+	if combat_prompt_label == null or combat_prompt_panel == null:
+		return
+	combat_prompt_panel.visible = true
+	combat_prompt_label.add_theme_color_override("font_color", UIStyleScript.TEXT)
+	if RunState.combat.outcome == "victory":
+		combat_prompt_label.text = "Claim the reward."
+	elif RunState.combat.outcome == "defeat":
+		combat_prompt_label.text = "The contract is broken."
+	elif _is_targeting_enemy_card():
+		combat_prompt_label.text = "Choose a living enemy."
+	else:
+		combat_prompt_label.text = ""
+		combat_prompt_panel.visible = false
 
 
 func _refresh_enemy() -> void:
@@ -393,6 +434,8 @@ func _make_enemy_panel(enemy: Dictionary, enemy_index: int) -> Control:
 	panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	panel.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	panel.gui_input.connect(_on_enemy_panel_gui_input.bind(enemy_index))
+	panel.mouse_entered.connect(_on_enemy_mouse_entered.bind(enemy_index))
+	panel.mouse_exited.connect(_on_enemy_mouse_exited.bind(enemy_index))
 	_style_enemy_panel(panel, enemy_index)
 
 	var margin := MarginContainer.new()
@@ -427,13 +470,28 @@ func _make_enemy_panel(enemy: Dictionary, enemy_index: int) -> Control:
 	var intent_chip := PanelContainer.new()
 	intent_chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	intent_chip.add_theme_stylebox_override("panel", _intent_style(String(intent.get("type", ""))))
-	intent_chip.custom_minimum_size = Vector2(92, 40)
+	intent_chip.custom_minimum_size = Vector2(124, 42)
 	intent_chip.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	var intent_row := HBoxContainer.new()
+	intent_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	intent_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	intent_row.add_theme_constant_override("separation", 6)
+	intent_chip.add_child(intent_row)
+	var intent_icon := TextureRect.new()
+	intent_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	intent_icon.custom_minimum_size = Vector2(24, 24)
+	intent_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	intent_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	intent_icon.texture = DataRegistry.get_temp_asset_texture(_intent_icon_asset_id(String(intent.get("type", "")), int(enemy.get("hp", 0)) <= 0))
+	intent_row.add_child(intent_icon)
 	var intent_label := UIStyleScript.label("%s %s" % [intent_kind, intent_text], 18, UIStyleScript.GOLD)
 	intent_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	intent_label.custom_minimum_size = Vector2(68, 24)
+	intent_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	intent_label.clip_text = true
 	intent_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	intent_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	intent_chip.add_child(intent_label)
+	intent_row.add_child(intent_label)
 	content.add_child(intent_chip)
 
 	var portrait := TextureRect.new()
@@ -490,18 +548,23 @@ func _refresh_hand() -> void:
 
 
 func _on_card_pressed(hand_index: int) -> void:
-	if not _is_card_playable(hand_index):
-		_show_invalid_action("Not enough energy.")
+	var validation := _validate_card_play(hand_index, -1)
+	if not bool(validation.get("ok", false)) and not _card_requires_target(hand_index):
+		_show_invalid_action(String(validation.get("message", "")))
 		return
 	if not _card_requires_target(hand_index):
 		_play_card_at_target(hand_index, -1)
 		return
 	selected_card_index = hand_index
+	hovered_enemy_index = -1
 	_layout_hand_cards()
+	_refresh_enemy()
+	_refresh_prompt()
 
 
 func _on_card_drag_started(hand_index: int, card_name_text: String) -> void:
 	if not _is_card_playable(hand_index):
+		_show_invalid_action(String(_validate_card_play(hand_index, -1).get("message", "Cannot play.")))
 		return
 	selected_card_index = hand_index
 	dragging_card_index = hand_index
@@ -509,6 +572,8 @@ func _on_card_drag_started(hand_index: int, card_name_text: String) -> void:
 	_show_drag_preview(card_name_text)
 	if _card_requires_target(hand_index):
 		_update_target_arc()
+	_refresh_enemy()
+	_refresh_prompt()
 
 
 func _input(event: InputEvent) -> void:
@@ -532,7 +597,7 @@ func _input(event: InputEvent) -> void:
 				_play_card_at_target(hand_index, -1)
 			else:
 				selected_card_index = hand_index
-				_show_invalid_action("Choose an enemy target.")
+				_show_invalid_action("Choose a living enemy.")
 				_refresh()
 
 
@@ -545,7 +610,7 @@ func _on_enemy_panel_gui_input(event: InputEvent, enemy_index: int) -> void:
 
 func _on_enemy_pressed(enemy_index: int) -> void:
 	if not _enemy_can_target(enemy_index):
-		_show_invalid_action("That target is gone.")
+		_show_invalid_action("That enemy is already down.")
 		return
 	selected_target_index = enemy_index
 	if selected_card_index >= 0 and _is_card_playable(selected_card_index):
@@ -555,11 +620,9 @@ func _on_enemy_pressed(enemy_index: int) -> void:
 
 
 func _play_card_at_target(hand_index: int, target_index: int) -> void:
-	if not _is_card_playable(hand_index):
-		_show_invalid_action("Not enough energy.")
-		return
-	if _card_requires_target(hand_index) and not _enemy_can_target(target_index):
-		_show_invalid_action("Choose an enemy target.")
+	var validation := _validate_card_play(hand_index, target_index)
+	if not bool(validation.get("ok", false)):
+		_show_invalid_action(String(validation.get("message", "")))
 		return
 	var instance: Dictionary = RunState.deck.hand[hand_index]
 	var card := DataRegistry.get_card(CardInstanceScript.get_card_id(instance)).duplicate(true)
@@ -567,6 +630,8 @@ func _play_card_at_target(hand_index: int, target_index: int) -> void:
 	var effect_kind := _card_effect_kind(card)
 	selected_target_index = target_index
 	selected_card_index = -1
+	hovered_enemy_index = -1
+	_clear_target_arc()
 	var messages := turn_manager.play_card(hand_index, target_index)
 	_append_logs(messages)
 	_refresh()
@@ -576,6 +641,7 @@ func _play_card_at_target(hand_index: int, target_index: int) -> void:
 func _on_end_turn_pressed() -> void:
 	selected_card_index = -1
 	dragging_card_index = -1
+	hovered_enemy_index = -1
 	_clear_drag_preview()
 	_clear_target_arc()
 	var messages := turn_manager.end_player_turn()
@@ -627,12 +693,25 @@ func _is_card_playable(hand_index: int) -> bool:
 	return CardDataScript.card_cost(card) <= RunState.combat.energy
 
 
+func _validate_card_play(hand_index: int, target_index: int) -> Dictionary:
+	if hand_index < 0 or hand_index >= RunState.deck.hand.size():
+		return {"ok": false, "message": "That card is no longer in hand."}
+	var instance: Dictionary = RunState.deck.hand[hand_index]
+	var card := DataRegistry.get_card(CardInstanceScript.get_card_id(instance))
+	return CardPlayRulesScript.validate_play(card, hand_index, target_index)
+
+
 func _card_requires_target(hand_index: int) -> bool:
 	if hand_index < 0 or hand_index >= RunState.deck.hand.size():
 		return false
 	var instance: Dictionary = RunState.deck.hand[hand_index]
 	var card := DataRegistry.get_card(CardInstanceScript.get_card_id(instance))
 	return CardPlayRulesScript.requires_enemy_target(card)
+
+
+func _is_targeting_enemy_card() -> bool:
+	var hand_index := dragging_card_index if dragging_card_index >= 0 else selected_card_index
+	return hand_index >= 0 and _card_requires_target(hand_index)
 
 
 func _card_name_for_hand_index(hand_index: int) -> String:
@@ -691,9 +770,26 @@ func _clamp_target_index(target_index: int) -> int:
 
 func _show_drag_preview(card_name: String) -> void:
 	_clear_drag_preview()
-	drag_preview = UIStyleScript.label(card_name, 17, UIStyleScript.GOLD)
+	var content := HBoxContainer.new()
+	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content.add_theme_constant_override("separation", 7)
+	drag_preview = PanelContainer.new()
 	drag_preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	drag_preview.z_index = 50
+	drag_preview.custom_minimum_size = Vector2(176, 42)
+	(drag_preview as PanelContainer).add_theme_stylebox_override("panel", _battle_overlay_style(UIStyleScript.GOLD))
+	drag_preview.add_child(content)
+	var icon := TextureRect.new()
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	icon.custom_minimum_size = Vector2(28, 28)
+	icon.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.texture = DataRegistry.get_temp_asset_texture("icon_tactical_mark")
+	content.add_child(icon)
+	var label := UIStyleScript.label(card_name, 15, UIStyleScript.GOLD)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	content.add_child(label)
 	add_child(drag_preview)
 	_move_drag_preview()
 
@@ -717,6 +813,8 @@ func _update_target_arc() -> void:
 	target_arc.clear_points()
 	var start := drag_start_position
 	var target := get_global_mouse_position()
+	var target_index := _enemy_index_at_position(target)
+	target_arc.default_color = Color(1.0, 0.72, 0.24, 0.96) if target_index >= 0 else Color(0.88, 0.24, 0.20, 0.82)
 	var distance := target - start
 	for i in range(8):
 		var t := float(i) / 8.0
@@ -749,10 +847,16 @@ func _spawn_float_text(text: String, global_position: Vector2, color: Color) -> 
 
 func _show_invalid_action(text: String) -> void:
 	_spawn_float_text(text, get_global_mouse_position(), UIStyleScript.RED)
+	if combat_prompt_label != null:
+		if combat_prompt_panel != null:
+			combat_prompt_panel.visible = true
+		combat_prompt_label.text = text
+		combat_prompt_label.add_theme_color_override("font_color", UIStyleScript.RED)
 
 
 func _play_card_feedback(card: Dictionary, source_position: Vector2, target_index: int, effect_kind: String, messages: Array[String]) -> void:
 	var destination := _feedback_destination(target_index, effect_kind)
+	_animate_player_action(effect_kind, destination)
 	_animate_played_card(card, source_position, destination, effect_kind)
 	await get_tree().create_timer(0.18).timeout
 	match effect_kind:
@@ -938,6 +1042,7 @@ func _spawn_projectile(from_position: Vector2, to_position: Vector2, effect_kind
 func _spawn_impact(global_position: Vector2, effect_kind: String) -> void:
 	if feedback_layer == null:
 		return
+	_spawn_sprite_fx(_effect_asset_id(effect_kind), global_position, Vector2(96, 96))
 	var ring := PanelContainer.new()
 	ring.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	ring.z_index = 118
@@ -953,6 +1058,37 @@ func _spawn_impact(global_position: Vector2, effect_kind: String) -> void:
 	tween.finished.connect(ring.queue_free)
 
 
+func _spawn_sprite_fx(asset_id: String, global_position: Vector2, size_hint: Vector2) -> void:
+	if feedback_layer == null or asset_id.is_empty():
+		return
+	var asset := DataRegistry.get_temp_asset(asset_id)
+	if asset.is_empty():
+		return
+	var sprite := TextureRect.new()
+	sprite.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	sprite.z_index = 119
+	sprite.custom_minimum_size = size_hint
+	sprite.size = size_hint
+	sprite.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	sprite.texture = DataRegistry.get_temp_asset_texture(asset_id, 0)
+	feedback_layer.add_child(sprite)
+	sprite.global_position = global_position - size_hint * 0.5
+	sprite.scale = Vector2(0.82, 0.82)
+	var grow := create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	grow.tween_property(sprite, "scale", Vector2(1.18, 1.18), 0.16)
+	grow.parallel().tween_property(sprite, "modulate:a", 0.0, 0.36).set_delay(0.12)
+	var frames: int = maxi(int(asset.get("frames", 1)), 1)
+	for frame in range(1, frames):
+		await get_tree().create_timer(0.045).timeout
+		if not is_instance_valid(sprite):
+			return
+		sprite.texture = DataRegistry.get_temp_asset_texture(asset_id, frame)
+	await get_tree().create_timer(0.16).timeout
+	if is_instance_valid(sprite):
+		sprite.queue_free()
+
+
 func _animate_target_hit(target_index: int, effect_kind: String) -> void:
 	if target_index < 0 or target_index >= enemy_controls.size():
 		return
@@ -964,6 +1100,29 @@ func _animate_target_hit(target_index: int, effect_kind: String) -> void:
 	tween.tween_property(target, "position", original - shove * 0.45, 0.055)
 	tween.tween_property(target, "position", original, 0.065)
 	_spawn_impact(_enemy_center(target_index), effect_kind)
+
+
+func _animate_player_action(effect_kind: String, destination: Vector2) -> void:
+	if protagonist_sprite == null:
+		return
+	var original_position := protagonist_sprite.position
+	var original_texture := protagonist_sprite.texture
+	var action_texture := DataRegistry.get_temp_asset_texture("protagonist_mercenary_attack", 1)
+	if effect_kind in ["block", "heal"]:
+		action_texture = DataRegistry.get_temp_asset_texture("protagonist_mercenary_guard", 1)
+	if action_texture != null:
+		protagonist_sprite.texture = action_texture
+	var direction := (destination - _player_center()).normalized()
+	var lunge := Vector2(clampf(direction.x, -1.0, 1.0) * 18.0, -4.0)
+	if effect_kind in ["block", "heal", "utility"]:
+		lunge = Vector2(0, -6)
+	var tween := create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(protagonist_sprite, "position", original_position + lunge, 0.08)
+	tween.tween_property(protagonist_sprite, "position", original_position, 0.14)
+	tween.finished.connect(func() -> void:
+		if is_instance_valid(protagonist_sprite):
+			protagonist_sprite.texture = original_texture
+	)
 
 
 func _animate_enemy_lunge(enemy_index: int) -> void:
@@ -1087,6 +1246,24 @@ func _effect_label(effect_kind: String) -> String:
 			return "Tactic"
 
 
+func _effect_asset_id(effect_kind: String) -> String:
+	match effect_kind:
+		"damage", "enemy_attack":
+			return "fx_slash_small"
+		"damage_all":
+			return "fx_pierce_red"
+		"block":
+			return "fx_guard_flash"
+		"heal":
+			return "fx_heal_low"
+		"mark":
+			return "fx_tactical_mark_pin"
+		"hex":
+			return "fx_healing_down_black_crack"
+		_:
+			return "fx_oath_token_glint"
+
+
 func _effect_color(effect_kind: String) -> Color:
 	match effect_kind:
 		"damage", "damage_all", "enemy_attack":
@@ -1174,14 +1351,39 @@ func _intent_style(intent_type: String) -> StyleBoxFlat:
 	return style
 
 
+func _intent_icon_asset_id(intent_type: String, defeated: bool = false) -> String:
+	if defeated:
+		return "icon_health"
+	match intent_type:
+		"attack":
+			return "icon_weapon_slot"
+		"block":
+			return "icon_block"
+		"healing_down":
+			return "icon_healing_down"
+		_:
+			return "icon_tactical_mark"
+
+
 func _style_enemy_panel(panel: PanelContainer, enemy_index: int) -> void:
 	var style := StyleBoxFlat.new()
 	var alive := _enemy_can_target(enemy_index)
+	var targeting := _is_targeting_enemy_card()
 	style.bg_color = Color(0, 0, 0, 0)
 	style.border_color = Color(0, 0, 0, 0)
-	if enemy_index == selected_target_index and alive and (selected_card_index >= 0 or dragging_card_index >= 0):
-		style.bg_color = Color(0.20, 0.12, 0.04, 0.04)
-		style.border_color = Color(1.0, 0.65, 0.22, 0.34)
+	if alive and targeting and enemy_index == hovered_enemy_index:
+		style.bg_color = Color(0.36, 0.18, 0.04, 0.18)
+		style.border_color = Color(1.0, 0.70, 0.22, 0.92)
+		style.shadow_color = Color(1.0, 0.45, 0.10, 0.38)
+		style.shadow_size = 12
+	elif alive and targeting:
+		style.bg_color = Color(0.20, 0.12, 0.04, 0.08)
+		style.border_color = Color(1.0, 0.65, 0.22, 0.56)
+		style.shadow_color = Color(1.0, 0.45, 0.10, 0.16)
+		style.shadow_size = 8
+	elif enemy_index == hovered_enemy_index and alive:
+		style.bg_color = Color(0.08, 0.13, 0.14, 0.10)
+		style.border_color = Color(0.62, 0.78, 0.80, 0.42)
 	elif not alive:
 		style.bg_color = Color(0.02, 0.02, 0.02, 0.12)
 		style.border_color = Color(0.12, 0.12, 0.12, 0.28)
@@ -1193,14 +1395,34 @@ func _style_enemy_panel(panel: PanelContainer, enemy_index: int) -> void:
 	style.corner_radius_top_right = 6
 	style.corner_radius_bottom_left = 6
 	style.corner_radius_bottom_right = 6
-	style.shadow_color = Color(0, 0, 0, 0)
-	style.shadow_size = 0
+	if style.shadow_size <= 0:
+		style.shadow_color = Color(0, 0, 0, 0)
+		style.shadow_size = 0
 	style.shadow_offset = Vector2.ZERO
 	style.content_margin_left = 10
 	style.content_margin_top = 6
 	style.content_margin_right = 10
 	style.content_margin_bottom = 6
 	panel.add_theme_stylebox_override("panel", style)
+
+
+func _on_enemy_mouse_entered(enemy_index: int) -> void:
+	hovered_enemy_index = enemy_index
+	if enemy_index >= 0 and enemy_index < enemy_controls.size():
+		_style_enemy_panel(enemy_controls[enemy_index] as PanelContainer, enemy_index)
+	if _is_targeting_enemy_card():
+		selected_target_index = enemy_index
+		_update_target_arc()
+		_refresh_prompt()
+
+
+func _on_enemy_mouse_exited(enemy_index: int) -> void:
+	if hovered_enemy_index == enemy_index:
+		hovered_enemy_index = -1
+	if enemy_index >= 0 and enemy_index < enemy_controls.size():
+		_style_enemy_panel(enemy_controls[enemy_index] as PanelContainer, enemy_index)
+	if _is_targeting_enemy_card():
+		_update_target_arc()
 
 
 func _on_claim_reward_pressed() -> void:

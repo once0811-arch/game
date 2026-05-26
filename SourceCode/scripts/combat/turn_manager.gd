@@ -61,14 +61,12 @@ func play_card(hand_index: int, target_index: int = 0) -> Array[String]:
 		return logs
 	var instance: Dictionary = RunState.deck.hand[hand_index]
 	var card := DataRegistry.get_card(CardInstanceScript.get_card_id(instance))
-	var cost := CardDataScript.card_cost(card)
-	if cost > RunState.combat.energy:
-		logs.append("Not enough energy for %s." % CardDataScript.card_name(card))
-		return logs
-	if CardPlayRulesScript.requires_enemy_target(card) and not CardPlayRulesScript.is_live_enemy_index(target_index):
-		logs.append("Choose an enemy target for %s." % CardDataScript.card_name(card))
+	var validation := CardPlayRulesScript.validate_play(card, hand_index, target_index)
+	if not bool(validation.get("ok", false)):
+		logs.append(String(validation.get("message", "")))
 		return logs
 
+	var cost := CardDataScript.card_cost(card)
 	RunState.combat.energy -= cost
 	RunState.deck.play_card(hand_index)
 	RunState.combat.cards_played_this_turn += 1

@@ -107,6 +107,8 @@ func _perform_preview_action(scene: Node, mode: String) -> void:
 			await _preview_main_settings(scene)
 		"combat_card_preview":
 			await _preview_combat_card(scene)
+		"combat_targeting_preview":
+			await _preview_combat_targeting(scene)
 		"combat_enemy_preview":
 			await _preview_enemy_turn(scene)
 		"shop_purchase_preview":
@@ -130,6 +132,20 @@ func _preview_combat_card(scene: Node) -> void:
 	for i in range(hand.size()):
 		if scene.has_method("_is_card_playable") and bool(scene.call("_is_card_playable", i)):
 			scene.call("_play_card_at_target", i, -1)
+			await create_timer(0.12).timeout
+			return
+
+
+func _preview_combat_targeting(scene: Node) -> void:
+	var run_state := root.get_node_or_null("/root/RunState")
+	if run_state == null or not scene.has_method("_on_card_pressed"):
+		return
+	var hand = run_state.get("deck").hand
+	for i in range(hand.size()):
+		if scene.has_method("_is_card_playable") and not bool(scene.call("_is_card_playable", i)):
+			continue
+		if scene.has_method("_card_requires_target") and bool(scene.call("_card_requires_target", i)):
+			scene.call("_on_card_pressed", i)
 			await create_timer(0.12).timeout
 			return
 

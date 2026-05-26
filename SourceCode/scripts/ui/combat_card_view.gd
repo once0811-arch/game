@@ -8,6 +8,11 @@ signal card_pressed(hand_index: int)
 signal card_drag_started(hand_index: int, card_name: String)
 
 const CARD_SIZE := Vector2(160, 232)
+const STATE_IDLE := "idle"
+const STATE_HOVER := "hover"
+const STATE_SELECTED := "selected"
+const STATE_DRAGGING := "dragging"
+const STATE_DISABLED := "disabled"
 
 var hand_index := -1
 var card_name := ""
@@ -16,6 +21,7 @@ var selected := false
 var hovered := false
 var pressing := false
 var dragging := false
+var visual_state := STATE_IDLE
 var press_origin := Vector2.ZERO
 
 
@@ -24,12 +30,14 @@ func setup(card: Dictionary, instance: Dictionary, index: int, can_play: bool, i
 	card_name = CardDataScript.card_name(card)
 	playable = can_play
 	selected = is_selected
+	visual_state = _state_from_flags()
 	custom_minimum_size = CARD_SIZE
 	size = CARD_SIZE
 	pivot_offset = CARD_SIZE * 0.5
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_rebuild(card, instance)
+	_apply_interaction_state()
 
 
 func _ready() -> void:
@@ -54,6 +62,8 @@ func _gui_input(event: InputEvent) -> void:
 	elif event is InputEventMouseMotion and pressing and not dragging:
 		if press_origin.distance_to(get_global_mouse_position()) >= 10.0:
 			dragging = true
+			visual_state = STATE_DRAGGING
+			_apply_interaction_state()
 			card_drag_started.emit(hand_index, card_name)
 
 
@@ -136,12 +146,20 @@ func _rebuild(card: Dictionary, instance: Dictionary) -> void:
 	text.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	layout.add_child(text)
 
+	if selected:
+		var selected_badge := UIStyleScript.label("TARGET", 12, UIStyleScript.GOLD)
+		selected_badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		selected_badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		selected_badge.autowrap_mode = TextServer.AUTOWRAP_OFF
+		layout.add_child(selected_badge)
+
 
 func _on_mouse_entered() -> void:
 	if hovered or not playable:
 		return
 	hovered = true
-	z_index = 10
+	visual_state = STATE_HOVER
+	_apply_interaction_state()
 	var tween := create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	tween.tween_property(self, "scale", Vector2(1.08, 1.08), 0.12)
 	tween.parallel().tween_property(self, "position:y", position.y - 22.0, 0.12)
@@ -151,7 +169,8 @@ func _on_mouse_exited() -> void:
 	if not hovered:
 		return
 	hovered = false
-	z_index = 0
+	visual_state = _state_from_flags()
+	_apply_interaction_state()
 	var tween := create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	tween.tween_property(self, "scale", Vector2.ONE, 0.12)
 	tween.parallel().tween_property(self, "position:y", position.y + 22.0, 0.12)
@@ -174,7 +193,7 @@ func _frame_style(card: Dictionary) -> StyleBox:
 		if not playable:
 			texture_style.modulate_color = Color(0.48, 0.48, 0.48, 0.86)
 		elif selected:
-			texture_style.modulate_color = Color(1.0, 0.94, 0.72, 1.0)
+			texture_style.modulate_color = Color(1.18, 1.02, 0.68, 1.0)
 		else:
 			texture_style.modulate_color = Color(1, 1, 1, 1)
 		return texture_style
@@ -196,6 +215,33 @@ func _frame_style(card: Dictionary) -> StyleBox:
 	style.shadow_size = 9
 	style.shadow_offset = Vector2(0, 4)
 	return style
+
+
+func _apply_interaction_state() -> void:
+	match visual_state:
+		STATE_DISABLED:
+			z_index = -1
+			modulate = Color(0.70, 0.70, 0.68, 0.88)
+		STATE_SELECTED:
+			z_index = 20
+			modulate = Color(1.08, 1.02, 0.86, 1.0)
+		STATE_DRAGGING:
+			z_index = 30
+			modulate = Color(1.0, 0.92, 0.72, 0.82)
+		STATE_HOVER:
+			z_index = 15
+			modulate = Color(1.04, 1.0, 0.92, 1.0)
+		_:
+			z_index = 0
+			modulate = Color.WHITE
+
+
+func _state_from_flags() -> String:
+	if not playable:
+		return STATE_DISABLED
+	if selected:
+		return STATE_SELECTED
+	return STATE_IDLE
 
 
 func _frame_asset_id(card: Dictionary) -> String:
