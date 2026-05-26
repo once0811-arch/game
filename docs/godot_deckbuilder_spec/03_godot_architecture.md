@@ -398,6 +398,8 @@ resolve_oath_tactic_effects(combat_state, tactic)
 선택한 서약 전술은 런 중 변경/업그레이드 없음.
 발동 제한은 tactic.limit에 따른다. 예: once_per_turn, once_per_combat.
 전술 표식, 카드 사용 기록, 방어도 획득량, 비용 0 카드 사용 수 같은 전투 로그를 조건으로 사용한다.
+oath_attack은 동료 기본 공격과 별도 처리한다.
+oath_attack 기본 피해는 동료 기본 공격력의 75%, 최소 3이며 패시브/장비의 기본 공격 보너스를 적용하지 않는다.
 ```
 
 ## 8. 카드 효과 처리 방식
@@ -436,6 +438,7 @@ combo_marker
 upgrade_card
 remove_card
 transform_card
+oath_attack
 ```
 
 금지 effect type:

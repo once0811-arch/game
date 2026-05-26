@@ -102,7 +102,14 @@ upgraded_description_ko: 강화 표시 설명
       "timing": "after_card_play",
       "limit": "once_per_turn",
       "effects": [
-        {"type": "companion_attack", "target": "tactical_mark", "damage_multiplier": 1.0}
+        {
+          "type": "oath_attack",
+          "target": "tactical_mark",
+          "damage_multiplier": 0.75,
+          "min_damage": 3,
+          "apply_passive_bonus": false,
+          "apply_equipment_basic_attack_bonus": false
+        }
       ]
     },
     {
@@ -482,6 +489,12 @@ add_status_card
   "bond": {
     "max_score": 100,
     "thresholds": [30, 60, 100],
+    "target_pace": {
+      "first_companion_normal_act2_mid": 30,
+      "first_companion_normal_act3_start": [50, 70],
+      "first_companion_normal_act3_late": [70, 90],
+      "second_companion_normal_act3_late": [50, 70]
+    },
     "gain": {
       "normal_combat_win": 3,
       "elite_combat_win": 7,
@@ -489,9 +502,23 @@ add_status_card
       "companion_card_pick": 3,
       "companion_card_upgrade": 5,
       "equipped_companion_combat_win": 1,
+      "elite_reward_bond_add": 10,
+      "companion_event_min": 8,
+      "companion_event_max": 12,
       "act2_new_companion_start": 20,
       "act2_existing_companion_pick": 20
     }
+  },
+  "oath_tactics": {
+    "oath_attack_damage_multiplier": 0.75,
+    "oath_attack_min_damage": 3,
+    "oath_attack_applies_passive_bonus": false,
+    "oath_attack_applies_equipment_basic_attack_bonus": false,
+    "per_turn_attack_damage_budget": [4, 8],
+    "per_combat_attack_damage_budget": [8, 14],
+    "block_budget": [4, 6],
+    "heal_budget": [2, 3],
+    "normal_combat_gold_budget": [3, 6]
   },
   "gold_rewards": {
     "normal_combat": [12, 20],
@@ -553,6 +580,7 @@ add_status_card
   "combat_turn_counts": [],
   "combat_hp_losses": [],
   "bond_score_gains": {},
+  "oath_tactic_pick_counts": {},
   "oath_tactic_trigger_counts": {},
   "card_reward_seen_counts": {},
   "card_reward_pick_counts": {},
