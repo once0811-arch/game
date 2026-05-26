@@ -1,0 +1,18 @@
+{
+  "version": "0.1.0",
+  "act": 3,
+  "nodes": [
+    {"depth": 1, "type": "combat", "label": "Inside the Wall", "enemy_id": "enemy_act3_nameless_limb"},
+    {"depth": 2, "type": "event", "label": "Room That Remembers"},
+    {"depth": 3, "type": "combat", "label": "Core Echo", "enemy_id": "enemy_act3_core_echo"},
+    {"depth": 4, "type": "inn", "label": "Last Fire"},
+    {"depth": 5, "type": "elite", "label": "Door That Walks", "enemy_id": "elite_act3_door_that_walks"},
+    {"depth": 6, "type": "shop", "label": "Impossible Trader"},
+    {"depth": 7, "type": "combat", "label": "Folded Gallery", "enemy_id": "enemy_act3_nameless_limb"},
+    {"depth": 8, "type": "event", "label": "Unwritten Contract"},
+    {"depth": 9, "type": "combat", "label": "Echo Choir", "enemy_id": "enemy_act3_core_echo"},
+    {"depth": 10, "type": "elite", "label": "Walking Gate", "enemy_id": "elite_act3_door_that_walks"},
+    {"depth": 11, "type": "inn", "label": "Cold Hearth"},
+    {"depth": 12, "type": "boss", "label": "Unbound Core", "enemy_id": "boss_act3_unbound_core"}
+  ]
+}

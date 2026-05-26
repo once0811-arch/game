@@ -6,7 +6,12 @@ const PROTAGONIST_CARDS_PATH := "res://data/cards/protagonist_cards.json"
 const COMPANION_CARDS_PATH := "res://data/cards/companion_cards.json"
 const COMPANIONS_PATH := "res://data/companions/companions.json"
 const ENEMIES_ACT1_PATH := "res://data/enemies/enemies_act1.json"
+const ENEMIES_ACT2_PATH := "res://data/enemies/enemies_act2.json"
+const ENEMIES_ACT3_PATH := "res://data/enemies/enemies_act3.json"
+const BOSSES_PATH := "res://data/bosses/bosses.json"
 const ACT1_ENCOUNTERS_PATH := "res://data/encounters/act1_encounters.json"
+const ACT2_ENCOUNTERS_PATH := "res://data/encounters/act2_encounters.json"
+const ACT3_ENCOUNTERS_PATH := "res://data/encounters/act3_encounters.json"
 const EQUIPMENT_PATH := "res://data/equipment/equipment.json"
 const EVENTS_ACT1_PATH := "res://data/events/events_act1.json"
 
@@ -19,8 +24,13 @@ var cards_by_id: Dictionary = {}
 var companions: Dictionary = {}
 var companions_by_id: Dictionary = {}
 var enemies_act1: Dictionary = {}
+var enemies_act2: Dictionary = {}
+var enemies_act3: Dictionary = {}
+var bosses: Dictionary = {}
 var enemies_by_id: Dictionary = {}
 var act1_encounters: Dictionary = {}
+var act2_encounters: Dictionary = {}
+var act3_encounters: Dictionary = {}
 var equipment: Dictionary = {}
 var equipment_by_id: Dictionary = {}
 var events_act1: Dictionary = {}
@@ -39,7 +49,12 @@ func load_all() -> bool:
 	companion_cards = _load_dictionary(COMPANION_CARDS_PATH)
 	companions = _load_dictionary(COMPANIONS_PATH)
 	enemies_act1 = _load_dictionary(ENEMIES_ACT1_PATH)
+	enemies_act2 = _load_dictionary(ENEMIES_ACT2_PATH)
+	enemies_act3 = _load_dictionary(ENEMIES_ACT3_PATH)
+	bosses = _load_dictionary(BOSSES_PATH)
 	act1_encounters = _load_dictionary(ACT1_ENCOUNTERS_PATH)
+	act2_encounters = _load_dictionary(ACT2_ENCOUNTERS_PATH)
+	act3_encounters = _load_dictionary(ACT3_ENCOUNTERS_PATH)
 	equipment = _load_dictionary(EQUIPMENT_PATH)
 	events_act1 = _load_dictionary(EVENTS_ACT1_PATH)
 	_index_temp_assets()
@@ -128,6 +143,16 @@ func get_act1_encounters() -> Dictionary:
 	return act1_encounters
 
 
+func get_encounters_for_act(act_number: int) -> Dictionary:
+	match act_number:
+		2:
+			return act2_encounters
+		3:
+			return act3_encounters
+		_:
+			return act1_encounters
+
+
 func get_equipment(equipment_id: String) -> Dictionary:
 	return equipment_by_id.get(equipment_id, {})
 
@@ -178,6 +203,10 @@ func is_ready_for_phase_6() -> bool:
 
 func is_ready_for_phase_7() -> bool:
 	return is_ready_for_phase_6() and get_equipment_count() > 0 and get_act1_events().size() > 0
+
+
+func is_ready_for_phase_8() -> bool:
+	return is_ready_for_phase_7() and not act2_encounters.is_empty() and not act3_encounters.is_empty() and not bosses.is_empty()
 
 
 func _load_dictionary(path: String) -> Dictionary:
@@ -232,7 +261,14 @@ func _index_companions() -> void:
 
 func _index_enemies() -> void:
 	enemies_by_id.clear()
-	for enemy in enemies_act1.get("enemies", []):
+	_index_enemy_set(enemies_act1.get("enemies", []))
+	_index_enemy_set(enemies_act2.get("enemies", []))
+	_index_enemy_set(enemies_act3.get("enemies", []))
+	_index_enemy_set(bosses.get("bosses", []))
+
+
+func _index_enemy_set(enemies: Array) -> void:
+	for enemy in enemies:
 		if typeof(enemy) != TYPE_DICTIONARY:
 			continue
 		var enemy_id := String(enemy.get("id", ""))

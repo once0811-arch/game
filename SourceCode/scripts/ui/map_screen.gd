@@ -10,7 +10,7 @@ var equipment_status_label: Label
 
 func _ready() -> void:
 	if RunState.is_run_active:
-		MapState.ensure_act1()
+		MapState.ensure_current_act()
 	_build_ui()
 	_refresh()
 
@@ -43,7 +43,7 @@ func _build_ui() -> void:
 	root.add_child(layout)
 
 	var title := Label.new()
-	title.text = "Act 1 Route"
+	title.text = "Act %d Route" % RunState.act
 	title.add_theme_font_size_override("font_size", 34)
 	layout.add_child(title)
 
@@ -61,7 +61,7 @@ func _build_ui() -> void:
 	map_area.add_child(map_box)
 
 	var hint := Label.new()
-	hint.text = "Choose the next reachable node. Depth 6 is the fixed mid-boss contract gate."
+	hint.text = "The road opens one contract at a time."
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	map_box.add_child(hint)
 
@@ -169,7 +169,7 @@ func _refresh_nodes() -> void:
 	if not RunState.is_run_active:
 		map_log_label.text = "Start a new run to generate the Act 1 route."
 		return
-	MapState.ensure_act1()
+	MapState.ensure_current_act()
 	map_log_label.text = "Reachable depth: %d / 12" % MapState.get_available_depth()
 	for node in MapState.nodes:
 		node_grid.add_child(_make_node_button(node))
@@ -205,6 +205,9 @@ func _on_node_pressed(node_id: String) -> void:
 		SceneRouter.open_inn()
 	elif node_type == "event":
 		SceneRouter.open_event()
+	elif node_type == "upgrade":
+		UpgradeState.begin_upgrade("map_upgrade")
+		SceneRouter.open_upgrade_select()
 	else:
 		MapState.complete_selected_node()
 		_refresh()

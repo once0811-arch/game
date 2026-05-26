@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "phase": 7,
+  "phase": 8,
   "run": {
     "starting_act": 1,
     "starting_depth": 0,
@@ -21,6 +21,9 @@
   "map": {
     "act_1_midboss_depth": 6,
     "act_1_boss_depth": 12,
+    "act_2_upgrade_depth": 6,
+    "act_2_boss_depth": 12,
+    "act_3_boss_depth": 12,
     "first_companion_after_midboss": true,
     "second_companion_after_boss": true
   },

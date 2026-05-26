@@ -77,6 +77,8 @@ func _get_selected_oath(companion_data: Dictionary) -> Dictionary:
 func _complete_pending() -> void:
 	if pending_source in ["map_contract", "map_boss"]:
 		MapState.complete_selected_node()
+	if pending_source == "map_boss" and RunState.act == 1:
+		MapState.start_next_act()
 	pending_source = ""
 	selected_companion_id = ""
 	selected_oath_id = ""

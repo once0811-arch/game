@@ -12,6 +12,8 @@ var depth := 0
 var gold := 0
 var current_hp := 1
 var max_hp := 1
+var protagonist_upgrade_level := 0
+var run_complete := false
 var phase_note := "No active run."
 var party = PartyStateScript.new()
 var deck = DeckStateScript.new()
@@ -28,6 +30,8 @@ func start_new_run() -> void:
 	gold = int(starting.get("starting_gold", 80))
 	max_hp = int(starting.get("starting_max_hp", 75))
 	current_hp = max_hp
+	protagonist_upgrade_level = 0
+	run_complete = false
 	phase_note = "A fresh contract begins. The road ahead is unstable."
 	party.reset()
 	deck.build_starting_deck(DataRegistry.get_starter_deck_ids())
@@ -49,6 +53,8 @@ func to_snapshot() -> Dictionary:
 		"gold": gold,
 		"current_hp": current_hp,
 		"max_hp": max_hp,
+		"protagonist_upgrade_level": protagonist_upgrade_level,
+		"run_complete": run_complete,
 		"phase_note": phase_note,
 		"party": party.to_dict(),
 		"deck": deck.to_dict(),
@@ -67,6 +73,8 @@ func load_snapshot(snapshot: Dictionary) -> bool:
 	gold = int(snapshot.get("gold", 0))
 	current_hp = int(snapshot.get("current_hp", 1))
 	max_hp = int(snapshot.get("max_hp", max(current_hp, 1)))
+	protagonist_upgrade_level = int(snapshot.get("protagonist_upgrade_level", 0))
+	run_complete = bool(snapshot.get("run_complete", false))
 	phase_note = String(snapshot.get("phase_note", "Loaded Phase 1 snapshot."))
 	RngService.set_run_seed(run_seed)
 

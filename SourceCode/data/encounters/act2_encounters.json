@@ -1,0 +1,18 @@
+{
+  "version": "0.1.0",
+  "act": 2,
+  "nodes": [
+    {"depth": 1, "type": "combat", "label": "Split Causeway", "enemy_id": "enemy_act2_oath_burned_mercenary"},
+    {"depth": 2, "type": "event", "label": "Wrong Ledger"},
+    {"depth": 3, "type": "combat", "label": "Censor Camp", "enemy_id": "enemy_act2_heal_censor_scholar"},
+    {"depth": 4, "type": "shop", "label": "Ash Counter"},
+    {"depth": 5, "type": "elite", "label": "Unsealed Caravan", "enemy_id": "elite_act2_unsealed_caravan"},
+    {"depth": 6, "type": "upgrade", "label": "Field Promotion"},
+    {"depth": 7, "type": "combat", "label": "Broken Milestone", "enemy_id": "enemy_act2_oath_burned_mercenary"},
+    {"depth": 8, "type": "inn", "label": "Warm Cellar"},
+    {"depth": 9, "type": "combat", "label": "Censor Ruin", "enemy_id": "enemy_act2_heal_censor_scholar"},
+    {"depth": 10, "type": "event", "label": "Black Witness"},
+    {"depth": 11, "type": "elite", "label": "Sealed Procession", "enemy_id": "elite_act2_unsealed_caravan"},
+    {"depth": 12, "type": "boss", "label": "Oathless Regent", "enemy_id": "boss_act2_oathless_regent"}
+  ]
+}

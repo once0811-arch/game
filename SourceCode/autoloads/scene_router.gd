@@ -12,6 +12,8 @@ const COMPANION_CARD_SELECT_SCENE := "res://scenes/companion/companion_card_sele
 const SHOP_SCENE := "res://scenes/shop/shop_screen.tscn"
 const INN_SCENE := "res://scenes/inn/inn_screen.tscn"
 const EVENT_SCENE := "res://scenes/event/event_screen.tscn"
+const UPGRADE_SELECT_SCENE := "res://scenes/upgrade/upgrade_select_screen.tscn"
+const ENDING_SCENE := "res://scenes/ending/ending_screen.tscn"
 
 
 func go_to_main() -> void:
@@ -60,6 +62,14 @@ func open_inn() -> void:
 
 func open_event() -> void:
 	_change_to(EVENT_SCENE)
+
+
+func open_upgrade_select() -> void:
+	_change_to(UPGRADE_SELECT_SCENE)
+
+
+func open_ending() -> void:
+	_change_to(ENDING_SCENE)
 
 
 func start_new_run() -> void:
