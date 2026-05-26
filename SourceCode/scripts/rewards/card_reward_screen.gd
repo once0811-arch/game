@@ -7,6 +7,7 @@ var reward_generator = RewardGeneratorScript.new()
 var reward_options: Array[Dictionary] = []
 var reward_box: HBoxContainer
 var status_label: Label
+var continue_button: Button
 
 
 func _ready() -> void:
@@ -64,10 +65,11 @@ func _build_ui() -> void:
 	skip.pressed.connect(_on_skip_pressed)
 	actions.add_child(skip)
 
-	var map := Button.new()
-	map.text = "Map"
-	map.pressed.connect(Callable(SceneRouter, "go_to_map"))
-	actions.add_child(map)
+	continue_button = Button.new()
+	continue_button.text = "Continue"
+	continue_button.pressed.connect(Callable(SceneRouter, "go_to_map"))
+	continue_button.visible = false
+	actions.add_child(continue_button)
 
 
 func _generate_rewards() -> void:
@@ -95,15 +97,16 @@ func _on_reward_pressed(index: int) -> void:
 	if index < 0 or index >= reward_options.size():
 		return
 	var card := reward_options[index]
-	RunState.deck.add_card_to_discard(String(card.get("id", "")))
+	RewardState.claim_card(String(card.get("id", "")))
 	status_label.text = "Added %s to discard." % CardDataScript.card_name(card)
 	for child in reward_box.get_children():
 		child.queue_free()
+	continue_button.visible = true
 
 
 func _on_skip_pressed() -> void:
-	var gold := reward_generator.get_skip_gold()
-	RunState.gold += gold
+	var gold := RewardState.skip_card_reward()
 	status_label.text = "Gained %d gold." % gold
 	for child in reward_box.get_children():
 		child.queue_free()
+	continue_button.visible = true

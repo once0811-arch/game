@@ -1,11 +1,15 @@
 extends Control
 
 var run_label: Label
+var node_grid: GridContainer
+var map_log_label: Label
 
 
 func _ready() -> void:
+	if RunState.is_run_active:
+		MapState.ensure_act1()
 	_build_ui()
-	_refresh_run_info()
+	_refresh()
 
 
 func _build_ui() -> void:
@@ -54,21 +58,20 @@ func _build_ui() -> void:
 	map_area.add_child(map_box)
 
 	var hint := Label.new()
-	hint.text = "The route ahead is still obscured. Only the first camp is reachable."
+	hint.text = "Choose the next reachable node. Depth 6 is the fixed mid-boss contract gate."
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	map_box.add_child(hint)
 
-	var route := HBoxContainer.new()
-	route.alignment = BoxContainer.ALIGNMENT_CENTER
-	route.add_theme_constant_override("separation", 16)
-	map_box.add_child(route)
+	node_grid = GridContainer.new()
+	node_grid.columns = 4
+	node_grid.add_theme_constant_override("h_separation", 10)
+	node_grid.add_theme_constant_override("v_separation", 10)
+	map_box.add_child(node_grid)
 
-	for label_text in ["Start", "Road", "Mid Boss", "Boss"]:
-		var node := Button.new()
-		node.text = label_text
-		node.custom_minimum_size = Vector2(112, 48)
-		node.disabled = label_text != "Start"
-		route.add_child(node)
+	map_log_label = Label.new()
+	map_log_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	map_log_label.modulate = Color(0.82, 0.84, 0.78)
+	map_box.add_child(map_log_label)
 
 	var actions := HBoxContainer.new()
 	actions.add_theme_constant_override("separation", 10)
@@ -104,10 +107,10 @@ func _refresh_run_info() -> void:
 	if not RunState.is_run_active:
 		run_label.text = "No active run. Return to Main Menu and start a new run."
 		return
-	run_label.text = "Seed %d | Act %d | Depth %d | HP %d/%d | Gold %d\n%s" % [
+	run_label.text = "Seed %d | Act %d | Map Depth %d | HP %d/%d | Gold %d\n%s" % [
 		RunState.run_seed,
 		RunState.act,
-		RunState.depth,
+		MapState.current_depth,
 		RunState.current_hp,
 		RunState.max_hp,
 		RunState.gold,
@@ -115,6 +118,51 @@ func _refresh_run_info() -> void:
 	]
 
 
-func _on_save_pressed() -> void:
-	SaveService.write_run_snapshot(RunState.to_snapshot())
+func _refresh() -> void:
 	_refresh_run_info()
+	_refresh_nodes()
+
+
+func _refresh_nodes() -> void:
+	for child in node_grid.get_children():
+		child.queue_free()
+	if not RunState.is_run_active:
+		map_log_label.text = "Start a new run to generate the Act 1 route."
+		return
+	MapState.ensure_act1()
+	map_log_label.text = "Reachable depth: %d / 12" % MapState.get_available_depth()
+	for node in MapState.nodes:
+		node_grid.add_child(_make_node_button(node))
+
+
+func _make_node_button(node: Dictionary) -> Button:
+	var button := Button.new()
+	var state := MapState.get_node_state(node)
+	var prefix := "D%d" % int(node.get("depth", 0))
+	button.custom_minimum_size = Vector2(170, 66)
+	button.text = "%s %s\n%s" % [prefix, String(node.get("type", "?")), String(node.get("label", ""))]
+	button.disabled = state != "available"
+	if state == "completed":
+		button.text += "\nDone"
+	elif state == "locked":
+		button.text += "\nLocked"
+	button.pressed.connect(_on_node_pressed.bind(String(node.get("id", ""))))
+	return button
+
+
+func _on_node_pressed(node_id: String) -> void:
+	if not MapState.choose_node(node_id):
+		return
+	var node_type := MapState.get_selected_node_type()
+	if node_type in ["combat", "elite", "midboss", "boss"]:
+		SceneRouter.open_combat_test()
+	else:
+		MapState.complete_selected_node()
+		_refresh()
+
+
+func _on_save_pressed() -> void:
+	var snapshot := RunState.to_snapshot()
+	snapshot["map"] = MapState.to_snapshot()
+	SaveService.write_run_snapshot(snapshot)
+	_refresh()

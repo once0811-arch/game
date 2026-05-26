@@ -34,6 +34,7 @@ func open_card_reward() -> void:
 
 func start_new_run() -> void:
 	RunState.start_new_run()
+	MapState.start_act1()
 	go_to_map()
 
 

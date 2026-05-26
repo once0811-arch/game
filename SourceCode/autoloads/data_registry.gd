@@ -4,6 +4,7 @@ const BALANCE_CONSTANTS_PATH := "res://data/balance_constants.json"
 const TEMP_ASSET_MANIFEST_PATH := "res://data/assets/temp_asset_manifest.json"
 const PROTAGONIST_CARDS_PATH := "res://data/cards/protagonist_cards.json"
 const ENEMIES_ACT1_PATH := "res://data/enemies/enemies_act1.json"
+const ACT1_ENCOUNTERS_PATH := "res://data/encounters/act1_encounters.json"
 
 var balance_constants: Dictionary = {}
 var temp_asset_manifest: Dictionary = {}
@@ -12,6 +13,7 @@ var protagonist_cards: Dictionary = {}
 var cards_by_id: Dictionary = {}
 var enemies_act1: Dictionary = {}
 var enemies_by_id: Dictionary = {}
+var act1_encounters: Dictionary = {}
 var load_errors: Array[String] = []
 
 
@@ -25,6 +27,7 @@ func load_all() -> bool:
 	temp_asset_manifest = _load_dictionary(TEMP_ASSET_MANIFEST_PATH)
 	protagonist_cards = _load_dictionary(PROTAGONIST_CARDS_PATH)
 	enemies_act1 = _load_dictionary(ENEMIES_ACT1_PATH)
+	act1_encounters = _load_dictionary(ACT1_ENCOUNTERS_PATH)
 	_index_temp_assets()
 	_index_cards()
 	_index_enemies()
@@ -81,6 +84,10 @@ func get_enemy_count() -> int:
 	return enemies_by_id.size()
 
 
+func get_act1_encounters() -> Dictionary:
+	return act1_encounters
+
+
 func is_ready_for_phase_1() -> bool:
 	return load_errors.is_empty() and not balance_constants.is_empty() and get_temp_asset_count() > 0
 
@@ -91,6 +98,10 @@ func is_ready_for_phase_2() -> bool:
 
 func is_ready_for_phase_3() -> bool:
 	return is_ready_for_phase_2() and get_enemy_count() > 0
+
+
+func is_ready_for_phase_4() -> bool:
+	return is_ready_for_phase_3() and not act1_encounters.is_empty()
 
 
 func _load_dictionary(path: String) -> Dictionary:

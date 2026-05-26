@@ -138,7 +138,7 @@ func _make_menu_button(label_text: String) -> Button:
 
 func _refresh_status() -> void:
 	continue_button.disabled = not SaveService.has_save()
-	var data_state := "ready" if DataRegistry.is_ready_for_phase_3() else "missing"
+	var data_state := "ready" if DataRegistry.is_ready_for_phase_4() else "missing"
 	status_label.text = "Data: %s | Cards: %d | Enemies: %d | Temp assets: %d | Save: %s" % [
 		data_state,
 		DataRegistry.get_card_count(),
@@ -161,6 +161,8 @@ func _on_continue_pressed() -> void:
 		_refresh_status()
 		status_label.text += "\nCould not load save snapshot."
 		return
+	var map_snapshot: Dictionary = snapshot.get("map", {})
+	MapState.from_snapshot(map_snapshot)
 	SceneRouter.go_to_map()
 
 

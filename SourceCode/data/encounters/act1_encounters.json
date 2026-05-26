@@ -1,0 +1,18 @@
+{
+  "version": "0.1.0",
+  "act": 1,
+  "nodes": [
+    {"depth": 1, "type": "combat", "label": "Broken Road", "enemy_id": "enemy_act1_mutated_merchant"},
+    {"depth": 2, "type": "combat", "label": "Hungry Tracks", "enemy_id": "enemy_act1_twisted_wolf"},
+    {"depth": 3, "type": "event", "label": "Black Fingerprint"},
+    {"depth": 4, "type": "combat", "label": "Ransacked Camp", "enemy_id": "enemy_act1_mutated_merchant"},
+    {"depth": 5, "type": "inn", "label": "Cold Fire"},
+    {"depth": 6, "type": "midboss", "label": "Blackened Guard", "enemy_id": "midboss_act1_blackened_guard"},
+    {"depth": 7, "type": "companion_contract", "label": "First Contract"},
+    {"depth": 8, "type": "combat", "label": "Rooted Cart", "enemy_id": "enemy_act1_mutated_merchant"},
+    {"depth": 9, "type": "elite", "label": "Caravan Elite", "enemy_id": "elite_act1_blackprint_captain"},
+    {"depth": 10, "type": "shop", "label": "Rust Trader"},
+    {"depth": 11, "type": "combat", "label": "Castle Road", "enemy_id": "enemy_act1_twisted_wolf"},
+    {"depth": 12, "type": "boss", "label": "Gate Warlord", "enemy_id": "boss_act1_blackprint_warlord"}
+  ]
+}

@@ -25,6 +25,42 @@
         {"type": "attack", "damage": 7, "label": "Lunge"},
         {"type": "block", "block": 4, "label": "Circle"}
       ]
+    },
+    {
+      "id": "midboss_act1_blackened_guard",
+      "name": "Blackened Guard",
+      "max_hp": 72,
+      "asset_id": "midboss_act1_blackened_guard_idle",
+      "background_id": "bg_battle_act1_outpost",
+      "intents": [
+        {"type": "attack", "damage": 9, "label": "Broken Order"},
+        {"type": "block", "block": 8, "label": "Raise Shield"},
+        {"type": "attack", "damage": 13, "label": "Black Oath"}
+      ]
+    },
+    {
+      "id": "elite_act1_blackprint_captain",
+      "name": "Blackprint Captain",
+      "max_hp": 60,
+      "asset_id": "elite_act1_blackprint_captain_idle",
+      "background_id": "bg_battle_act1_outpost",
+      "intents": [
+        {"type": "attack", "damage": 8, "label": "Command Cut"},
+        {"type": "attack", "damage": 10, "label": "Press"},
+        {"type": "block", "block": 7, "label": "Hold Line"}
+      ]
+    },
+    {
+      "id": "boss_act1_blackprint_warlord",
+      "name": "Blackprint Warlord",
+      "max_hp": 96,
+      "asset_id": "boss_act1_blackprint_warlord_idle",
+      "background_id": "bg_battle_act1_boss_gate",
+      "intents": [
+        {"type": "attack", "damage": 10, "label": "Gate Strike"},
+        {"type": "block", "block": 10, "label": "Iron Refusal"},
+        {"type": "attack", "damage": 16, "label": "Warlord's Mark"}
+      ]
     }
   ]
 }

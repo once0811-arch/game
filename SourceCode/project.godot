@@ -22,6 +22,8 @@ RngService="*res://autoloads/rng_service.gd"
 SaveService="*res://autoloads/save_service.gd"
 SceneRouter="*res://autoloads/scene_router.gd"
 RunState="*res://scripts/state/run_state.gd"
+MapState="*res://scripts/map/map_state.gd"
+RewardState="*res://scripts/rewards/reward_state.gd"
 
 [physics]
 

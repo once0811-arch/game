@@ -142,7 +142,7 @@ func _build_ui() -> void:
 
 	claim_reward_button = Button.new()
 	claim_reward_button.text = "Claim Reward"
-	claim_reward_button.pressed.connect(Callable(SceneRouter, "open_card_reward"))
+	claim_reward_button.pressed.connect(_on_claim_reward_pressed)
 	controls.add_child(claim_reward_button)
 
 	var log_panel := PanelContainer.new()
@@ -155,9 +155,11 @@ func _build_ui() -> void:
 
 
 func _restart_combat() -> void:
-	RunState.start_new_run()
+	if not RunState.is_run_active:
+		RunState.start_new_run()
 	log_lines.clear()
-	var enemy_id := String(DataRegistry.get_balance("combat.debug_enemy_id", "enemy_act1_mutated_merchant"))
+	var default_enemy_id := String(DataRegistry.get_balance("combat.debug_enemy_id", "enemy_act1_mutated_merchant"))
+	var enemy_id := MapState.get_selected_enemy_id(default_enemy_id)
 	_append_logs(turn_manager.start_debug_combat(enemy_id))
 	_refresh()
 
@@ -241,6 +243,12 @@ func _on_card_pressed(hand_index: int) -> void:
 func _on_end_turn_pressed() -> void:
 	_append_logs(turn_manager.end_player_turn())
 	_refresh()
+
+
+func _on_claim_reward_pressed() -> void:
+	var source := "map_combat" if MapState.has_selected_node() else "debug_combat"
+	RewardState.begin_card_reward(source)
+	SceneRouter.open_card_reward()
 
 
 func _append_logs(messages: Array[String]) -> void:
