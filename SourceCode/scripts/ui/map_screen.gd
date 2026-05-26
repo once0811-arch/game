@@ -3,6 +3,7 @@ extends Control
 const UIStyleScript := preload("res://scripts/ui/ui_style.gd")
 
 var run_label: Label
+var map_scroll: ScrollContainer
 var map_canvas: Control
 var map_log_label: Label
 var legend_box: VBoxContainer
@@ -12,7 +13,8 @@ var equipment_status_label: Label
 var node_buttons: Dictionary = {}
 var dragging_node_id := ""
 
-const MAP_NODE_SIZE := Vector2(46, 46)
+const MAP_NODE_SIZE := Vector2(52, 52)
+const MAP_CANVAS_MIN_SIZE := Vector2(720, 1380)
 
 
 func _ready() -> void:
@@ -75,13 +77,19 @@ func _build_ui() -> void:
 	map_area.offset_bottom = 0
 	add_child(map_area)
 
+	map_scroll = ScrollContainer.new()
+	map_scroll.custom_minimum_size = Vector2(760, 520)
+	map_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	map_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	map_scroll.clip_contents = true
+	route_layout.add_child(map_scroll)
+
 	map_canvas = Control.new()
-	map_canvas.custom_minimum_size = Vector2(760, 520)
+	map_canvas.custom_minimum_size = MAP_CANVAS_MIN_SIZE
 	map_canvas.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	map_canvas.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	map_canvas.clip_contents = true
+	map_canvas.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	map_canvas.resized.connect(_on_map_canvas_resized)
-	route_layout.add_child(map_canvas)
+	map_scroll.add_child(map_canvas)
 
 	map_log_label = UIStyleScript.label("", 14, UIStyleScript.stat_text())
 	map_log_label.custom_minimum_size = Vector2(0, 28)
@@ -246,6 +254,7 @@ func _refresh_nodes() -> void:
 			"button": button,
 			"state": MapState.get_node_state(node),
 		}
+	_focus_available_depth.call_deferred()
 
 
 func _on_map_canvas_resized() -> void:
@@ -339,13 +348,13 @@ func _draw_route_lines() -> void:
 func _node_position(node: Dictionary) -> Vector2:
 	var depth := int(node.get("depth", 1))
 	var lane := int(node.get("lane", 1))
-	var canvas_size := Vector2(840, 472)
+	var canvas_size := MAP_CANVAS_MIN_SIZE
 	if map_canvas != null:
 		canvas_size = Vector2(
 			maxf(map_canvas.size.x, map_canvas.custom_minimum_size.x),
 			maxf(map_canvas.size.y, map_canvas.custom_minimum_size.y)
 		)
-	var side_margin: float = maxf(110.0, canvas_size.x * 0.14)
+	var side_margin: float = maxf(130.0, canvas_size.x * 0.16)
 	var x_positions := [
 		side_margin,
 		canvas_size.x * 0.5,
@@ -356,12 +365,40 @@ func _node_position(node: Dictionary) -> Vector2:
 	if lane == 1:
 		jitter *= 0.52
 	x += jitter
-	var y_margin := 30.0
-	var usable_height := maxf(420.0, canvas_size.y - 92.0)
+	var y_margin := 72.0
+	var usable_height := maxf(980.0, canvas_size.y - 154.0)
 	var depth_count := 12.0
 	var climb_index := depth_count - float(depth)
 	var y := y_margin + climb_index * (usable_height / maxf(depth_count - 1.0, 1.0))
 	return Vector2(x, y)
+
+
+func _focus_available_depth() -> void:
+	if map_scroll == null or map_canvas == null or not RunState.is_run_active:
+		return
+	await get_tree().process_frame
+	var target_y := _average_node_y_for_depth(MapState.get_available_depth())
+	var viewport_height := maxf(map_scroll.size.y, 1.0)
+	var canvas_height := maxf(map_canvas.size.y, map_canvas.custom_minimum_size.y)
+	var max_scroll := maxf(canvas_height - viewport_height, 0.0)
+	map_scroll.scroll_vertical = int(clampf(target_y - viewport_height * 0.66, 0.0, max_scroll))
+
+
+func _average_node_y_for_depth(depth: int) -> float:
+	var total := 0.0
+	var count := 0
+	for node in MapState.nodes:
+		if int(node.get("depth", 0)) != depth:
+			continue
+		total += _node_position(node).y
+		count += 1
+	if count > 0:
+		return total / float(count)
+	var fallback_node := {
+		"depth": clampi(depth, 1, 12),
+		"lane": 1,
+	}
+	return _node_position(fallback_node).y
 
 
 func _node_next_ids(node: Dictionary) -> Array[String]:

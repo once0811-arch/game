@@ -81,6 +81,8 @@ Combat rules from this pass:
 Map rules from this pass:
 
 - The parchment route is the screen's main object.
+- The route can be taller than the viewport; do not compress all 12 floors into one screen.
+- On entry, the map should auto-scroll to the currently available floor so the next decision is readable first.
 - Node labels stay hidden until hover/tooltip.
 - The default footer prompt must stay short.
 - Future paths remain quiet; reachable paths use warm contract-token emphasis.
@@ -93,6 +95,7 @@ Implemented in this pass:
 - Removed idle enemy panel framing from combat.
 - Increased combat card size and art area so cards read more like game cards than text buttons.
 - Reduced combat/map explanatory text and moved companion details into compact icon tooltips.
+- Converted the Act route into a vertical scroll map so nearby route choices stay large instead of compressing the full act into a dense chart.
 - Captured and inspected combat and map at 1280x720 and 1920x1080 after the rework.
 
 ## Current Design Direction
