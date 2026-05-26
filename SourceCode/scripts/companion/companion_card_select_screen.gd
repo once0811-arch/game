@@ -2,6 +2,7 @@ extends Control
 
 const CardDataScript := preload("res://scripts/data/card_data.gd")
 const CompanionRewardGeneratorScript := preload("res://scripts/rewards/companion_reward_generator.gd")
+const UIStyleScript := preload("res://scripts/ui/ui_style.gd")
 
 var generator = CompanionRewardGeneratorScript.new()
 var status_label: Label
@@ -18,36 +19,23 @@ func _ready() -> void:
 
 
 func _build_ui() -> void:
-	var shade := ColorRect.new()
-	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
-	shade.color = Color(0.035, 0.035, 0.04, 1.0)
-	add_child(shade)
-
-	var root := MarginContainer.new()
-	root.set_anchors_preset(Control.PRESET_FULL_RECT)
-	root.add_theme_constant_override("margin_left", 42)
-	root.add_theme_constant_override("margin_top", 36)
-	root.add_theme_constant_override("margin_right", 42)
-	root.add_theme_constant_override("margin_bottom", 36)
-	add_child(root)
+	UIStyleScript.add_background(self, "bg_event_act1_generic", 0.78)
+	var root := UIStyleScript.page_root(self, 38)
 
 	var layout := VBoxContainer.new()
 	layout.add_theme_constant_override("separation", 14)
 	root.add_child(layout)
 
-	var title := Label.new()
-	title.text = "Choose Companion Cards"
-	title.add_theme_font_size_override("font_size", 34)
+	var title := UIStyleScript.label("Choose Companion Cards", 34)
 	layout.add_child(title)
 
-	status_label = Label.new()
-	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	status_label.add_theme_font_size_override("font_size", 18)
+	status_label = UIStyleScript.label("", 18, UIStyleScript.MUTED)
 	layout.add_child(status_label)
 
 	option_box = HBoxContainer.new()
-	option_box.add_theme_constant_override("separation", 12)
-	layout.add_child(option_box)
+	option_box.add_theme_constant_override("separation", 14)
+	var option_panel := UIStyleScript.panel(option_box, Vector2(0, 180))
+	layout.add_child(option_panel)
 
 	var actions := HBoxContainer.new()
 	actions.add_theme_constant_override("separation", 8)
@@ -55,12 +43,16 @@ func _build_ui() -> void:
 
 	confirm_button = Button.new()
 	confirm_button.text = "Sign Contract"
+	confirm_button.custom_minimum_size = Vector2(160, 44)
+	UIStyleScript.style_button(confirm_button, "primary")
 	confirm_button.pressed.connect(_on_confirm_pressed)
 	actions.add_child(confirm_button)
 
 	continue_button = Button.new()
 	continue_button.text = "Continue"
 	continue_button.visible = false
+	continue_button.custom_minimum_size = Vector2(150, 44)
+	UIStyleScript.style_button(continue_button, "primary")
 	continue_button.pressed.connect(Callable(SceneRouter, "go_to_map"))
 	actions.add_child(continue_button)
 
@@ -92,14 +84,15 @@ func _refresh() -> void:
 func _make_card_button(card: Dictionary) -> Button:
 	var button := Button.new()
 	button.toggle_mode = true
-	button.custom_minimum_size = Vector2(190, 132)
+	button.custom_minimum_size = Vector2(230, 138)
 	button.set_meta("card_id", String(card.get("id", "")))
-	button.text = "%s [%d]\n%s\n%s" % [
-		CardDataScript.card_name(card),
+	button.text = "%d  %s\n%s\n%s" % [
 		CardDataScript.card_cost(card),
+		CardDataScript.card_name(card),
 		CardDataScript.card_type(card),
 		CardDataScript.card_rules_text(card),
 	]
+	UIStyleScript.style_card_button(button, "primary")
 	button.pressed.connect(_on_card_pressed.bind(String(card.get("id", ""))))
 	return button
 

@@ -1,6 +1,7 @@
 extends Control
 
 const CompanionRewardGeneratorScript := preload("res://scripts/rewards/companion_reward_generator.gd")
+const UIStyleScript := preload("res://scripts/ui/ui_style.gd")
 
 var generator = CompanionRewardGeneratorScript.new()
 var status_label: Label
@@ -13,46 +14,24 @@ func _ready() -> void:
 
 
 func _build_ui() -> void:
-	var background := TextureRect.new()
-	background.set_anchors_preset(Control.PRESET_FULL_RECT)
-	background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	var bg_path := DataRegistry.get_temp_asset_path("bg_event_act1_generic")
-	if not bg_path.is_empty():
-		background.texture = load(bg_path)
-	add_child(background)
-
-	var shade := ColorRect.new()
-	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
-	shade.color = Color(0.035, 0.035, 0.04, 0.74)
-	add_child(shade)
-
-	var root := MarginContainer.new()
-	root.set_anchors_preset(Control.PRESET_FULL_RECT)
-	root.add_theme_constant_override("margin_left", 42)
-	root.add_theme_constant_override("margin_top", 36)
-	root.add_theme_constant_override("margin_right", 42)
-	root.add_theme_constant_override("margin_bottom", 36)
-	add_child(root)
+	UIStyleScript.add_background(self, "bg_event_act1_generic", 0.74)
+	var root := UIStyleScript.page_root(self, 38)
 
 	var layout := VBoxContainer.new()
 	layout.add_theme_constant_override("separation", 14)
 	root.add_child(layout)
 
-	var title := Label.new()
-	title.text = "Companion Contract"
-	title.add_theme_font_size_override("font_size", 34)
+	var title := UIStyleScript.label("Companion Contract", 34)
 	layout.add_child(title)
 
-	status_label = Label.new()
+	status_label = UIStyleScript.label("", 18, UIStyleScript.MUTED)
 	status_label.text = "Choose one companion to sign the token."
-	status_label.add_theme_font_size_override("font_size", 18)
-	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	layout.add_child(status_label)
 
 	option_box = HBoxContainer.new()
-	option_box.add_theme_constant_override("separation", 12)
-	layout.add_child(option_box)
+	option_box.add_theme_constant_override("separation", 14)
+	var option_panel := UIStyleScript.panel(option_box, Vector2(0, 190))
+	layout.add_child(option_panel)
 
 	var actions := HBoxContainer.new()
 	actions.add_theme_constant_override("separation", 8)
@@ -60,6 +39,8 @@ func _build_ui() -> void:
 
 	var map_button := Button.new()
 	map_button.text = "Map"
+	map_button.custom_minimum_size = Vector2(120, 44)
+	UIStyleScript.style_button(map_button)
 	map_button.pressed.connect(Callable(SceneRouter, "go_to_map"))
 	actions.add_child(map_button)
 
@@ -73,6 +54,7 @@ func _populate_options() -> void:
 		var continue_button := Button.new()
 		continue_button.text = "Continue"
 		continue_button.custom_minimum_size = Vector2(180, 58)
+		UIStyleScript.style_button(continue_button, "primary")
 		continue_button.pressed.connect(_on_continue_without_recruitment)
 		option_box.add_child(continue_button)
 		return
@@ -82,12 +64,13 @@ func _populate_options() -> void:
 
 func _make_companion_button(companion: Dictionary) -> Button:
 	var button := Button.new()
-	button.custom_minimum_size = Vector2(210, 150)
+	button.custom_minimum_size = Vector2(250, 160)
 	button.text = "%s\n%s\nOath tactics: %d" % [
 		String(companion.get("name", "?")),
 		String(companion.get("role", "")),
 		Array(companion.get("oath_tactics", [])).size(),
 	]
+	UIStyleScript.style_card_button(button, "primary")
 	button.pressed.connect(_on_companion_pressed.bind(String(companion.get("id", ""))))
 	return button
 

@@ -2,6 +2,7 @@ extends Control
 
 const InnRoomGeneratorScript := preload("res://scripts/systems/inn_room_generator.gd")
 const EventResolverScript := preload("res://scripts/systems/event_resolver.gd")
+const UIStyleScript := preload("res://scripts/ui/ui_style.gd")
 
 var room_generator = InnRoomGeneratorScript.new()
 var event_resolver = EventResolverScript.new()
@@ -21,49 +22,26 @@ func _ready() -> void:
 
 
 func _build_ui() -> void:
-	var background := TextureRect.new()
-	background.set_anchors_preset(Control.PRESET_FULL_RECT)
-	background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	var bg_asset := "bg_inn_act1_suspicious" if String(inn_data.get("type", "")) == "event" else "bg_inn_act1_warm_common"
-	var bg_path := DataRegistry.get_temp_asset_path(bg_asset)
-	if not bg_path.is_empty():
-		background.texture = load(bg_path)
-	add_child(background)
-
-	var shade := ColorRect.new()
-	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
-	shade.color = Color(0.03, 0.026, 0.022, 0.62)
-	add_child(shade)
-
-	var root := MarginContainer.new()
-	root.set_anchors_preset(Control.PRESET_FULL_RECT)
-	root.add_theme_constant_override("margin_left", 40)
-	root.add_theme_constant_override("margin_top", 34)
-	root.add_theme_constant_override("margin_right", 40)
-	root.add_theme_constant_override("margin_bottom", 34)
-	add_child(root)
+	UIStyleScript.add_background(self, bg_asset, 0.68)
+	var root := UIStyleScript.page_root(self, 36)
 
 	var layout := VBoxContainer.new()
 	layout.add_theme_constant_override("separation", 14)
 	root.add_child(layout)
 
-	var title := Label.new()
-	title.text = String(inn_data.get("title", "Inn"))
-	title.add_theme_font_size_override("font_size", 34)
+	var title := UIStyleScript.label(String(inn_data.get("title", "Inn")), 34)
 	layout.add_child(title)
 
-	run_label = Label.new()
-	run_label.add_theme_font_size_override("font_size", 18)
+	run_label = UIStyleScript.label("", 18, UIStyleScript.GOLD)
 	layout.add_child(run_label)
 
 	room_box = HBoxContainer.new()
-	room_box.add_theme_constant_override("separation", 12)
-	layout.add_child(room_box)
+	room_box.add_theme_constant_override("separation", 14)
+	var room_panel := UIStyleScript.panel(room_box, Vector2(0, 170))
+	layout.add_child(room_panel)
 
-	status_label = Label.new()
-	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	status_label.modulate = Color(0.86, 0.88, 0.80)
+	status_label = UIStyleScript.label("", 16, UIStyleScript.MUTED)
 	layout.add_child(status_label)
 
 	var actions := HBoxContainer.new()
@@ -72,12 +50,16 @@ func _build_ui() -> void:
 
 	var leave := Button.new()
 	leave.text = "Leave"
+	leave.custom_minimum_size = Vector2(120, 44)
+	UIStyleScript.style_button(leave)
 	leave.pressed.connect(_on_leave_pressed)
 	actions.add_child(leave)
 
 	continue_button = Button.new()
 	continue_button.text = "Continue"
 	continue_button.visible = false
+	continue_button.custom_minimum_size = Vector2(150, 44)
+	UIStyleScript.style_button(continue_button, "primary")
 	continue_button.pressed.connect(Callable(SceneRouter, "go_to_map"))
 	actions.add_child(continue_button)
 
@@ -94,13 +76,14 @@ func _refresh() -> void:
 func _make_room_button(room: Dictionary, index: int) -> Button:
 	var button := Button.new()
 	var price := int(room.get("price", 0))
-	button.custom_minimum_size = Vector2(230, 132)
-	button.text = "%s\n%d Gold\n%s" % [
+	button.custom_minimum_size = Vector2(260, 132)
+	button.text = "%s\n%d gold\n%s" % [
 		room.get("name", "Room"),
 		price,
 		room.get("description", ""),
 	]
 	button.disabled = RunState.gold < price
+	UIStyleScript.style_card_button(button, "primary" if not button.disabled else "locked")
 	button.pressed.connect(_on_room_pressed.bind(index))
 	return button
 

@@ -2,6 +2,7 @@ extends Control
 
 const CardDataScript := preload("res://scripts/data/card_data.gd")
 const RewardGeneratorScript := preload("res://scripts/systems/card_reward_generator.gd")
+const UIStyleScript := preload("res://scripts/ui/ui_style.gd")
 
 var reward_generator = RewardGeneratorScript.new()
 var reward_options: Array[Dictionary] = []
@@ -16,57 +17,40 @@ func _ready() -> void:
 
 
 func _build_ui() -> void:
-	var background := TextureRect.new()
-	background.set_anchors_preset(Control.PRESET_FULL_RECT)
-	background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	var bg_path := DataRegistry.get_temp_asset_path("bg_event_act1_generic")
-	if not bg_path.is_empty():
-		background.texture = load(bg_path)
-	add_child(background)
-
-	var shade := ColorRect.new()
-	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
-	shade.color = Color(0.035, 0.035, 0.04, 0.72)
-	add_child(shade)
-
-	var root := MarginContainer.new()
-	root.set_anchors_preset(Control.PRESET_FULL_RECT)
-	root.add_theme_constant_override("margin_left", 42)
-	root.add_theme_constant_override("margin_top", 36)
-	root.add_theme_constant_override("margin_right", 42)
-	root.add_theme_constant_override("margin_bottom", 36)
-	add_child(root)
+	UIStyleScript.add_background(self, "bg_event_act1_generic", 0.72)
+	var root := UIStyleScript.page_root(self, 38)
 
 	var layout := VBoxContainer.new()
 	layout.add_theme_constant_override("separation", 14)
 	root.add_child(layout)
 
-	var title := Label.new()
-	title.text = "Card Reward"
-	title.add_theme_font_size_override("font_size", 34)
+	var title := UIStyleScript.label("Choose a Reward", 34)
 	layout.add_child(title)
 
-	status_label = Label.new()
+	status_label = UIStyleScript.label("", 18, UIStyleScript.MUTED)
 	status_label.text = "Choose one card or take gold."
-	status_label.add_theme_font_size_override("font_size", 18)
 	layout.add_child(status_label)
 
 	reward_box = HBoxContainer.new()
-	reward_box.add_theme_constant_override("separation", 12)
-	layout.add_child(reward_box)
+	reward_box.add_theme_constant_override("separation", 14)
+	var reward_panel := UIStyleScript.panel(reward_box, Vector2(0, 170))
+	layout.add_child(reward_panel)
 
 	var actions := HBoxContainer.new()
 	actions.add_theme_constant_override("separation", 8)
 	layout.add_child(actions)
 
 	var skip := Button.new()
-	skip.text = "Skip (+%d Gold)" % reward_generator.get_skip_gold()
+	skip.text = "Take %d Gold" % reward_generator.get_skip_gold()
+	skip.custom_minimum_size = Vector2(150, 44)
+	UIStyleScript.style_button(skip)
 	skip.pressed.connect(_on_skip_pressed)
 	actions.add_child(skip)
 
 	continue_button = Button.new()
 	continue_button.text = "Continue"
+	continue_button.custom_minimum_size = Vector2(150, 44)
+	UIStyleScript.style_button(continue_button, "primary")
 	continue_button.pressed.connect(Callable(SceneRouter, "go_to_map"))
 	continue_button.visible = false
 	actions.add_child(continue_button)
@@ -82,13 +66,14 @@ func _generate_rewards() -> void:
 
 func _make_reward_button(card: Dictionary, index: int) -> Button:
 	var button := Button.new()
-	button.custom_minimum_size = Vector2(190, 132)
-	button.text = "%s [%d]\n%s\n%s" % [
-		CardDataScript.card_name(card),
+	button.custom_minimum_size = Vector2(230, 140)
+	button.text = "%d  %s\n%s\n%s" % [
 		CardDataScript.card_cost(card),
+		CardDataScript.card_name(card),
 		CardDataScript.card_rarity(card),
 		CardDataScript.card_rules_text(card),
 	]
+	UIStyleScript.style_card_button(button, "primary")
 	button.pressed.connect(_on_reward_pressed.bind(index))
 	return button
 

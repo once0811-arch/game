@@ -4,6 +4,7 @@ const CardDataScript := preload("res://scripts/data/card_data.gd")
 const CardInstanceScript := preload("res://scripts/state/card_instance.gd")
 const TurnManagerScript := preload("res://scripts/combat/turn_manager.gd")
 const BondSystemScript := preload("res://scripts/systems/bond_system.gd")
+const UIStyleScript := preload("res://scripts/ui/ui_style.gd")
 
 var turn_manager = TurnManagerScript.new()
 var bond_system = BondSystemScript.new()
@@ -26,69 +27,40 @@ func _ready() -> void:
 
 
 func _build_ui() -> void:
-	var background := TextureRect.new()
-	background.set_anchors_preset(Control.PRESET_FULL_RECT)
-	background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	var bg_path := DataRegistry.get_temp_asset_path("bg_battle_act1_road_ruin")
-	if not bg_path.is_empty():
-		background.texture = load(bg_path)
-	add_child(background)
-
-	var shade := ColorRect.new()
-	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
-	shade.color = Color(0.03, 0.035, 0.04, 0.55)
-	add_child(shade)
-
-	var root := MarginContainer.new()
-	root.set_anchors_preset(Control.PRESET_FULL_RECT)
-	root.add_theme_constant_override("margin_left", 28)
-	root.add_theme_constant_override("margin_top", 22)
-	root.add_theme_constant_override("margin_right", 28)
-	root.add_theme_constant_override("margin_bottom", 20)
-	add_child(root)
+	UIStyleScript.add_background(self, "bg_battle_act1_road_ruin", 0.68)
+	var root := UIStyleScript.page_root(self, 24)
 
 	var layout := VBoxContainer.new()
-	layout.add_theme_constant_override("separation", 10)
+	layout.add_theme_constant_override("separation", 12)
 	root.add_child(layout)
 
 	var header := HBoxContainer.new()
-	header.add_theme_constant_override("separation", 10)
+	header.add_theme_constant_override("separation", 12)
 	layout.add_child(header)
 
-	var title := Label.new()
-	title.text = "Combat Test"
-	title.add_theme_font_size_override("font_size", 30)
+	var title := UIStyleScript.label("Combat", 30)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
 
-	var restart := Button.new()
-	restart.text = "Restart"
-	restart.pressed.connect(_restart_combat)
-	header.add_child(restart)
-
-	var deck_debug := Button.new()
-	deck_debug.text = "Deck Debug"
-	deck_debug.pressed.connect(Callable(SceneRouter, "open_deck_debug"))
-	header.add_child(deck_debug)
-
 	var map := Button.new()
 	map.text = "Map"
+	map.custom_minimum_size = Vector2(92, 40)
+	UIStyleScript.style_button(map)
 	map.pressed.connect(Callable(SceneRouter, "go_to_map"))
 	header.add_child(map)
 
 	var battlefield := HBoxContainer.new()
 	battlefield.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	battlefield.add_theme_constant_override("separation", 28)
+	battlefield.add_theme_constant_override("separation", 14)
 	layout.add_child(battlefield)
 
 	var player_box := VBoxContainer.new()
-	player_box.custom_minimum_size = Vector2(240, 0)
 	player_box.add_theme_constant_override("separation", 8)
-	battlefield.add_child(player_box)
+	var player_panel := UIStyleScript.panel(player_box, Vector2(260, 0), true)
+	battlefield.add_child(player_panel)
 
 	var protagonist := TextureRect.new()
-	protagonist.custom_minimum_size = Vector2(180, 180)
+	protagonist.custom_minimum_size = Vector2(210, 210)
 	protagonist.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
 	protagonist.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	var protagonist_path := DataRegistry.get_temp_asset_path("protagonist_mercenary_idle")
@@ -96,70 +68,67 @@ func _build_ui() -> void:
 		protagonist.texture = load(protagonist_path)
 	player_box.add_child(protagonist)
 
-	player_label = Label.new()
-	player_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	player_label.add_theme_font_size_override("font_size", 18)
+	player_label = UIStyleScript.label("", 17)
 	player_box.add_child(player_label)
 
-	var spacer := Control.new()
-	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	battlefield.add_child(spacer)
+	var center_box := VBoxContainer.new()
+	center_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	center_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	center_box.add_theme_constant_override("separation", 10)
+	battlefield.add_child(center_box)
+
+	pile_label = UIStyleScript.label("", 15, UIStyleScript.MUTED)
+	center_box.add_child(pile_label)
+
+	companion_label = UIStyleScript.label("", 15, UIStyleScript.GREEN)
+	center_box.add_child(companion_label)
+
+	var log_panel := UIStyleScript.panel(null, Vector2(0, 190), true)
+	log_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	log_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	center_box.add_child(log_panel)
+
+	log_label = UIStyleScript.label("", 15, UIStyleScript.MUTED)
+	log_panel.add_child(log_label)
 
 	var enemy_box := VBoxContainer.new()
-	enemy_box.custom_minimum_size = Vector2(280, 0)
 	enemy_box.add_theme_constant_override("separation", 8)
-	battlefield.add_child(enemy_box)
+	var enemy_panel := UIStyleScript.panel(enemy_box, Vector2(300, 0), true)
+	battlefield.add_child(enemy_panel)
 
 	enemy_texture = TextureRect.new()
-	enemy_texture.custom_minimum_size = Vector2(220, 220)
+	enemy_texture.custom_minimum_size = Vector2(230, 230)
 	enemy_texture.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
 	enemy_texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	enemy_box.add_child(enemy_texture)
 
-	enemy_label = Label.new()
-	enemy_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	enemy_label.add_theme_font_size_override("font_size", 18)
+	enemy_label = UIStyleScript.label("", 18)
 	enemy_box.add_child(enemy_label)
 
-	intent_label = Label.new()
-	intent_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	intent_label.modulate = Color(0.92, 0.78, 0.58)
+	intent_label = UIStyleScript.label("", 16, UIStyleScript.GOLD)
 	enemy_box.add_child(intent_label)
 
-	pile_label = Label.new()
-	pile_label.add_theme_font_size_override("font_size", 16)
-	layout.add_child(pile_label)
-
-	companion_label = Label.new()
-	companion_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	companion_label.modulate = Color(0.78, 0.88, 0.82)
-	layout.add_child(companion_label)
-
 	hand_box = HBoxContainer.new()
-	hand_box.add_theme_constant_override("separation", 8)
+	hand_box.add_theme_constant_override("separation", 10)
 	layout.add_child(hand_box)
 
 	var controls := HBoxContainer.new()
-	controls.add_theme_constant_override("separation", 8)
+	controls.add_theme_constant_override("separation", 10)
 	layout.add_child(controls)
 
 	var end_turn := Button.new()
 	end_turn.text = "End Turn"
+	end_turn.custom_minimum_size = Vector2(180, 46)
+	UIStyleScript.style_button(end_turn, "primary")
 	end_turn.pressed.connect(_on_end_turn_pressed)
 	controls.add_child(end_turn)
 
 	claim_reward_button = Button.new()
 	claim_reward_button.text = "Claim Reward"
+	claim_reward_button.custom_minimum_size = Vector2(180, 46)
+	UIStyleScript.style_button(claim_reward_button, "success")
 	claim_reward_button.pressed.connect(_on_claim_reward_pressed)
 	controls.add_child(claim_reward_button)
-
-	var log_panel := PanelContainer.new()
-	log_panel.custom_minimum_size = Vector2(0, 128)
-	layout.add_child(log_panel)
-
-	log_label = Label.new()
-	log_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	log_panel.add_child(log_label)
 
 
 func _restart_combat() -> void:
@@ -238,15 +207,16 @@ func _make_card_button(card: Dictionary, instance: Dictionary, hand_index: int) 
 	var button := Button.new()
 	var cost := CardDataScript.card_cost(card)
 	var upgraded_suffix := "+" if bool(instance.get("upgraded", false)) else ""
-	button.custom_minimum_size = Vector2(150, 124)
-	button.text = "%s%s [%d]\n%s\n%s" % [
+	button.custom_minimum_size = Vector2(170, 132)
+	button.text = "%d  %s%s\n%s\n%s" % [
+		cost,
 		CardDataScript.card_name(card),
 		upgraded_suffix,
-		cost,
 		CardDataScript.card_type(card),
 		CardDataScript.card_rules_text(card),
 	]
 	button.disabled = cost > RunState.combat.energy or RunState.combat.outcome != "active"
+	UIStyleScript.style_card_button(button, "primary" if not button.disabled else "locked")
 	button.pressed.connect(_on_card_pressed.bind(hand_index))
 	return button
 

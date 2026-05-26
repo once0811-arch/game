@@ -1,5 +1,7 @@
 extends Control
 
+const UIStyleScript := preload("res://scripts/ui/ui_style.gd")
+
 var status_label: Label
 var continue_button: Button
 
@@ -10,27 +12,8 @@ func _ready() -> void:
 
 
 func _build_ui() -> void:
-	var background := TextureRect.new()
-	background.set_anchors_preset(Control.PRESET_FULL_RECT)
-	background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	var bg_path := DataRegistry.get_temp_asset_path("bg_battle_act1_road_ruin")
-	if not bg_path.is_empty():
-		background.texture = load(bg_path)
-	add_child(background)
-
-	var shade := ColorRect.new()
-	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
-	shade.color = Color(0.04, 0.05, 0.06, 0.68)
-	add_child(shade)
-
-	var root := MarginContainer.new()
-	root.set_anchors_preset(Control.PRESET_FULL_RECT)
-	root.add_theme_constant_override("margin_left", 48)
-	root.add_theme_constant_override("margin_top", 38)
-	root.add_theme_constant_override("margin_right", 48)
-	root.add_theme_constant_override("margin_bottom", 34)
-	add_child(root)
+	UIStyleScript.add_background(self, "bg_battle_act1_road_ruin", 0.70)
+	var root := UIStyleScript.page_root(self, 42)
 
 	var columns := HBoxContainer.new()
 	columns.add_theme_constant_override("separation", 28)
@@ -42,15 +25,10 @@ func _build_ui() -> void:
 	left.add_theme_constant_override("separation", 14)
 	columns.add_child(left)
 
-	var title := Label.new()
-	title.text = "Deckbuilder Prototype"
-	title.add_theme_font_size_override("font_size", 42)
+	var title := UIStyleScript.label("The Ruined Road", 44)
 	left.add_child(title)
 
-	var subtitle := Label.new()
-	subtitle.text = "A road through a collapsing fantasy world"
-	subtitle.modulate = Color(0.82, 0.86, 0.84)
-	subtitle.add_theme_font_size_override("font_size", 16)
+	var subtitle := UIStyleScript.label("Survival deckbuilding through a dying fantasy world", 17, UIStyleScript.MUTED)
 	left.add_child(subtitle)
 
 	var portrait := TextureRect.new()
@@ -74,25 +52,13 @@ func _build_ui() -> void:
 	continue_button.pressed.connect(_on_continue_pressed)
 	menu.add_child(continue_button)
 
-	var gallery := _make_menu_button("Asset Gallery")
-	gallery.pressed.connect(Callable(SceneRouter, "open_asset_gallery"))
-	menu.add_child(gallery)
-
-	var deck_debug := _make_menu_button("Deck Debug")
-	deck_debug.pressed.connect(Callable(SceneRouter, "open_deck_debug"))
-	menu.add_child(deck_debug)
-
-	var combat_test := _make_menu_button("Combat Test")
-	combat_test.pressed.connect(Callable(SceneRouter, "open_combat_test"))
-	menu.add_child(combat_test)
-
 	var quit := _make_menu_button("Quit")
 	quit.pressed.connect(_on_quit_pressed)
 	menu.add_child(quit)
 
 	status_label = Label.new()
 	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	status_label.modulate = Color(0.73, 0.78, 0.76)
+	status_label.add_theme_color_override("font_color", UIStyleScript.MUTED)
 	left.add_child(status_label)
 
 	var right := VBoxContainer.new()
@@ -101,17 +67,13 @@ func _build_ui() -> void:
 	right.add_theme_constant_override("separation", 12)
 	columns.add_child(right)
 
-	var build_label := Label.new()
-	build_label.text = "The Ruined Road"
+	var build_label := UIStyleScript.label("Blood Tags. Broken Roads. One Contract Left.", 24)
 	build_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	build_label.add_theme_font_size_override("font_size", 24)
 	right.add_child(build_label)
 
-	var summary := Label.new()
+	var summary := UIStyleScript.label("", 16, UIStyleScript.MUTED)
 	summary.text = "The first contract begins at the camp. The keep waits beyond the broken route."
 	summary.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	summary.modulate = Color(0.80, 0.84, 0.82)
 	right.add_child(summary)
 
 	var spacer := Control.new()
@@ -131,15 +93,15 @@ func _build_ui() -> void:
 func _make_menu_button(label_text: String) -> Button:
 	var button := Button.new()
 	button.text = label_text
-	button.custom_minimum_size = Vector2(260, 42)
-	button.focus_mode = Control.FOCUS_NONE
+	button.custom_minimum_size = Vector2(280, 46)
+	UIStyleScript.style_button(button, "primary" if label_text in ["New Run", "Continue"] else "default")
 	return button
 
 
 func _refresh_status() -> void:
 	continue_button.disabled = not SaveService.has_save()
-	var data_state := "ready" if DataRegistry.is_ready_for_phase_8() else "missing"
-	status_label.text = "Data: %s | Cards: %d | Companions: %d | Enemies: %d | Equipment: %d | Temp assets: %d | Save: %s" % [
+	var data_state := "Ready" if DataRegistry.is_ready_for_phase_8() else "Missing data"
+	status_label.text = "%s | Cards %d | Companions %d | Enemies %d | Equipment %d | Assets %d | Save %s" % [
 		data_state,
 		DataRegistry.get_card_count(),
 		DataRegistry.get_companion_count(),

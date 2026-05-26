@@ -2,6 +2,7 @@ extends Control
 
 const ShopGeneratorScript := preload("res://scripts/systems/shop_generator.gd")
 const EventResolverScript := preload("res://scripts/systems/event_resolver.gd")
+const UIStyleScript := preload("res://scripts/ui/ui_style.gd")
 
 var shop_generator = ShopGeneratorScript.new()
 var event_resolver = EventResolverScript.new()
@@ -20,27 +21,8 @@ func _ready() -> void:
 
 
 func _build_ui() -> void:
-	var background := TextureRect.new()
-	background.set_anchors_preset(Control.PRESET_FULL_RECT)
-	background.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	background.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	var bg_path := DataRegistry.get_temp_asset_path("bg_shop_act1_rusty_trader")
-	if not bg_path.is_empty():
-		background.texture = load(bg_path)
-	add_child(background)
-
-	var shade := ColorRect.new()
-	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
-	shade.color = Color(0.035, 0.032, 0.028, 0.70)
-	add_child(shade)
-
-	var root := MarginContainer.new()
-	root.set_anchors_preset(Control.PRESET_FULL_RECT)
-	root.add_theme_constant_override("margin_left", 38)
-	root.add_theme_constant_override("margin_top", 30)
-	root.add_theme_constant_override("margin_right", 38)
-	root.add_theme_constant_override("margin_bottom", 30)
-	add_child(root)
+	UIStyleScript.add_background(self, "bg_shop_act1_rusty_trader", 0.72)
+	var root := UIStyleScript.page_root(self, 30)
 
 	var layout := VBoxContainer.new()
 	layout.add_theme_constant_override("separation", 12)
@@ -49,30 +31,29 @@ func _build_ui() -> void:
 	var header := HBoxContainer.new()
 	layout.add_child(header)
 
-	var title := Label.new()
-	title.text = "Rust Trader"
-	title.add_theme_font_size_override("font_size", 34)
+	var title := UIStyleScript.label("Rust Trader", 34)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
 
 	var done := Button.new()
 	done.text = "Leave"
+	done.custom_minimum_size = Vector2(108, 42)
+	UIStyleScript.style_button(done)
 	done.pressed.connect(_on_leave_pressed)
 	header.add_child(done)
 
-	gold_label = Label.new()
-	gold_label.add_theme_font_size_override("font_size", 18)
+	gold_label = UIStyleScript.label("", 18, UIStyleScript.GOLD)
 	layout.add_child(gold_label)
 
 	product_grid = GridContainer.new()
-	product_grid.columns = 4
-	product_grid.add_theme_constant_override("h_separation", 10)
-	product_grid.add_theme_constant_override("v_separation", 10)
-	layout.add_child(product_grid)
+	product_grid.columns = 3
+	product_grid.add_theme_constant_override("h_separation", 12)
+	product_grid.add_theme_constant_override("v_separation", 12)
+	var product_panel := UIStyleScript.panel(product_grid, Vector2(0, 0))
+	product_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	layout.add_child(product_panel)
 
-	status_label = Label.new()
-	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	status_label.modulate = Color(0.84, 0.88, 0.80)
+	status_label = UIStyleScript.label("", 16, UIStyleScript.MUTED)
 	layout.add_child(status_label)
 
 
@@ -86,14 +67,15 @@ func _refresh() -> void:
 
 func _make_product_button(product: Dictionary, index: int) -> Button:
 	var button := Button.new()
-	button.custom_minimum_size = Vector2(210, 132)
+	button.custom_minimum_size = Vector2(250, 134)
 	var price := int(product.get("price", 0))
-	button.text = "%s\n%d Gold\n%s" % [
+	button.text = "%s\n%d gold\n%s" % [
 		product.get("title", "Product"),
 		price,
 		product.get("description", ""),
 	]
 	button.disabled = bool(product.get("purchased", false)) or RunState.gold < price
+	UIStyleScript.style_card_button(button, "primary" if not button.disabled else "locked")
 	button.pressed.connect(_on_product_pressed.bind(index))
 	return button
 
