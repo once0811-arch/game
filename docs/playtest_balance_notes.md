@@ -34,6 +34,8 @@ Current counters:
 | `event_choices` | Tracks event engagement. |
 | `upgrades_taken` | Tracks Act 2 upgrade usage. |
 | `act_2_reached` / `act_3_reached` / `run_completed` | Tracks macro progression. |
+| `combat_wave_count` / `combat_wave_index` | Checks whether 2-3 wave nodes are too frequent or too exhausting. |
+| `hp_lost_by_wave` / `turns_by_wave` | Separates fair multi-wave pressure from bloated total HP. |
 
 Event records also include act, depth, gold, HP, max HP, timestamp, and type.
 Combat end records include turns, HP lost, cards played, outcome, and average bond.
@@ -49,6 +51,9 @@ Use the first 5-10 manual runs to answer:
 5. Does Healing Down meaningfully pressure healing cards without making Maren-style utility feel bad?
 6. Do Act 2 midpoint upgrades change the build, or feel like small stat maintenance?
 7. Does average bond reach 30 before Act 2, 60 around Act 2/3, and 100 only in strong companion-focused runs?
+8. Do 2-wave normal fights feel like a rhythm change rather than an elite fight?
+9. Do 3-wave fights appear rarely enough that players remember them as set pieces, not chores?
+10. Does any route produce back-to-back long fights without a visible safe branch?
 
 ## Initial Targets
 
@@ -63,6 +68,9 @@ These are starting targets, not final truth:
 | Act 2 depth 6 | At least one companion near or above 30 bond. |
 | Act 2 boss | Major upgrade should feel run-defining. |
 | Act 3 boss | Victory should require coherent deck, companion, and equipment choices. |
+| 2-wave normal combat | HP loss no more than 15-25% above same-tier 1-wave combat. |
+| 3-wave normal combat | Appears at most once in Act 2 route and twice in Act 3 route. |
+| Multi-wave combat turn count | 2-wave normal 4-6 turns, 3-wave normal 5-7 turns. |
 
 ## Current Risks
 
@@ -73,6 +81,8 @@ These are starting targets, not final truth:
 - The current playable card pool is 20 protagonist cards and 30 companion cards. It is still smaller than the final 40 protagonist / 80 companion target, so early balance should judge pacing and system clarity before judging final build variety.
 - Act 1 now has a Healing Down enemy pattern through Mutated Scholar. Verify that it pressures Maren/Isol healing without making healing cards feel like trap picks.
 - Combat now has visible oath/bond/wager/victory feedback. Verify that the toast timing helps rather than covering important card or enemy information.
+- Multi-wave combat is not implemented yet. When added, the danger is not a single overtuned wave but too many 2-3 wave nodes on one route.
+- Enemy total HP targets were raised by about 6%; do not also raise multi-wave frequency in the same tuning patch without telemetry.
 
 ## Next Tuning Loop
 
@@ -81,7 +91,8 @@ After each tuning patch:
 1. Export or copy `telemetry_last_run.json` into `SourceCode/data/playtest_logs/` with a short filename.
 2. Record build commit, run seed, companion choices, and death/victory point.
 3. Compare turn count, HP loss, shop purchases, inn usage, oath triggers, and bond score.
-4. Change one balance cluster at a time: enemy HP/damage, economy prices, bond gains, or card numbers.
+4. Compare wave count, HP lost by wave, and whether a safe branch existed before/after 3-wave nodes.
+5. Change one balance cluster at a time: enemy HP/damage, wave frequency, economy prices, bond gains, or card numbers.
 
 ## Phase 9 Validation
 

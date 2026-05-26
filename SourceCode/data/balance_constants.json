@@ -27,6 +27,42 @@
     "first_companion_after_midboss": true,
     "second_companion_after_boss": true
   },
+  "encounter_waves": {
+    "max_waves": 3,
+    "enemy_budget_base_increase_percent": 6,
+    "total_budget_multiplier_by_wave_count": {
+      "1": 1.0,
+      "2": 1.18,
+      "3": 1.38
+    },
+    "wave_budget_split": {
+      "2": [0.48, 0.52],
+      "3": [0.30, 0.34, 0.36]
+    },
+    "normal_node_wave_weights": {
+      "act1_depth_1_3": {"1": 100, "2": 0, "3": 0},
+      "act1_depth_4_5": {"1": 85, "2": 15, "3": 0},
+      "act1_depth_8_12": {"1": 70, "2": 30, "3": 0},
+      "act2_depth_1_3": {"1": 75, "2": 25, "3": 0},
+      "act2_depth_4_5": {"1": 60, "2": 35, "3": 5},
+      "act2_depth_7_12": {"1": 50, "2": 40, "3": 10},
+      "act3_depth_1_3": {"1": 55, "2": 40, "3": 5},
+      "act3_depth_4_8": {"1": 40, "2": 45, "3": 15},
+      "act3_depth_9_12": {"1": 35, "2": 45, "3": 20}
+    },
+    "elite_node_wave_weights": {
+      "act1": {"1": 70, "2": 30, "3": 0},
+      "act2": {"1": 35, "2": 55, "3": 10},
+      "act3": {"1": 20, "2": 55, "3": 25}
+    },
+    "path_caps": {
+      "act1_max_two_wave_normal_nodes": 2,
+      "act2_max_three_wave_normal_nodes": 1,
+      "act3_max_three_wave_normal_nodes": 2,
+      "no_consecutive_three_wave_nodes": true,
+      "no_three_wave_before_boss_without_safe_branch": true
+    }
+  },
   "rewards": {
     "card_options": 3,
     "skip_gold": 15,

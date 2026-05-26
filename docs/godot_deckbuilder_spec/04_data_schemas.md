@@ -332,7 +332,77 @@ upgrade
 
 `upgrade`는 Act 2 depth 6 중간 강화 노드처럼 전투 없이 주인공/동료 강화 선택을 제공하는 노드다.
 
-## 11. EnemyData
+## 11. EncounterData
+
+전투 노드는 기존 `enemy_id` / `enemy_ids`를 계속 지원하되, 정식 웨이브 구현부터는 `waves`를 우선한다.
+
+```json
+{
+  "id": "encounter_act2_broken_milestone",
+  "act": 2,
+  "node_type": "combat",
+  "difficulty_pool": "hard",
+  "budget_tier": "normal_late",
+  "wave_count": 2,
+  "total_budget_multiplier": 1.18,
+  "waves": [
+    {
+      "label_ko": "먼저 무너진 길",
+      "role": "opener",
+      "budget_share": 0.48,
+      "enemy_ids": ["enemy_act2_oath_burned_mercenary"]
+    },
+    {
+      "label_ko": "검열관의 후속대",
+      "role": "pressure",
+      "budget_share": 0.52,
+      "enemy_ids": ["enemy_act2_heal_censor_scholar"]
+    }
+  ]
+}
+```
+
+필드:
+
+```txt
+id: 전투 고유 ID.
+act: 1 / 2 / 3.
+node_type: combat / elite / mid_boss / boss.
+difficulty_pool: easy / hard / elite / boss.
+budget_tier: act와 depth에 따른 밸런스 구간.
+wave_count: 1~3. 3을 초과하지 않는다.
+total_budget_multiplier: 같은 구간 1웨이브 기준 대비 총 적 예산 배율.
+waves: 순서대로 등장할 웨이브 배열.
+```
+
+웨이브 필드:
+
+```txt
+label_ko: UI에 짧게 보여줄 웨이브 이름. 전투 로그 장문 대체용이 아니다.
+role: opener / pressure / finisher / respite.
+budget_share: 전체 예산 중 해당 웨이브 비율. 합계는 1.0.
+enemy_ids: 해당 웨이브에 동시에 등장하는 적 ID 목록.
+```
+
+하위 호환 규칙:
+
+```txt
+waves가 있으면 enemy_id/enemy_ids는 무시한다.
+waves가 없고 enemy_ids가 있으면 1웨이브 다수 적 전투로 처리한다.
+waves가 없고 enemy_id만 있으면 1웨이브 단일 적 전투로 처리한다.
+보스의 HP 기반 phase_thresholds와 EncounterData의 waves는 별개다. 같은 전투에 둘 다 넣을 수 있지만, MVP에서는 하나만 사용한다.
+```
+
+웨이브 생성 금지:
+
+```txt
+일반 전투 4웨이브 이상.
+웨이브마다 보상을 지급하는 구조.
+다음 웨이브가 등장한 즉시 적이 행동하는 구조.
+Act 1 초반 3웨이브.
+```
+
+## 12. EnemyData
 
 ```json
 {
@@ -351,7 +421,7 @@ upgrade
 
 `healing_down`은 받는 회복량을 비율로 줄이는 상태 효과다. Act 1 일반 적은 기본 weight 0으로 두고, Act 2 이후 특정 적에게만 명시적으로 가중치를 준다.
 
-## 11.1 BossData
+## 12.1 BossData
 
 보스는 일반 적보다 패턴 의도가 중요하므로 별도 스키마를 둔다.
 
@@ -383,7 +453,7 @@ upgrade
 동료를 직접 제거하거나 영구 약화
 ```
 
-## 12. EventData
+## 13. EventData
 
 ```json
 {
@@ -415,7 +485,7 @@ add_curse
 add_status_card
 ```
 
-## 13. InnData
+## 14. InnData
 
 여관은 매번 절차적으로 생성해도 된다.
 
@@ -438,7 +508,7 @@ add_status_card
 }
 ```
 
-## 14. ShopState
+## 15. ShopState
 
 ```json
 {
@@ -450,7 +520,7 @@ add_status_card
 }
 ```
 
-## 15. SaveData
+## 16. SaveData
 
 ```json
 {
@@ -474,7 +544,7 @@ add_status_card
 }
 ```
 
-## 16. BalanceConstants
+## 17. BalanceConstants
 
 초기 수치는 코드에 흩뿌리지 않고 JSON으로 관리한다.
 
@@ -497,6 +567,38 @@ add_status_card
     "act1_boss_reward": "second_companion_contract",
     "act2_mid_reward": "minor_protagonist_or_companion_upgrade",
     "act2_boss_reward": "major_protagonist_or_companion_upgrade"
+  },
+  "encounter_waves": {
+    "max_waves": 3,
+    "enemy_budget_base_increase_percent": 6,
+    "total_budget_multiplier_by_wave_count": {"1": 1.0, "2": 1.18, "3": 1.38},
+    "wave_budget_split": {
+      "2": [0.48, 0.52],
+      "3": [0.30, 0.34, 0.36]
+    },
+    "normal_node_wave_weights": {
+      "act1_depth_1_3": {"1": 100, "2": 0, "3": 0},
+      "act1_depth_4_5": {"1": 85, "2": 15, "3": 0},
+      "act1_depth_8_12": {"1": 70, "2": 30, "3": 0},
+      "act2_depth_1_3": {"1": 75, "2": 25, "3": 0},
+      "act2_depth_4_5": {"1": 60, "2": 35, "3": 5},
+      "act2_depth_7_12": {"1": 50, "2": 40, "3": 10},
+      "act3_depth_1_3": {"1": 55, "2": 40, "3": 5},
+      "act3_depth_4_8": {"1": 40, "2": 45, "3": 15},
+      "act3_depth_9_12": {"1": 35, "2": 45, "3": 20}
+    },
+    "elite_node_wave_weights": {
+      "act1": {"1": 70, "2": 30, "3": 0},
+      "act2": {"1": 35, "2": 55, "3": 10},
+      "act3": {"1": 20, "2": 55, "3": 25}
+    },
+    "path_caps": {
+      "act1_max_two_wave_normal_nodes": 2,
+      "act2_max_three_wave_normal_nodes": 1,
+      "act3_max_three_wave_normal_nodes": 2,
+      "no_consecutive_three_wave_nodes": true,
+      "no_three_wave_before_boss_without_safe_branch": true
+    }
   },
   "card_cost_distribution_target": {
     "zero_cost_percent": [10, 12],
@@ -622,7 +724,7 @@ add_status_card
 }
 ```
 
-## 17. RunTelemetry
+## 18. RunTelemetry
 
 플레이테스트용 지표다. 게임 내 통계 화면은 만들지 않는다.
 
