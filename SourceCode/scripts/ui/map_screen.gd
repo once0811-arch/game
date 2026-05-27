@@ -7,6 +7,7 @@ var map_scroll: ScrollContainer
 var map_canvas: Control
 var map_log_label: Label
 var legend_box: VBoxContainer
+var route_detail_label: Label
 var equipment_label: Label
 var equipment_box: HBoxContainer
 var equipment_status_label: Label
@@ -69,7 +70,7 @@ func _build_ui() -> void:
 	_style_route_panel(map_area)
 	map_area.anchor_left = 0.10
 	map_area.anchor_top = 0.10
-	map_area.anchor_right = 0.84
+	map_area.anchor_right = 0.78
 	map_area.anchor_bottom = 0.94
 	map_area.offset_left = 0
 	map_area.offset_top = 0
@@ -98,15 +99,15 @@ func _build_ui() -> void:
 
 	legend_box = VBoxContainer.new()
 	legend_box.add_theme_constant_override("separation", 7)
-	var legend_panel := UIStyleScript.panel(legend_box, Vector2(206, 320), true)
+	var legend_panel := UIStyleScript.panel(legend_box, Vector2(250, 430), true)
 	legend_panel.anchor_left = 1.0
 	legend_panel.anchor_top = 0.18
 	legend_panel.anchor_right = 1.0
 	legend_panel.anchor_bottom = 0.18
-	legend_panel.offset_left = -236
+	legend_panel.offset_left = -282
 	legend_panel.offset_top = 0
 	legend_panel.offset_right = -28
-	legend_panel.offset_bottom = 320
+	legend_panel.offset_bottom = 430
 	legend_panel.add_theme_stylebox_override("panel", _legend_scroll_style())
 	add_child(legend_panel)
 	_build_legend()
@@ -133,6 +134,15 @@ func _build_legend() -> void:
 		["upgrade", "Upgrade"],
 	]:
 		legend_box.add_child(_make_legend_row(String(entry[0]), String(entry[1])))
+	var separator := HSeparator.new()
+	separator.custom_minimum_size = Vector2(0, 10)
+	legend_box.add_child(separator)
+	legend_box.add_child(UIStyleScript.label("Next Contract", 18, Color(0.08, 0.12, 0.12, 1.0)))
+	route_detail_label = UIStyleScript.label("Hover a lit token to inspect risk.", 13, Color(0.13, 0.14, 0.12, 1.0))
+	route_detail_label.custom_minimum_size = Vector2(210, 88)
+	route_detail_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	route_detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	legend_box.add_child(route_detail_label)
 
 
 func _make_legend_row(node_type: String, label_text: String) -> HBoxContainer:
@@ -245,6 +255,8 @@ func _refresh_nodes() -> void:
 		return
 	MapState.ensure_current_act()
 	map_log_label.text = "Choose the next contract."
+	if route_detail_label != null:
+		route_detail_label.text = _default_route_detail_text()
 	_draw_route_lines()
 	for node in MapState.nodes:
 		var button := _make_node_button(node)
@@ -311,11 +323,15 @@ func _on_node_button_gui_input(event: InputEvent, node_id: String, state: String
 
 func _on_node_hovered(node: Dictionary) -> void:
 	map_log_label.text = _describe_node(node)
+	if route_detail_label != null:
+		route_detail_label.text = _describe_node_card(node)
 
 
 func _on_node_unhovered() -> void:
 	if dragging_node_id.is_empty():
 		map_log_label.text = "Choose the next contract."
+		if route_detail_label != null:
+			route_detail_label.text = _default_route_detail_text()
 
 
 func _node_id_at_position(global_position: Vector2) -> String:
@@ -599,6 +615,54 @@ func _describe_node(node: Dictionary) -> String:
 	elif node_type == "upgrade":
 		parts.append("Strengthen the protagonist or a companion.")
 	return "  |  ".join(PackedStringArray(parts))
+
+
+func _describe_node_card(node: Dictionary) -> String:
+	var node_type := String(node.get("type", ""))
+	var state := MapState.get_node_state(node)
+	var lines: Array[String] = [
+		"%s: %s" % [_node_type_label(node_type), String(node.get("label", ""))],
+		"Depth %d / %s" % [int(node.get("depth", 0)), state.capitalize()],
+	]
+	var wave_names := _node_wave_names(node)
+	if not wave_names.is_empty():
+		lines.append("Waves: %d" % wave_names.size())
+		for i in range(mini(wave_names.size(), 3)):
+			lines.append("%d. %s" % [i + 1, wave_names[i]])
+	match node_type:
+		"combat":
+			lines.append("Pressure: normal attrition, card reward chance.")
+		"elite":
+			lines.append("Pressure: heavy HP cost, better reward.")
+		"midboss":
+			lines.append("Pressure: forced test before ally contract.")
+		"boss":
+			lines.append("Pressure: act gate and major progression.")
+		"inn":
+			lines.append("Value: recover or stabilize before the next climb.")
+		"shop":
+			lines.append("Value: spend gold on cards, gear, or removal.")
+		"event":
+			lines.append("Value: uncertain contract outcome.")
+		"companion_contract":
+			lines.append("Value: recruit an ally and bind one oath tactic.")
+		"upgrade":
+			lines.append("Value: strengthen protagonist or companion.")
+	return "\n".join(PackedStringArray(lines))
+
+
+func _default_route_detail_text() -> String:
+	var node := _first_available_node()
+	if not node.is_empty():
+		return _describe_node_card(node)
+	return "Hover a lit token to inspect risk, waves, and route purpose."
+
+
+func _first_available_node() -> Dictionary:
+	for node in MapState.nodes:
+		if typeof(node) == TYPE_DICTIONARY and MapState.get_node_state(node) == "available":
+			return node
+	return {}
 
 
 func _node_enemy_names(node: Dictionary) -> Array[String]:

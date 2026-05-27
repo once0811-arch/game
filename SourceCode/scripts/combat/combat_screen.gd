@@ -17,6 +17,7 @@ var player_hp_bar: ProgressBar
 var player_hp_label: Label
 var energy_label: Label
 var pile_label: Label
+var combat_plan_label: Label
 var companion_box: HBoxContainer
 var hand_area: Control
 var enemy_box: HBoxContainer
@@ -79,10 +80,20 @@ func _build_ui() -> void:
 	player_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	top_content.add_child(player_label)
 
+	combat_plan_label = UIStyleScript.label("", 16, UIStyleScript.GOLD)
+	combat_plan_label.custom_minimum_size = Vector2(286, 0)
+	combat_plan_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	combat_plan_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	combat_plan_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	combat_plan_label.clip_text = true
+	top_content.add_child(combat_plan_label)
+
 	pile_label = UIStyleScript.label("", 15, UIStyleScript.GOLD)
-	pile_label.custom_minimum_size = Vector2(220, 0)
+	pile_label.custom_minimum_size = Vector2(326, 0)
 	pile_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	pile_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	pile_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	pile_label.clip_text = true
 	top_content.add_child(pile_label)
 
 	var battlefield := Control.new()
@@ -380,16 +391,19 @@ func _refresh() -> void:
 			RunState.combat.healing_reduction_percent,
 			RunState.combat.healing_reduction_turns,
 		]
+	_update_combat_plan_label()
 	selected_target_index = _clamp_target_index(selected_target_index)
 	_refresh_enemy()
 	var wave_text := "Wave %d/%d    " % [
 		RunState.combat.wave_index + 1,
 		RunState.combat.wave_count,
 	] if RunState.combat.wave_count > 1 else ""
-	pile_label.text = "%sTurn %d    Draw %d" % [
+	pile_label.text = "%sTurn %d    Draw %d  Discard %d  Exhaust %d" % [
 		wave_text,
 		RunState.combat.turn_index,
 		RunState.deck.draw_pile.size(),
+		RunState.deck.discard_pile.size(),
+		RunState.deck.exhaust_pile.size(),
 	]
 	_refresh_companions()
 	_refresh_hand()
@@ -401,6 +415,59 @@ func _refresh() -> void:
 	for i in range(start_index, log_lines.size()):
 		recent_logs.append(log_lines[i])
 	log_label.text = "\n".join(PackedStringArray(recent_logs))
+
+
+func _update_combat_plan_label() -> void:
+	if combat_plan_label == null:
+		return
+	if RunState.combat.outcome == "victory":
+		combat_plan_label.text = "Victory secured"
+		combat_plan_label.add_theme_color_override("font_color", UIStyleScript.GREEN)
+		return
+	if RunState.combat.outcome == "defeat":
+		combat_plan_label.text = "Contract broken"
+		combat_plan_label.add_theme_color_override("font_color", UIStyleScript.RED)
+		return
+	var incoming: int = _incoming_attack_damage()
+	var unblocked: int = max(incoming - int(RunState.combat.player_block), 0)
+	var projected_hp: int = max(int(RunState.current_hp) - unblocked, 0)
+	if incoming > 0:
+		combat_plan_label.text = "Incoming %d -> HP %d" % [incoming, projected_hp]
+		var color := UIStyleScript.RED if unblocked > 0 else UIStyleScript.BLUE
+		combat_plan_label.add_theme_color_override("font_color", color)
+		return
+	var hostile_count := 0
+	var guard_count := 0
+	for enemy in RunState.combat.enemies:
+		if typeof(enemy) != TYPE_DICTIONARY or int(enemy.get("hp", 0)) <= 0:
+			continue
+		var enemy_dict: Dictionary = enemy
+		hostile_count += 1
+		if String(enemy_dict.get("intent", {}).get("type", "")) == "block":
+			guard_count += 1
+	if hostile_count > 0 and guard_count == hostile_count:
+		combat_plan_label.text = "Enemies are guarding"
+	else:
+		combat_plan_label.text = "No incoming damage"
+	combat_plan_label.add_theme_color_override("font_color", UIStyleScript.GOLD)
+
+
+func _incoming_attack_damage() -> int:
+	var total := 0
+	var reduction_remaining: int = int(RunState.combat.enemy_attack_reduction)
+	for enemy in RunState.combat.enemies:
+		if typeof(enemy) != TYPE_DICTIONARY or int(enemy.get("hp", 0)) <= 0:
+			continue
+		var enemy_dict: Dictionary = enemy
+		var intent: Dictionary = enemy_dict.get("intent", {})
+		if String(intent.get("type", "")) != "attack":
+			continue
+		var damage := int(intent.get("damage", 0))
+		if reduction_remaining > 0:
+			damage = max(damage - reduction_remaining, 0)
+			reduction_remaining = 0
+		total += damage
+	return total
 
 
 func _refresh_prompt() -> void:
