@@ -443,7 +443,7 @@ func _update_combat_plan_label() -> void:
 			continue
 		var enemy_dict: Dictionary = enemy
 		hostile_count += 1
-		if String(enemy_dict.get("intent", {}).get("type", "")) == "block":
+		if String(enemy_dict.get("intent", {}).get("type", "")) in ["block", "guard_all"]:
 			guard_count += 1
 	if hostile_count > 0 and guard_count == hostile_count:
 		combat_plan_label.text = "Enemies are guarding"
@@ -460,7 +460,7 @@ func _incoming_attack_damage() -> int:
 			continue
 		var enemy_dict: Dictionary = enemy
 		var intent: Dictionary = enemy_dict.get("intent", {})
-		if String(intent.get("type", "")) != "attack":
+		if not (String(intent.get("type", "")) in ["attack", "attack_block", "attack_healing_down"]):
 			continue
 		var damage := int(intent.get("damage", 0))
 		if reduction_remaining > 0:
@@ -527,21 +527,37 @@ func _make_enemy_panel(enemy: Dictionary, enemy_index: int) -> Control:
 	var intent: Dictionary = enemy.get("intent", {})
 	var intent_text := "Unknown"
 	var intent_kind := "?"
-	if String(intent.get("type", "")) == "attack":
+	var intent_type := String(intent.get("type", ""))
+	if intent_type == "attack":
 		intent_kind = "ATK"
 		intent_text = "%d" % int(intent.get("damage", 0))
-	elif String(intent.get("type", "")) == "block":
+	elif intent_type == "attack_block":
+		intent_kind = "ATK"
+		intent_text = "%d/+%d" % [int(intent.get("damage", 0)), int(intent.get("block", 0))]
+	elif intent_type == "attack_healing_down":
+		intent_kind = "ATK"
+		intent_text = "%d/-%d%%" % [int(intent.get("damage", 0)), int(intent.get("percent", 50))]
+	elif intent_type == "block":
 		intent_kind = "BLK"
 		intent_text = "+%d" % int(intent.get("block", 0))
-	elif String(intent.get("type", "")) == "healing_down":
+	elif intent_type == "guard_all":
+		intent_kind = "BLK"
+		intent_text = "all +%d" % int(intent.get("block", 0))
+	elif intent_type == "healing_down":
 		intent_kind = "HEX"
 		intent_text = "-%d%%" % int(intent.get("percent", 50))
+	elif intent_type == "buff_attack":
+		intent_kind = "PWR"
+		intent_text = "+%d ATK" % int(intent.get("amount", 0))
+	elif intent_type == "steal_gold":
+		intent_kind = "TAX"
+		intent_text = "-%dG" % int(intent.get("gold", 0))
 	if int(enemy.get("hp", 0)) <= 0:
 		intent_kind = "KO"
 		intent_text = "Defeated"
 	var intent_chip := PanelContainer.new()
 	intent_chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	intent_chip.add_theme_stylebox_override("panel", _intent_style(String(intent.get("type", ""))))
+	intent_chip.add_theme_stylebox_override("panel", _intent_style(intent_type))
 	intent_chip.custom_minimum_size = Vector2(124, 42)
 	intent_chip.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	var intent_row := HBoxContainer.new()
@@ -554,7 +570,7 @@ func _make_enemy_panel(enemy: Dictionary, enemy_index: int) -> Control:
 	intent_icon.custom_minimum_size = Vector2(24, 24)
 	intent_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	intent_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	intent_icon.texture = DataRegistry.get_temp_asset_texture(_intent_icon_asset_id(String(intent.get("type", "")), int(enemy.get("hp", 0)) <= 0))
+	intent_icon.texture = DataRegistry.get_temp_asset_texture(_intent_icon_asset_id(intent_type, int(enemy.get("hp", 0)) <= 0))
 	intent_row.add_child(intent_icon)
 	var intent_label := UIStyleScript.label("%s %s" % [intent_kind, intent_text], 18, UIStyleScript.GOLD)
 	intent_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -1407,15 +1423,21 @@ func _bar_style(color: Color) -> StyleBoxFlat:
 func _intent_style(intent_type: String) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
 	match intent_type:
-		"attack":
+		"attack", "attack_block", "attack_healing_down":
 			style.bg_color = Color(0.28, 0.08, 0.06, 0.92)
 			style.border_color = UIStyleScript.RED
-		"block":
+		"block", "guard_all":
 			style.bg_color = Color(0.07, 0.17, 0.15, 0.92)
 			style.border_color = UIStyleScript.GREEN
 		"healing_down":
 			style.bg_color = Color(0.17, 0.11, 0.24, 0.92)
 			style.border_color = Color(0.48, 0.32, 0.62, 1.0)
+		"buff_attack":
+			style.bg_color = Color(0.20, 0.08, 0.09, 0.92)
+			style.border_color = Color(0.92, 0.40, 0.28, 1.0)
+		"steal_gold":
+			style.bg_color = Color(0.22, 0.16, 0.05, 0.92)
+			style.border_color = UIStyleScript.GOLD
 		_:
 			style.bg_color = Color(0.10, 0.09, 0.08, 0.90)
 			style.border_color = UIStyleScript.BORDER
@@ -1438,12 +1460,16 @@ func _intent_icon_asset_id(intent_type: String, defeated: bool = false) -> Strin
 	if defeated:
 		return "icon_health"
 	match intent_type:
-		"attack":
+		"attack", "attack_block", "attack_healing_down":
 			return "icon_weapon_slot"
-		"block":
+		"block", "guard_all":
 			return "icon_block"
 		"healing_down":
 			return "icon_healing_down"
+		"buff_attack":
+			return "icon_weapon_slot"
+		"steal_gold":
+			return "icon_gold"
 		_:
 			return "icon_tactical_mark"
 

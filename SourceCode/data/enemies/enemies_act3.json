@@ -1,12 +1,24 @@
 {
-  "version": "0.1.0",
+  "version": "0.2.0",
   "act": 3,
   "enemies": [
     {
       "id": "enemy_act3_nameless_limb",
       "name": "Nameless Limb",
+      "role": "mark_punisher",
+      "faction": "other_dimension",
+      "behavior_tags": ["mark_punish", "threshold_scaling", "late_damage"],
+      "budget": 94,
+      "counterplay_note": "It rewards clean burst math; stacking marks without lethal setup makes the next reach worse.",
       "max_hp": 88,
       "asset_id": "enemy_act1_rooted_scavenger_idle",
+      "pattern": [
+        {"type": "attack", "label": "Wrong Angle", "damage": 19, "condition": {"turn": 1}},
+        {"type": "attack", "label": "Reads the Seal", "damage": 17, "per_mark_damage": 2, "per_mark_cap": 10, "condition": {"mark_at_least": 2}},
+        {"type": "buff_attack", "label": "Unfold Tendon", "amount": 4, "condition": {"hp_below_percent": 45, "once_key": "unfold_tendon"}},
+        {"type": "block", "label": "Fold Space", "block": 13},
+        {"type": "attack_block", "label": "Long Reach", "damage": 17, "block": 8}
+      ],
       "intents": [
         {"type": "attack", "label": "Wrong Angle", "damage": 17},
         {"type": "block", "label": "Fold Space", "block": 12},
@@ -16,8 +28,20 @@
     {
       "id": "enemy_act3_core_echo",
       "name": "Core Echo",
+      "role": "anti_sustain_scaler",
+      "faction": "ancient_core",
+      "behavior_tags": ["healing_down", "scaling", "late_act"],
+      "budget": 102,
+      "counterplay_note": "Its first action shrinks recovery windows; if the fight drags, echo scaling turns every cut lethal.",
       "max_hp": 94,
       "asset_id": "elite_act1_excavation_scholar_idle",
+      "pattern": [
+        {"type": "healing_down", "label": "Empty Benediction", "percent": 50, "turns": 2, "condition": {"turn": 1}},
+        {"type": "buff_attack", "label": "Echo Gain", "amount": 3, "condition": {"turn_mod": 4, "turn_mod_equals": 0}},
+        {"type": "attack_healing_down", "label": "Echo Rot", "damage": 20, "percent": 50, "turns": 2, "condition": {"hp_below_percent": 50, "once_key": "echo_rot"}},
+        {"type": "attack", "label": "Echo Cut", "damage": 20},
+        {"type": "block", "label": "Not There", "block": 18}
+      ],
       "intents": [
         {"type": "healing_down", "label": "Empty Benediction", "percent": 50, "turns": 2},
         {"type": "attack", "label": "Echo Cut", "damage": 19},
@@ -27,8 +51,19 @@
     {
       "id": "enemy_act3_frayed_witness",
       "name": "Frayed Witness",
+      "role": "disruptor",
+      "faction": "academy_echo",
+      "behavior_tags": ["anti_sustain", "guard_all", "tempo_disrupt"],
+      "budget": 86,
+      "counterplay_note": "Its guarded opener invites setup, but repeated testimony makes long wave chains expensive.",
       "max_hp": 76,
       "asset_id": "enemy_act1_mutated_scholar_idle",
+      "pattern": [
+        {"type": "block", "label": "Fold Testimony", "block": 16, "condition": {"turn": 1}},
+        {"type": "attack_healing_down", "label": "Memory Rot", "damage": 16, "percent": 50, "turns": 2, "condition": {"turn_mod": 3, "turn_mod_equals": 0}},
+        {"type": "guard_all", "label": "Shared Memory", "block": 10},
+        {"type": "attack", "label": "Point Beyond", "damage": 18}
+      ],
       "intents": [
         {"type": "healing_down", "label": "Memory Rot", "percent": 50, "turns": 2},
         {"type": "attack", "label": "Point Beyond", "damage": 16},
@@ -38,8 +73,20 @@
     {
       "id": "enemy_act3_angle_choir",
       "name": "Angle Choir",
+      "role": "team_guard_burster",
+      "faction": "other_dimension",
+      "behavior_tags": ["guard_all", "visible_burst", "scaling"],
+      "budget": 92,
+      "counterplay_note": "It protects the wave, then hits on a three-turn cadence; answer with AoE or decisive focus.",
       "max_hp": 82,
       "asset_id": "enemy_act1_rooted_scavenger_idle",
+      "pattern": [
+        {"type": "guard_all", "label": "Impossible Harmony", "block": 14, "condition": {"turn": 1}},
+        {"type": "attack_block", "label": "Many-Throat Cut", "damage": 20, "block": 10, "condition": {"turn_mod": 3, "turn_mod_equals": 0}},
+        {"type": "buff_attack", "label": "Off-Key Spiral", "amount": 3, "condition": {"hp_below_percent": 40, "once_key": "off_key_spiral"}},
+        {"type": "block", "label": "Impossible Harmony", "block": 18},
+        {"type": "attack", "label": "Off-Beam", "damage": 19}
+      ],
       "intents": [
         {"type": "block", "label": "Impossible Harmony", "block": 16},
         {"type": "attack", "label": "Many-Throat Cut", "damage": 18},
@@ -49,8 +96,21 @@
     {
       "id": "elite_act3_door_that_walks",
       "name": "Door That Walks",
+      "role": "elite_setup_race",
+      "faction": "ancient_core",
+      "behavior_tags": ["elite", "setup_window", "anti_sustain", "guard_all"],
+      "budget": 145,
+      "counterplay_note": "Like a late-act race, it gives one armored setup turn before closing the fight around you.",
       "max_hp": 130,
       "asset_id": "elite_act1_blackprint_captain_idle",
+      "pattern": [
+        {"type": "block", "label": "Close Itself", "block": 22, "condition": {"turn": 1}},
+        {"type": "guard_all", "label": "Threshold Lock", "block": 18, "condition": {"turn_mod": 4, "turn_mod_equals": 0}},
+        {"type": "attack_healing_down", "label": "Open Inside", "damage": 24, "percent": 50, "turns": 2, "condition": {"hp_below_percent": 55, "once_key": "open_inside"}},
+        {"type": "attack", "label": "Threshold Slam", "damage": 24},
+        {"type": "block", "label": "Close Itself", "block": 20},
+        {"type": "attack_block", "label": "Open Inside", "damage": 20, "block": 14}
+      ],
       "intents": [
         {"type": "attack", "label": "Threshold Slam", "damage": 23},
         {"type": "block", "label": "Close Itself", "block": 20},

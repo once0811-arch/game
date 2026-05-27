@@ -513,13 +513,20 @@ class BalanceSimulator:
             enemies.append({
                 "id": enemy_id,
                 "name": data.get("name", enemy_id),
+                "role": data.get("role", ""),
+                "faction": data.get("faction", ""),
                 "max_hp": int(math.ceil(int(data.get("max_hp", 1)) * hp_scale)),
                 "hp": int(math.ceil(int(data.get("max_hp", 1)) * hp_scale)),
                 "block": 0,
                 "mark": 0,
+                "attack_bonus": 0,
+                "pattern": data.get("pattern", []),
+                "pattern_flags": {},
                 "intents": data.get("intents", []) or [{"type": "attack", "damage": 5, "label": "Attack"}],
+                "intent": {},
                 "intent_index": 0,
             })
+        self._refresh_enemy_intents(enemies)
         return enemies
 
     def _combat_result(self, state: RunState, node: dict[str, Any], outcome: str, turns: int, start_hp: int, cards_played: int, hp_scale: float, attack_scale: float, wave_count: int, wave_hp_lost: list[int], wave_turns: list[int]) -> dict[str, Any]:
@@ -564,21 +571,85 @@ class BalanceSimulator:
     def _alive_indices(self, enemies: list[dict[str, Any]]) -> list[int]:
         return [i for i, enemy in enumerate(enemies) if int(enemy.get("hp", 0)) > 0]
 
+    def _refresh_enemy_intents(self, enemies: list[dict[str, Any]]) -> None:
+        for enemy in enemies:
+            if int(enemy.get("hp", 0)) > 0:
+                enemy["intent"] = self._enemy_intent(enemy)
+
     def _incoming_damage(self, combat: dict[str, Any], enemies: list[dict[str, Any]]) -> int:
         total = 0
+        reduction_remaining = int(combat.get("enemy_attack_reduction", 0))
         for enemy in enemies:
             if int(enemy.get("hp", 0)) <= 0:
                 continue
-            intent = self._enemy_intent(enemy)
-            if str(intent.get("type", "attack")) == "attack":
-                total += max(int(round(int(intent.get("damage", 0)) * combat.get("attack_scale", 1.0))) - int(combat.get("enemy_attack_reduction", 0)), 0)
+            intent = enemy.get("intent") or self._enemy_intent(enemy)
+            if str(intent.get("type", "attack")) in {"attack", "attack_block", "attack_healing_down"}:
+                damage = int(round(int(intent.get("damage", 0)) * combat.get("attack_scale", 1.0)))
+                if reduction_remaining > 0:
+                    damage = max(damage - reduction_remaining, 0)
+                    reduction_remaining = 0
+                total += damage
         return total
 
     def _enemy_intent(self, enemy: dict[str, Any]) -> dict[str, Any]:
-        intents = enemy.get("intents", [])
+        intents = enemy.get("pattern") or enemy.get("intents", [])
         if not intents:
             return {"type": "attack", "damage": 5, "label": "Attack"}
-        return intents[int(enemy.get("intent_index", 0)) % len(intents)]
+        conditional: list[dict[str, Any]] = []
+        fallback: list[dict[str, Any]] = []
+        for intent in intents:
+            if not isinstance(intent, dict):
+                continue
+            if "condition" in intent or "conditions" in intent:
+                if self._enemy_condition_matches(enemy, intent.get("condition", intent.get("conditions", {}))):
+                    conditional.append(intent)
+            else:
+                fallback.append(intent)
+        if conditional:
+            return self._prepared_enemy_intent(enemy, conditional[0])
+        pool = fallback or [intent for intent in intents if isinstance(intent, dict)]
+        if not pool:
+            return {"type": "attack", "damage": 5, "label": "Attack"}
+        return self._prepared_enemy_intent(enemy, pool[int(enemy.get("intent_index", 0)) % len(pool)])
+
+    def _enemy_condition_matches(self, enemy: dict[str, Any], condition: Any) -> bool:
+        if not isinstance(condition, dict):
+            return True
+        turn = int(enemy.get("intent_index", 0)) + 1
+        if "turn" in condition and turn != int(condition.get("turn", 0)):
+            return False
+        if "turn_min" in condition and turn < int(condition.get("turn_min", 0)):
+            return False
+        if "turn_mod" in condition:
+            mod = max(1, int(condition.get("turn_mod", 1)))
+            expected = int(condition.get("turn_mod_equals", 0))
+            if turn % mod != expected:
+                return False
+        hp_percent = int(round(int(enemy.get("hp", 0)) * 100 / max(1, int(enemy.get("max_hp", 1)))))
+        if "hp_below_percent" in condition and hp_percent >= int(condition.get("hp_below_percent", 0)):
+            return False
+        if "hp_above_percent" in condition and hp_percent <= int(condition.get("hp_above_percent", 0)):
+            return False
+        if "mark_at_least" in condition and int(enemy.get("mark", 0)) < int(condition.get("mark_at_least", 0)):
+            return False
+        once_key = str(condition.get("once_key", ""))
+        if once_key and enemy.get("pattern_flags", {}).get(once_key):
+            return False
+        return True
+
+    def _prepared_enemy_intent(self, enemy: dict[str, Any], intent: dict[str, Any]) -> dict[str, Any]:
+        prepared = dict(intent)
+        if str(prepared.get("type", "attack")) in {"attack", "attack_block", "attack_healing_down"}:
+            damage = int(prepared.get("damage", 0)) + int(enemy.get("attack_bonus", 0))
+            per_mark = int(prepared.get("per_mark_damage", 0))
+            if per_mark > 0:
+                mark_bonus = int(enemy.get("mark", 0)) * per_mark
+                cap = int(prepared.get("per_mark_cap", 0))
+                if cap > 0:
+                    mark_bonus = min(mark_bonus, cap)
+                damage += mark_bonus
+            prepared["damage"] = max(0, damage)
+        return prepared
 
     def _best_target_index(self, enemies: list[dict[str, Any]], preferred: int | None = None) -> int | None:
         live = self._alive_indices(enemies)
@@ -590,7 +661,7 @@ class BalanceSimulator:
         best_key = (-999, -999, 9999)
         for index in live:
             enemy = enemies[index]
-            intent = self._enemy_intent(enemy)
+            intent = enemy.get("intent") or self._enemy_intent(enemy)
             key = (int(enemy.get("mark", 0)), 1 if intent.get("type") == "attack" else 0, -int(enemy.get("hp", 0)))
             if key > best_key:
                 best_key = key
@@ -842,7 +913,7 @@ class BalanceSimulator:
         for enemy in enemies:
             if int(enemy.get("hp", 0)) <= 0:
                 continue
-            intent = self._enemy_intent(enemy)
+            intent = enemy.get("intent") or self._enemy_intent(enemy)
             intent_type = str(intent.get("type", "attack"))
             if intent_type == "attack":
                 damage = max(int(round(int(intent.get("damage", 0)) * combat.get("attack_scale", 1.0))) - int(combat.get("enemy_attack_reduction", 0)), 0)
@@ -850,12 +921,35 @@ class BalanceSimulator:
                 blocked = min(int(combat.get("block", 0)), damage)
                 combat["block"] = int(combat.get("block", 0)) - blocked
                 combat["hp"] = max(0, int(combat.get("hp", 0)) - max(damage - blocked, 0))
+            elif intent_type in {"attack_block", "attack_healing_down"}:
+                damage = max(int(round(int(intent.get("damage", 0)) * combat.get("attack_scale", 1.0))) - int(combat.get("enemy_attack_reduction", 0)), 0)
+                combat["enemy_attack_reduction"] = 0
+                blocked = min(int(combat.get("block", 0)), damage)
+                combat["block"] = int(combat.get("block", 0)) - blocked
+                combat["hp"] = max(0, int(combat.get("hp", 0)) - max(damage - blocked, 0))
+                if intent_type == "attack_block":
+                    enemy["block"] = int(enemy.get("block", 0)) + int(intent.get("block", 0))
+                else:
+                    combat["healing_down_percent"] = int(intent.get("percent", 50))
+                    combat["healing_down_turns"] = int(intent.get("turns", 2))
             elif intent_type == "block":
                 enemy["block"] = int(enemy.get("block", 0)) + int(intent.get("block", 0))
+            elif intent_type == "guard_all":
+                for ally in enemies:
+                    if int(ally.get("hp", 0)) > 0:
+                        ally["block"] = int(ally.get("block", 0)) + int(intent.get("block", 0))
             elif intent_type == "healing_down":
                 combat["healing_down_percent"] = int(intent.get("percent", 50))
                 combat["healing_down_turns"] = int(intent.get("turns", 2))
+            elif intent_type == "buff_attack":
+                enemy["attack_bonus"] = int(enemy.get("attack_bonus", 0)) + int(intent.get("amount", 0))
+            elif intent_type == "steal_gold":
+                state.gold = max(0, state.gold - int(intent.get("gold", 0)))
+            condition = intent.get("condition", intent.get("conditions", {}))
+            if isinstance(condition, dict) and condition.get("once_key"):
+                enemy.setdefault("pattern_flags", {})[str(condition["once_key"])] = True
             enemy["intent_index"] = int(enemy.get("intent_index", 0)) + 1
+            enemy["intent"] = self._enemy_intent(enemy)
 
     def _card_reward(self, state: RunState, policy: str, source: str) -> None:
         options = self._generate_card_options(state, 3)

@@ -1,13 +1,24 @@
 {
-  "version": "0.1.0",
+  "version": "0.2.0",
   "act": 1,
   "enemies": [
     {
       "id": "enemy_act1_mutated_merchant",
       "name": "Mutated Merchant",
+      "role": "taxer",
+      "faction": "merchant_mutant",
+      "behavior_tags": ["gold_pressure", "early_route_tax"],
+      "budget": 44,
+      "counterplay_note": "Kill before the first ledger action or accept a small gold leak.",
       "max_hp": 44,
       "asset_id": "enemy_act1_mutated_merchant_idle",
       "background_id": "bg_battle_act1_road_ruin",
+      "pattern": [
+        {"type": "steal_gold", "gold": 8, "label": "Open Ledger", "condition": {"turn": 1}},
+        {"type": "attack", "damage": 8, "label": "Claw Ledger"},
+        {"type": "block", "block": 6, "label": "Hoard Scraps"},
+        {"type": "attack_block", "damage": 10, "block": 4, "label": "Black Receipt"}
+      ],
       "intents": [
         {"type": "attack", "damage": 7, "label": "Claw Ledger"},
         {"type": "block", "block": 5, "label": "Hoard Scraps"},
@@ -17,9 +28,20 @@
     {
       "id": "enemy_act1_twisted_wolf",
       "name": "Twisted Wolf",
+      "role": "rusher",
+      "faction": "beast_mutant",
+      "behavior_tags": ["early_damage", "low_hp"],
+      "budget": 36,
+      "counterplay_note": "Prioritize early block or burst; it opens with pressure before circling.",
       "max_hp": 36,
       "asset_id": "enemy_act1_twisted_wolf_idle",
       "background_id": "bg_battle_act1_road_ruin",
+      "pattern": [
+        {"type": "attack", "damage": 10, "label": "Opening Lunge", "condition": {"turn": 1}},
+        {"type": "attack", "damage": 8, "label": "Lunge"},
+        {"type": "attack_block", "damage": 7, "block": 4, "label": "Circle and Snap"},
+        {"type": "block", "block": 5, "label": "Circle"}
+      ],
       "intents": [
         {"type": "attack", "damage": 8, "label": "Lunge"},
         {"type": "attack", "damage": 8, "label": "Lunge"},
@@ -29,9 +51,21 @@
     {
       "id": "enemy_act1_mutated_scholar",
       "name": "Mutated Scholar",
+      "role": "suppressor",
+      "faction": "academy_mutant",
+      "behavior_tags": ["healing_down", "setup_window"],
+      "budget": 40,
+      "counterplay_note": "Use the first guarded turn to mark or burst before Healing Down lands.",
       "max_hp": 40,
       "asset_id": "enemy_act1_mutated_scholar_idle",
       "background_id": "bg_battle_act1_outpost",
+      "pattern": [
+        {"type": "block", "block": 7, "label": "Seal Notes", "condition": {"turn": 1}},
+        {"type": "attack_healing_down", "damage": 8, "percent": 50, "turns": 2, "label": "Black Formula", "condition": {"hp_below_percent": 55, "once_key": "panic_formula"}},
+        {"type": "healing_down", "percent": 50, "turns": 2, "label": "Black Formula"},
+        {"type": "attack", "damage": 10, "label": "Bad Formula"},
+        {"type": "block", "block": 6, "label": "Seal Notes"}
+      ],
       "intents": [
         {"type": "block", "block": 6, "label": "Seal Notes"},
         {"type": "healing_down", "percent": 50, "turns": 2, "label": "Black Formula"},
@@ -41,9 +75,20 @@
     {
       "id": "enemy_act1_mutated_mercenary",
       "name": "Mutated Mercenary",
+      "role": "bruiser",
+      "faction": "mercenary_mutant",
+      "behavior_tags": ["visible_burst", "guard"],
+      "budget": 48,
+      "counterplay_note": "The heavy turn is telegraphed after guard; plan block before Paid in Blood.",
       "max_hp": 48,
       "asset_id": "enemy_act1_mutated_mercenary_idle",
       "background_id": "bg_battle_act1_outpost",
+      "pattern": [
+        {"type": "attack_block", "damage": 8, "block": 5, "label": "Contract Cut"},
+        {"type": "block", "block": 8, "label": "Old Guard"},
+        {"type": "attack", "damage": 13, "label": "Paid in Blood"},
+        {"type": "buff_attack", "amount": 2, "label": "Remember Drill", "condition": {"hp_below_percent": 45, "once_key": "merc_drill"}}
+      ],
       "intents": [
         {"type": "attack", "damage": 9, "label": "Contract Cut"},
         {"type": "block", "block": 7, "label": "Old Guard"},
@@ -53,9 +98,20 @@
     {
       "id": "enemy_act1_broken_packhorse",
       "name": "Broken Packhorse",
+      "role": "threshold_burster",
+      "faction": "beast_mutant",
+      "behavior_tags": ["hp_threshold", "burst_warning"],
+      "budget": 44,
+      "counterplay_note": "Avoid leaving it below half HP before a weak block turn.",
       "max_hp": 44,
       "asset_id": "enemy_act1_broken_packhorse_idle",
       "background_id": "bg_battle_act1_road_ruin",
+      "pattern": [
+        {"type": "attack", "damage": 15, "label": "Panic Break", "condition": {"hp_below_percent": 50, "once_key": "panic_break"}},
+        {"type": "attack", "damage": 7, "label": "Panic Kick"},
+        {"type": "block", "block": 9, "label": "Tangled Harness"},
+        {"type": "attack_block", "damage": 10, "block": 4, "label": "Splinter Charge"}
+      ],
       "intents": [
         {"type": "attack", "damage": 7, "label": "Panic Kick"},
         {"type": "block", "block": 8, "label": "Tangled Harness"},
@@ -65,9 +121,20 @@
     {
       "id": "enemy_act1_rooted_scavenger",
       "name": "Rooted Scavenger",
+      "role": "armored",
+      "faction": "plant_mutant",
+      "behavior_tags": ["block_pressure", "mark_target"],
+      "budget": 50,
+      "counterplay_note": "Mark and focus it before Root Down turns block into tempo loss.",
       "max_hp": 50,
       "asset_id": "enemy_act1_rooted_scavenger_idle",
       "background_id": "bg_battle_act1_road_ruin",
+      "pattern": [
+        {"type": "block", "block": 11, "label": "Root Down"},
+        {"type": "attack_block", "damage": 8, "block": 5, "label": "Hook Branch"},
+        {"type": "attack", "damage": 13, "label": "Pull Apart"},
+        {"type": "guard_all", "block": 5, "label": "Root Net", "condition": {"turn_mod": 4, "turn_mod_equals": 0}}
+      ],
       "intents": [
         {"type": "block", "block": 9, "label": "Root Down"},
         {"type": "attack", "damage": 9, "label": "Hook Branch"},
@@ -77,9 +144,22 @@
     {
       "id": "midboss_act1_blackened_guard",
       "name": "Blackened Guard",
-      "max_hp": 78,
+      "role": "midboss_setup_race",
+      "faction": "blackened_kingdom",
+      "behavior_tags": ["midboss", "setup_window", "scaling"],
+      "budget": 82,
+      "counterplay_note": "Use turn 1 to set mark or power; after half HP it scales once and starts trading harder.",
+      "max_hp": 82,
       "asset_id": "midboss_act1_blackened_guard_idle",
       "background_id": "bg_battle_act1_outpost",
+      "pattern": [
+        {"type": "block", "block": 12, "label": "Raise Shield", "condition": {"turn": 1}},
+        {"type": "buff_attack", "amount": 3, "label": "Blackened Order", "condition": {"hp_below_percent": 50, "once_key": "blackened_order"}},
+        {"type": "attack_block", "damage": 12, "block": 8, "label": "Shield Crush", "condition": {"turn_mod": 3, "turn_mod_equals": 0}},
+        {"type": "attack", "damage": 11, "label": "Broken Order"},
+        {"type": "block", "block": 10, "label": "Raise Shield"},
+        {"type": "attack", "damage": 15, "label": "Black Oath"}
+      ],
       "intents": [
         {"type": "attack", "damage": 10, "label": "Broken Order"},
         {"type": "block", "block": 8, "label": "Raise Shield"},
@@ -89,9 +169,21 @@
     {
       "id": "elite_act1_blackprint_captain",
       "name": "Blackprint Captain",
-      "max_hp": 70,
+      "role": "elite_commander",
+      "faction": "blackened_kingdom",
+      "behavior_tags": ["elite", "scaling", "guard_all"],
+      "budget": 76,
+      "counterplay_note": "Race the captain before command turns add attack and team block.",
+      "max_hp": 76,
       "asset_id": "elite_act1_blackprint_captain_idle",
       "background_id": "bg_battle_act1_outpost",
+      "pattern": [
+        {"type": "attack", "damage": 10, "label": "Command Cut", "condition": {"turn": 1}},
+        {"type": "buff_attack", "amount": 2, "label": "Press the Line", "condition": {"turn_mod": 4, "turn_mod_equals": 0}},
+        {"type": "attack_block", "damage": 12, "block": 7, "label": "Press"},
+        {"type": "guard_all", "block": 8, "label": "Hold Line"},
+        {"type": "attack", "damage": 15, "label": "Captain's Due", "condition": {"hp_below_percent": 45, "once_key": "captain_due"}}
+      ],
       "intents": [
         {"type": "attack", "damage": 9, "label": "Command Cut"},
         {"type": "attack", "damage": 12, "label": "Press"},
@@ -101,9 +193,22 @@
     {
       "id": "boss_act1_blackprint_warlord",
       "name": "Blackprint Warlord",
-      "max_hp": 118,
+      "role": "act_boss_mark_test",
+      "faction": "blackened_kingdom",
+      "behavior_tags": ["boss", "phase", "mark_punish", "first_companion_test"],
+      "budget": 126,
+      "counterplay_note": "The fight rewards focused marked bursts, but over-marking without lethal setup empowers Warlord's Mark.",
+      "max_hp": 126,
       "asset_id": "boss_act1_blackprint_warlord_idle",
       "background_id": "bg_battle_act1_boss_gate",
+      "pattern": [
+        {"type": "attack", "damage": 12, "label": "Gate Strike", "condition": {"turn": 1}},
+        {"type": "buff_attack", "amount": 3, "label": "Iron Refusal", "condition": {"hp_below_percent": 65, "once_key": "iron_refusal"}},
+        {"type": "attack_healing_down", "damage": 15, "percent": 50, "turns": 2, "label": "Stamped Wound", "condition": {"hp_below_percent": 35, "once_key": "stamped_wound"}},
+        {"type": "attack", "damage": 13, "per_mark_damage": 2, "per_mark_cap": 8, "label": "Warlord's Mark", "condition": {"mark_at_least": 2}},
+        {"type": "block", "block": 15, "label": "Iron Refusal"},
+        {"type": "attack_block", "damage": 17, "block": 8, "label": "Gate Verdict"}
+      ],
       "intents": [
         {"type": "attack", "damage": 12, "label": "Gate Strike"},
         {"type": "block", "block": 12, "label": "Iron Refusal"},

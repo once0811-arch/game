@@ -1,12 +1,24 @@
 {
-  "version": "0.1.0",
+  "version": "0.2.0",
   "act": 2,
   "enemies": [
     {
       "id": "enemy_act2_heal_censor_scholar",
       "name": "Heal-Censor Scholar",
+      "role": "suppressor",
+      "faction": "academy_blackprint",
+      "behavior_tags": ["healing_down", "anti_sustain", "setup_window"],
+      "budget": 64,
+      "counterplay_note": "It spends tempo corrupting healing; burst or block before the low-HP combined attack lands.",
       "max_hp": 60,
       "asset_id": "enemy_act1_mutated_scholar_idle",
+      "pattern": [
+        {"type": "healing_down", "label": "Black Prescription", "percent": 50, "turns": 2, "condition": {"turn": 1}},
+        {"type": "attack_healing_down", "label": "Censor's Cut", "damage": 14, "percent": 50, "turns": 2, "condition": {"hp_below_percent": 45, "once_key": "censor_cut"}},
+        {"type": "attack", "label": "Glass Scalpel", "damage": 13},
+        {"type": "block", "label": "Seal Notes", "block": 9},
+        {"type": "attack_block", "label": "Denied Remedy", "damage": 10, "block": 6}
+      ],
       "intents": [
         {"type": "healing_down", "label": "Black Prescription", "percent": 50, "turns": 2},
         {"type": "attack", "label": "Glass Scalpel", "damage": 12},
@@ -16,8 +28,20 @@
     {
       "id": "enemy_act2_oath_burned_mercenary",
       "name": "Oath-Burned Mercenary",
+      "role": "scaling_bruiser",
+      "faction": "blackened_mercenary",
+      "behavior_tags": ["visible_burst", "scaling", "guard"],
+      "budget": 76,
+      "counterplay_note": "The first strike is survivable, but below half HP it remembers drill and makes later attacks dangerous.",
       "max_hp": 72,
       "asset_id": "enemy_act1_mutated_mercenary_idle",
+      "pattern": [
+        {"type": "attack_block", "label": "Black Edge", "damage": 13, "block": 6, "condition": {"turn": 1}},
+        {"type": "buff_attack", "label": "Burned Drill", "amount": 3, "condition": {"hp_below_percent": 55, "once_key": "burned_drill"}},
+        {"type": "attack", "label": "Black Edge", "damage": 17},
+        {"type": "block", "label": "Broken Guard", "block": 11},
+        {"type": "attack", "label": "Follow Through", "damage": 12}
+      ],
       "intents": [
         {"type": "attack", "label": "Black Edge", "damage": 15},
         {"type": "attack", "label": "Follow Through", "damage": 11},
@@ -27,8 +51,20 @@
     {
       "id": "enemy_act2_receipt_hound",
       "name": "Receipt Hound",
+      "role": "resource_rusher",
+      "faction": "beast_mutant",
+      "behavior_tags": ["gold_pressure", "early_damage", "low_hp"],
+      "budget": 54,
+      "counterplay_note": "Kill it quickly or lose gold on its third action; the fight is short but route-taxing.",
       "max_hp": 48,
       "asset_id": "enemy_act1_twisted_wolf_idle",
+      "pattern": [
+        {"type": "attack", "label": "Sniff Debt", "damage": 13, "condition": {"turn": 1}},
+        {"type": "steal_gold", "label": "Bite the Purse", "gold": 12, "condition": {"turn_mod": 3, "turn_mod_equals": 0}},
+        {"type": "attack", "label": "Snap Seal", "damage": 17, "condition": {"hp_below_percent": 40, "once_key": "snap_seal"}},
+        {"type": "attack", "label": "Sniff Debt", "damage": 11},
+        {"type": "attack_block", "label": "Guard the Ledger", "damage": 12, "block": 5}
+      ],
       "intents": [
         {"type": "attack", "label": "Sniff Debt", "damage": 10},
         {"type": "attack", "label": "Snap Seal", "damage": 13},
@@ -38,8 +74,19 @@
     {
       "id": "enemy_act2_seal_bearer",
       "name": "Seal Bearer",
+      "role": "protector",
+      "faction": "contract_cult",
+      "behavior_tags": ["guard_all", "healing_down", "team_support"],
+      "budget": 66,
+      "counterplay_note": "It turns multi-enemy waves into tempo checks; focus it before Guard All repeats.",
       "max_hp": 58,
       "asset_id": "enemy_act1_mutated_merchant_idle",
+      "pattern": [
+        {"type": "block", "label": "Raise the Plate", "block": 13, "condition": {"turn": 1}},
+        {"type": "guard_all", "label": "Shared Seal", "block": 8, "condition": {"turn_mod": 3, "turn_mod_equals": 0}},
+        {"type": "healing_down", "label": "Stamped Cure", "percent": 50, "turns": 2},
+        {"type": "attack_block", "label": "Metal Verdict", "damage": 13, "block": 8}
+      ],
       "intents": [
         {"type": "block", "label": "Raise the Plate", "block": 11},
         {"type": "healing_down", "label": "Stamped Cure", "percent": 50, "turns": 2},
@@ -49,8 +96,21 @@
     {
       "id": "elite_act2_unsealed_caravan",
       "name": "Unsealed Caravan",
+      "role": "elite_support_scaler",
+      "faction": "merchant_mutant",
+      "behavior_tags": ["elite", "guard_all", "anti_sustain", "scaling"],
+      "budget": 114,
+      "counterplay_note": "It starts by armoring the fight, then alternates sustain denial and axle hits; long fights favor it.",
       "max_hp": 104,
       "asset_id": "elite_act1_armored_caravan_guard_idle",
+      "pattern": [
+        {"type": "guard_all", "label": "Iron Ring", "block": 14, "condition": {"turn": 1}},
+        {"type": "buff_attack", "label": "Unsealed Load", "amount": 3, "condition": {"turn_mod": 4, "turn_mod_equals": 0}},
+        {"type": "attack_healing_down", "label": "Sour Axle", "damage": 19, "percent": 50, "turns": 2, "condition": {"hp_below_percent": 50, "once_key": "sour_axle"}},
+        {"type": "attack", "label": "Crushing Axle", "damage": 21},
+        {"type": "healing_down", "label": "Sour Vapors", "percent": 50, "turns": 2},
+        {"type": "attack_block", "label": "Iron Ring", "damage": 17, "block": 12}
+      ],
       "intents": [
         {"type": "attack", "label": "Crushing Axle", "damage": 19},
         {"type": "healing_down", "label": "Sour Vapors", "percent": 50, "turns": 2},
