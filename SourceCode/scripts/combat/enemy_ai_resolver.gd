@@ -58,6 +58,13 @@ func execute_enemy_turn() -> Array[String]:
 					RunState.combat.healing_reduction_percent,
 					RunState.combat.healing_reduction_turns,
 				])
+			"attack_energy_down":
+				logs.append(_apply_attack(enemy, intent))
+				_apply_energy_down(intent)
+				logs.append("%s disrupted next turn energy by %d." % [
+					enemy.get("name", "Enemy"),
+					int(intent.get("amount", 1)),
+				])
 			"block":
 				var block := int(intent.get("block", 0))
 				enemy["block"] = int(enemy.get("block", 0)) + block
@@ -77,6 +84,12 @@ func execute_enemy_turn() -> Array[String]:
 					enemy.get("name", "Enemy"),
 					RunState.combat.healing_reduction_percent,
 					RunState.combat.healing_reduction_turns,
+				])
+			"energy_down":
+				_apply_energy_down(intent)
+				logs.append("%s disrupted next turn energy by %d." % [
+					enemy.get("name", "Enemy"),
+					int(intent.get("amount", 1)),
 				])
 			"buff_attack":
 				var amount := int(intent.get("amount", 0))
@@ -110,6 +123,13 @@ func _apply_healing_down(intent: Dictionary) -> void:
 	RunState.combat.healing_reduction_percent = int(intent.get("percent", 50))
 	RunState.combat.healing_reduction_turns = int(intent.get("turns", 2))
 	RunTelemetry.record_healing_down(RunState.combat.healing_reduction_percent, RunState.combat.healing_reduction_turns)
+
+
+func _apply_energy_down(intent: Dictionary) -> void:
+	RunState.combat.energy_reduction_next_turn = maxi(
+		RunState.combat.energy_reduction_next_turn,
+		int(intent.get("amount", 1))
+	)
 
 
 func _set_next_intent(enemy: Dictionary) -> void:
@@ -184,7 +204,7 @@ func _matches_condition(enemy: Dictionary, condition: Variant) -> bool:
 func _prepared_intent(enemy: Dictionary, intent: Dictionary) -> Dictionary:
 	var prepared := intent.duplicate(true)
 	var intent_type := String(prepared.get("type", "attack"))
-	if intent_type in ["attack", "attack_block", "attack_healing_down"]:
+	if intent_type in ["attack", "attack_block", "attack_healing_down", "attack_energy_down"]:
 		var damage := int(prepared.get("damage", 0)) + int(enemy.get("attack_bonus", 0))
 		var per_mark := int(prepared.get("per_mark_damage", 0))
 		if per_mark > 0:

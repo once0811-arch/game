@@ -21,8 +21,8 @@
       "rarity": "starter",
       "cost": 1,
       "asset_id": "card_motif_attack_sword",
-      "rules_text": "Deal 6 damage.",
-      "effects": [{"type": "damage", "amount": 6}]
+      "rules_text": "Deal 7 damage.",
+      "effects": [{"type": "damage", "amount": 7}]
     },
     {
       "id": "p_guard",
@@ -51,8 +51,8 @@
       "rarity": "common",
       "cost": 2,
       "asset_id": "card_motif_attack_sword",
-      "rules_text": "Deal 14 damage.",
-      "effects": [{"type": "damage", "amount": 14}]
+      "rules_text": "Deal 16 damage.",
+      "effects": [{"type": "damage", "amount": 16}]
     },
     {
       "id": "p_clean_cut",
@@ -61,8 +61,8 @@
       "rarity": "common",
       "cost": 1,
       "asset_id": "card_motif_attack_sword",
-      "rules_text": "Deal 8 damage.",
-      "effects": [{"type": "damage", "amount": 8}]
+      "rules_text": "Deal 10 damage.",
+      "effects": [{"type": "damage", "amount": 10}]
     },
     {
       "id": "p_wide_swing",
@@ -71,8 +71,8 @@
       "rarity": "common",
       "cost": 2,
       "asset_id": "card_motif_attack_sword",
-      "rules_text": "Deal 7 damage to all enemies.",
-      "effects": [{"type": "damage_all", "amount": 7}]
+      "rules_text": "Deal 9 damage to all enemies.",
+      "effects": [{"type": "damage_all", "amount": 9}]
     },
     {
       "id": "p_brace",
@@ -121,8 +121,8 @@
       "rarity": "common",
       "cost": 3,
       "asset_id": "card_motif_attack_sword",
-      "rules_text": "Deal 16 damage.",
-      "effects": [{"type": "damage", "amount": 16}]
+      "rules_text": "Deal 19 damage.",
+      "effects": [{"type": "damage", "amount": 19}]
     },
     {
       "id": "p_shield_line",
@@ -151,8 +151,8 @@
       "rarity": "uncommon",
       "cost": 3,
       "asset_id": "card_motif_attack_sword",
-      "rules_text": "Deal 7 damage to all enemies. Apply 1 Tactical Mark.",
-      "effects": [{"type": "damage_all", "amount": 7}, {"type": "tactical_mark", "amount": 1}]
+      "rules_text": "Deal 9 damage to all enemies. Apply 1 Tactical Mark.",
+      "effects": [{"type": "damage_all", "amount": 9}, {"type": "tactical_mark", "amount": 1}]
     },
     {
       "id": "p_risk_advance",
@@ -181,8 +181,8 @@
       "rarity": "uncommon",
       "cost": 3,
       "asset_id": "card_motif_attack_sword",
-      "rules_text": "Deal 12 damage. Draw 1.",
-      "effects": [{"type": "damage", "amount": 12}, {"type": "draw", "amount": 1}]
+      "rules_text": "Deal 15 damage. Draw 1.",
+      "effects": [{"type": "damage", "amount": 15}, {"type": "draw", "amount": 1}]
     },
     {
       "id": "p_desperate_stand",

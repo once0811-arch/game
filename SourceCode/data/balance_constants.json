@@ -80,6 +80,10 @@
       "boss": 75,
       "combat_fallback": 0
     },
+    "elite_equipment_reward": {
+      "enabled": true,
+      "rarities": ["common", "uncommon"]
+    },
     "companion_options": 3,
     "companion_card_choices": 3,
     "companion_card_picks": 2

@@ -289,6 +289,16 @@ class BalanceSimulator:
                 base += 2
             if node_type == "inn":
                 base -= 2 if hp_ratio > 0.35 else 0
+                if hp_ratio < 0.45:
+                    base += 15
+                if hp_ratio < 0.65:
+                    base += 14
+            if node_type == "shop" and state.gold >= 140:
+                base += 10
+            if node_type == "elite" and hp_ratio < 0.55:
+                base -= 8
+            if node_type == "elite" and hp_ratio < 0.65:
+                base -= 6
         else:
             if node_type == "elite" and hp_ratio < 0.55:
                 base -= 8
@@ -329,6 +339,9 @@ class BalanceSimulator:
         gold_table = self.balance.get("rewards", {}).get("gold_by_node_type", {})
         state.gold += int(gold_table.get(node_type, 0))
         state.stats[f"gold_from_{node_type}"] += int(gold_table.get(node_type, 0))
+        elite_equipment = self.balance.get("rewards", {}).get("elite_equipment_reward", {})
+        if node_type == "elite" and bool(elite_equipment.get("enabled", False)):
+            self._gain_random_equipment(state, elite_equipment.get("rarities", []))
         if state.companions:
             gain = int(BOND_GAINS.get(node_type, BOND_GAINS["combat"]))
             for companion in state.companions:
@@ -448,6 +461,7 @@ class BalanceSimulator:
             "healing_down_turns": 0,
             "healing_down_percent": 0,
             "enemy_attack_reduction": 0,
+            "energy_reduction_next_turn": 0,
             "turn": 1,
             "cards_played_this_turn": 0,
             "oath_flags": {},
@@ -464,7 +478,9 @@ class BalanceSimulator:
         total_cards_played = 0
         for turn in range(1, 61):
             combat["turn"] = turn
-            combat["energy"] = int(self.balance.get("combat", {}).get("energy_per_turn", 4))
+            energy_penalty = max(0, int(combat.get("energy_reduction_next_turn", 0)))
+            combat["energy"] = max(0, int(self.balance.get("combat", {}).get("energy_per_turn", 4)) - energy_penalty)
+            combat["energy_reduction_next_turn"] = 0
             combat["cards_played_this_turn"] = 0
             if turn > 1:
                 combat["block"] = self._bond_start_block(state)
@@ -583,7 +599,7 @@ class BalanceSimulator:
             if int(enemy.get("hp", 0)) <= 0:
                 continue
             intent = enemy.get("intent") or self._enemy_intent(enemy)
-            if str(intent.get("type", "attack")) in {"attack", "attack_block", "attack_healing_down"}:
+            if str(intent.get("type", "attack")) in {"attack", "attack_block", "attack_healing_down", "attack_energy_down"}:
                 damage = int(round(int(intent.get("damage", 0)) * combat.get("attack_scale", 1.0)))
                 if reduction_remaining > 0:
                     damage = max(damage - reduction_remaining, 0)
@@ -639,7 +655,7 @@ class BalanceSimulator:
 
     def _prepared_enemy_intent(self, enemy: dict[str, Any], intent: dict[str, Any]) -> dict[str, Any]:
         prepared = dict(intent)
-        if str(prepared.get("type", "attack")) in {"attack", "attack_block", "attack_healing_down"}:
+        if str(prepared.get("type", "attack")) in {"attack", "attack_block", "attack_healing_down", "attack_energy_down"}:
             damage = int(prepared.get("damage", 0)) + int(enemy.get("attack_bonus", 0))
             per_mark = int(prepared.get("per_mark_damage", 0))
             if per_mark > 0:
@@ -921,7 +937,7 @@ class BalanceSimulator:
                 blocked = min(int(combat.get("block", 0)), damage)
                 combat["block"] = int(combat.get("block", 0)) - blocked
                 combat["hp"] = max(0, int(combat.get("hp", 0)) - max(damage - blocked, 0))
-            elif intent_type in {"attack_block", "attack_healing_down"}:
+            elif intent_type in {"attack_block", "attack_healing_down", "attack_energy_down"}:
                 damage = max(int(round(int(intent.get("damage", 0)) * combat.get("attack_scale", 1.0))) - int(combat.get("enemy_attack_reduction", 0)), 0)
                 combat["enemy_attack_reduction"] = 0
                 blocked = min(int(combat.get("block", 0)), damage)
@@ -929,9 +945,11 @@ class BalanceSimulator:
                 combat["hp"] = max(0, int(combat.get("hp", 0)) - max(damage - blocked, 0))
                 if intent_type == "attack_block":
                     enemy["block"] = int(enemy.get("block", 0)) + int(intent.get("block", 0))
-                else:
+                elif intent_type == "attack_healing_down":
                     combat["healing_down_percent"] = int(intent.get("percent", 50))
                     combat["healing_down_turns"] = int(intent.get("turns", 2))
+                else:
+                    combat["energy_reduction_next_turn"] = max(int(combat.get("energy_reduction_next_turn", 0)), int(intent.get("amount", 1)))
             elif intent_type == "block":
                 enemy["block"] = int(enemy.get("block", 0)) + int(intent.get("block", 0))
             elif intent_type == "guard_all":
@@ -941,6 +959,8 @@ class BalanceSimulator:
             elif intent_type == "healing_down":
                 combat["healing_down_percent"] = int(intent.get("percent", 50))
                 combat["healing_down_turns"] = int(intent.get("turns", 2))
+            elif intent_type == "energy_down":
+                combat["energy_reduction_next_turn"] = max(int(combat.get("energy_reduction_next_turn", 0)), int(intent.get("amount", 1)))
             elif intent_type == "buff_attack":
                 enemy["attack_bonus"] = int(enemy.get("attack_bonus", 0)) + int(intent.get("amount", 0))
             elif intent_type == "steal_gold":
@@ -1004,7 +1024,7 @@ class BalanceSimulator:
         scored.sort(key=lambda item: item[0], reverse=True)
         threshold = 20 if deck_size < 16 else 26 if deck_size < 22 else 33
         if policy == "greedy":
-            threshold -= 4
+            threshold = 22 if deck_size < 16 else 30 if deck_size < 22 else 38
         elif policy == "safe":
             threshold += 2
         elif policy == "novice":
@@ -1729,9 +1749,9 @@ def write_report(sim: BalanceSimulator, reports: list[dict[str, Any]], output_js
         "| Target profile | Act 1 boss clear | Act 2 boss clear | Act 3 reach | Act 3 boss clear | Use |",
         "| --- | ---: | ---: | ---: | ---: | --- |",
         "| Early general player | 65-75% | 25-35% | 12-18% | 6-10% | 신규/초기 런 체감 목표. 자동 러너와 직접 비교하지 않는다. |",
-        "| Automatic runner sanity | novice 75-90% | novice 30-45% | novice 25-45% | novice 6-12%, balanced 35-55%, safe 70-90%, greedy 20-40% | 수치 패치가 너무 쉬운지/가파른지 보는 내부 안전장치. |",
+        "| Current hard-mode runner | novice 55-70%, skilled routes 85-95% | skilled routes 60-75% | skilled routes 60-75% | greedy 8-12%, safe 12-18% | 이번 패치의 자동 러너 기준. Act 3 진입은 비교적 잦지만 최종 클리어는 Act 3 노드/보스에서 걸러지도록 본다. |",
         "",
-        "Steam achievements show many lifetime players eventually beat at least one character, while high Ascension completion is much rarer. 그래서 기본 난이도의 장기 목표를 10% 미만으로 두지 않고, 신규/초기 플레이어 목표와 숙련 플레이어 목표를 분리한다.",
+        "Steam achievements show many lifetime players eventually beat at least one character, while high Ascension completion is much rarer. 그래서 기본 난이도의 장기 목표와 신규/초기 플레이어 목표를 분리하고, 현재 자동 러너는 사용자가 지정한 hard-mode 체감 목표를 우선한다.",
         "",
         "체력 곡선은 별도 목표로 본다. 평균 여관 진입 체력은 35-60% 사이, 여관 퇴장 체력은 60-85% 사이가 좋다. 보스 진입 체력은 Act 1 55-80%, Act 2 45-75%, Act 3 40-70%를 1차 목표로 둔다. 이 값이 높게 고정되면 경로 선택의 긴장이 약하고, 너무 낮으면 여관을 못 찾은 런이 즉사한다.",
     ])
@@ -1766,7 +1786,7 @@ def write_report(sim: BalanceSimulator, reports: list[dict[str, Any]], output_js
         "",
         "- 낮은 픽률 카드는 보상 후보를 흐리는 카드다. 높은 출력 카드는 코스트 대비 과한지 실제 카드 텍스트를 따로 검토한다.",
         "- 현재 자동 정책은 공격적으로 강한 카드를 선호하므로, 방어/유틸 카드의 실제 인간 가치가 과소평가될 수 있다. 그래도 0%에 가까운 픽률은 경고로 본다.",
-        "- 승률 목표는 자동 러너 기준 novice 6~12%, balanced 35~55%, safe 70~90%, greedy 20~40% 정도가 1차 기준으로 적당하다. safe 95% 이상은 너무 쉽고, balanced 25% 이하는 너무 가파르다.",
+        "- 이번 기준 승률은 자동 러너 기준 greedy 8~12%, safe 12~18%를 우선한다. greedy가 5% 아래면 위험 보상이 부족하고, safe가 20%를 넘으면 체력 보존 루트가 지나치게 안정적이다.",
         "",
         "## Next Balance Actions",
         "",

@@ -12,6 +12,7 @@ var cards_played_this_turn := 0
 var enemy_attack_reduction := 0
 var healing_reduction_percent := 0
 var healing_reduction_turns := 0
+var energy_reduction_next_turn := 0
 var oath_flags: Dictionary = {}
 var enemies: Array[Dictionary] = []
 var enemy_waves: Array = []
@@ -35,6 +36,7 @@ func reset() -> void:
 	enemy_attack_reduction = 0
 	healing_reduction_percent = 0
 	healing_reduction_turns = 0
+	energy_reduction_next_turn = 0
 	oath_flags.clear()
 	enemies.clear()
 	enemy_waves.clear()
@@ -59,6 +61,7 @@ func to_dict() -> Dictionary:
 		"enemy_attack_reduction": enemy_attack_reduction,
 		"healing_reduction_percent": healing_reduction_percent,
 		"healing_reduction_turns": healing_reduction_turns,
+		"energy_reduction_next_turn": energy_reduction_next_turn,
 		"oath_flags": oath_flags.duplicate(true),
 		"enemies": enemies.duplicate(true),
 		"enemy_waves": enemy_waves.duplicate(true),
@@ -83,6 +86,7 @@ func from_dict(data: Dictionary) -> void:
 	enemy_attack_reduction = int(data.get("enemy_attack_reduction", 0))
 	healing_reduction_percent = int(data.get("healing_reduction_percent", 0))
 	healing_reduction_turns = int(data.get("healing_reduction_turns", 0))
+	energy_reduction_next_turn = int(data.get("energy_reduction_next_turn", 0))
 	var restored_flags: Variant = data.get("oath_flags", {})
 	oath_flags = restored_flags if typeof(restored_flags) == TYPE_DICTIONARY else {}
 	enemies = []

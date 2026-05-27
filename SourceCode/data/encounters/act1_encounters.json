@@ -8,7 +8,7 @@
 
     {"depth": 2, "lane": 0, "type": "event", "label": "Black Fingerprint"},
     {"depth": 2, "lane": 1, "type": "combat", "label": "Ransacked Camp", "enemy_ids": ["enemy_act1_mutated_merchant", "enemy_act1_twisted_wolf"]},
-    {"depth": 2, "lane": 2, "type": "inn", "label": "Cold Fire"},
+    {"depth": 2, "lane": 2, "type": "combat", "label": "Cold Tracks", "enemy_id": "enemy_act1_twisted_wolf"},
 
     {"depth": 3, "lane": 0, "type": "combat", "label": "Triage Camp", "enemy_id": "enemy_act1_mutated_scholar"},
     {"depth": 3, "lane": 1, "type": "shop", "label": "Rust Trader"},

@@ -14,10 +14,10 @@
       "asset_id": "enemy_act1_mutated_merchant_idle",
       "background_id": "bg_battle_act1_road_ruin",
       "pattern": [
-        {"type": "steal_gold", "gold": 8, "label": "Open Ledger", "condition": {"turn": 1}},
-        {"type": "attack", "damage": 8, "label": "Claw Ledger"},
+        {"type": "steal_gold", "gold": 12, "label": "Open Ledger", "condition": {"turn": 1}},
+        {"type": "attack", "damage": 10, "label": "Claw Ledger"},
         {"type": "block", "block": 6, "label": "Hoard Scraps"},
-        {"type": "attack_block", "damage": 10, "block": 4, "label": "Black Receipt"}
+        {"type": "attack_block", "damage": 12, "block": 4, "label": "Black Receipt"}
       ],
       "intents": [
         {"type": "attack", "damage": 7, "label": "Claw Ledger"},
@@ -37,9 +37,9 @@
       "asset_id": "enemy_act1_twisted_wolf_idle",
       "background_id": "bg_battle_act1_road_ruin",
       "pattern": [
-        {"type": "attack", "damage": 10, "label": "Opening Lunge", "condition": {"turn": 1}},
-        {"type": "attack", "damage": 8, "label": "Lunge"},
-        {"type": "attack_block", "damage": 7, "block": 4, "label": "Circle and Snap"},
+        {"type": "attack", "damage": 12, "label": "Opening Lunge", "condition": {"turn": 1}},
+        {"type": "attack", "damage": 10, "label": "Lunge"},
+        {"type": "attack_block", "damage": 9, "block": 4, "label": "Circle and Snap"},
         {"type": "block", "block": 5, "label": "Circle"}
       ],
       "intents": [
@@ -61,9 +61,9 @@
       "background_id": "bg_battle_act1_outpost",
       "pattern": [
         {"type": "block", "block": 7, "label": "Seal Notes", "condition": {"turn": 1}},
-        {"type": "attack_healing_down", "damage": 8, "percent": 50, "turns": 2, "label": "Black Formula", "condition": {"hp_below_percent": 55, "once_key": "panic_formula"}},
-        {"type": "healing_down", "percent": 50, "turns": 2, "label": "Black Formula"},
-        {"type": "attack", "damage": 10, "label": "Bad Formula"},
+        {"type": "attack_healing_down", "damage": 10, "percent": 60, "turns": 3, "label": "Black Formula", "condition": {"hp_below_percent": 55, "once_key": "panic_formula"}},
+        {"type": "healing_down", "percent": 60, "turns": 3, "label": "Black Formula"},
+        {"type": "attack", "damage": 12, "label": "Bad Formula"},
         {"type": "block", "block": 6, "label": "Seal Notes"}
       ],
       "intents": [
@@ -84,10 +84,10 @@
       "asset_id": "enemy_act1_mutated_mercenary_idle",
       "background_id": "bg_battle_act1_outpost",
       "pattern": [
-        {"type": "attack_block", "damage": 8, "block": 5, "label": "Contract Cut"},
+        {"type": "attack_block", "damage": 10, "block": 5, "label": "Contract Cut"},
         {"type": "block", "block": 8, "label": "Old Guard"},
-        {"type": "attack", "damage": 13, "label": "Paid in Blood"},
-        {"type": "buff_attack", "amount": 2, "label": "Remember Drill", "condition": {"hp_below_percent": 45, "once_key": "merc_drill"}}
+        {"type": "attack", "damage": 16, "label": "Paid in Blood"},
+        {"type": "buff_attack", "amount": 3, "label": "Remember Drill", "condition": {"hp_below_percent": 45, "once_key": "merc_drill"}}
       ],
       "intents": [
         {"type": "attack", "damage": 9, "label": "Contract Cut"},
@@ -107,10 +107,10 @@
       "asset_id": "enemy_act1_broken_packhorse_idle",
       "background_id": "bg_battle_act1_road_ruin",
       "pattern": [
-        {"type": "attack", "damage": 15, "label": "Panic Break", "condition": {"hp_below_percent": 50, "once_key": "panic_break"}},
-        {"type": "attack", "damage": 7, "label": "Panic Kick"},
+        {"type": "attack", "damage": 18, "label": "Panic Break", "condition": {"hp_below_percent": 50, "once_key": "panic_break"}},
+        {"type": "attack", "damage": 9, "label": "Panic Kick"},
         {"type": "block", "block": 9, "label": "Tangled Harness"},
-        {"type": "attack_block", "damage": 10, "block": 4, "label": "Splinter Charge"}
+        {"type": "attack_block", "damage": 12, "block": 4, "label": "Splinter Charge"}
       ],
       "intents": [
         {"type": "attack", "damage": 7, "label": "Panic Kick"},
@@ -131,9 +131,9 @@
       "background_id": "bg_battle_act1_road_ruin",
       "pattern": [
         {"type": "block", "block": 11, "label": "Root Down"},
-        {"type": "attack_block", "damage": 8, "block": 5, "label": "Hook Branch"},
-        {"type": "attack", "damage": 13, "label": "Pull Apart"},
-        {"type": "guard_all", "block": 5, "label": "Root Net", "condition": {"turn_mod": 4, "turn_mod_equals": 0}}
+        {"type": "attack_block", "damage": 10, "block": 6, "label": "Hook Branch"},
+        {"type": "attack", "damage": 15, "label": "Pull Apart"},
+        {"type": "guard_all", "block": 7, "label": "Root Net", "condition": {"turn_mod": 4, "turn_mod_equals": 0}}
       ],
       "intents": [
         {"type": "block", "block": 9, "label": "Root Down"},
@@ -154,11 +154,11 @@
       "background_id": "bg_battle_act1_outpost",
       "pattern": [
         {"type": "block", "block": 12, "label": "Raise Shield", "condition": {"turn": 1}},
-        {"type": "buff_attack", "amount": 3, "label": "Blackened Order", "condition": {"hp_below_percent": 50, "once_key": "blackened_order"}},
-        {"type": "attack_block", "damage": 12, "block": 8, "label": "Shield Crush", "condition": {"turn_mod": 3, "turn_mod_equals": 0}},
-        {"type": "attack", "damage": 11, "label": "Broken Order"},
+        {"type": "buff_attack", "amount": 4, "label": "Blackened Order", "condition": {"hp_below_percent": 50, "once_key": "blackened_order"}},
+        {"type": "attack_energy_down", "damage": 14, "amount": 1, "label": "Shield Crush", "condition": {"turn_mod": 3, "turn_mod_equals": 0}},
+        {"type": "attack", "damage": 13, "label": "Broken Order"},
         {"type": "block", "block": 10, "label": "Raise Shield"},
-        {"type": "attack", "damage": 15, "label": "Black Oath"}
+        {"type": "attack", "damage": 18, "label": "Black Oath"}
       ],
       "intents": [
         {"type": "attack", "damage": 10, "label": "Broken Order"},
@@ -178,11 +178,11 @@
       "asset_id": "elite_act1_blackprint_captain_idle",
       "background_id": "bg_battle_act1_outpost",
       "pattern": [
-        {"type": "attack", "damage": 10, "label": "Command Cut", "condition": {"turn": 1}},
-        {"type": "buff_attack", "amount": 2, "label": "Press the Line", "condition": {"turn_mod": 4, "turn_mod_equals": 0}},
-        {"type": "attack_block", "damage": 12, "block": 7, "label": "Press"},
-        {"type": "guard_all", "block": 8, "label": "Hold Line"},
-        {"type": "attack", "damage": 15, "label": "Captain's Due", "condition": {"hp_below_percent": 45, "once_key": "captain_due"}}
+        {"type": "attack", "damage": 12, "label": "Command Cut", "condition": {"turn": 1}},
+        {"type": "buff_attack", "amount": 3, "label": "Press the Line", "condition": {"turn_mod": 4, "turn_mod_equals": 0}},
+        {"type": "attack_block", "damage": 14, "block": 8, "label": "Press"},
+        {"type": "guard_all", "block": 10, "label": "Hold Line"},
+        {"type": "attack_energy_down", "damage": 18, "amount": 1, "label": "Captain's Due", "condition": {"hp_below_percent": 45, "once_key": "captain_due"}}
       ],
       "intents": [
         {"type": "attack", "damage": 9, "label": "Command Cut"},
@@ -203,8 +203,8 @@
       "background_id": "bg_battle_act1_boss_gate",
       "pattern": [
         {"type": "attack", "damage": 12, "label": "Gate Strike", "condition": {"turn": 1}},
-        {"type": "buff_attack", "amount": 3, "label": "Iron Refusal", "condition": {"hp_below_percent": 65, "once_key": "iron_refusal"}},
-        {"type": "attack_healing_down", "damage": 15, "percent": 50, "turns": 2, "label": "Stamped Wound", "condition": {"hp_below_percent": 35, "once_key": "stamped_wound"}},
+        {"type": "buff_attack", "amount": 4, "label": "Iron Refusal", "condition": {"hp_below_percent": 65, "once_key": "iron_refusal"}},
+        {"type": "attack_healing_down", "damage": 15, "percent": 65, "turns": 3, "label": "Stamped Wound", "condition": {"hp_below_percent": 35, "once_key": "stamped_wound"}},
         {"type": "attack", "damage": 13, "per_mark_damage": 2, "per_mark_cap": 8, "label": "Warlord's Mark", "condition": {"mark_at_least": 2}},
         {"type": "block", "block": 15, "label": "Iron Refusal"},
         {"type": "attack_block", "damage": 17, "block": 8, "label": "Gate Verdict"}

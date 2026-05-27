@@ -3,1742 +3,1729 @@
     {
       "policy": "novice",
       "enemy_profile": "current",
-      "runs": 300,
-      "win_rate": 0.06333333333333334,
+      "runs": 600,
+      "win_rate": 0.025,
       "act_reach_rate": {
         "1": 1.0,
-        "2": 0.7533333333333333,
-        "3": 0.37666666666666665
+        "2": 0.6566666666666666,
+        "3": 0.2633333333333333
       },
       "boss_clear_rate": {
-        "1": 0.7533333333333333,
-        "2": 0.38,
-        "3": 0.06333333333333334
+        "1": 0.6566666666666666,
+        "2": 0.2633333333333333,
+        "3": 0.025
       },
       "top_deaths": [
         [
           "A1D12 Gate Warlord",
-          61
-        ],
-        [
-          "A3D12 Unbound Core",
-          34
+          154
         ],
         [
           "A2D12 Oathless Regent",
-          25
+          39
         ],
         [
-          "win",
-          19
-        ],
-        [
-          "A2D8 Red Receipt",
-          19
+          "A1D11 Castle Ditch",
+          34
         ],
         [
           "A2D2 Broken Milestone",
-          15
+          29
         ],
         [
-          "A3D10 Core Approach",
-          12
+          "A2D1 Split Causeway",
+          23
         ],
         [
-          "A2D10 Causeway Toll",
-          12
+          "A3D1 Inside the Wall",
+          23
+        ],
+        [
+          "A2D8 Red Receipt",
+          22
+        ],
+        [
+          "A2D7 Broken Milestone",
+          22
         ]
       ],
-      "avg_final_deck_size": 24.57,
-      "avg_final_hp": 1.5866666666666667,
-      "avg_final_gold": 175.74,
-      "avg_final_bond": 46.965,
-      "avg_cards_picked": 10.603333333333333,
-      "avg_cards_skipped": 2.0866666666666664,
-      "avg_cards_upgraded": 1.3,
-      "avg_cards_removed": 1.3266666666666667,
-      "avg_equipment_gained": 0.5866666666666667,
-      "avg_shop_purchases": 3.24,
-      "avg_inn_rooms": 1.6666666666666667,
-      "avg_oath_triggers": 47.22,
+      "avg_final_deck_size": 24.758333333333333,
+      "avg_final_hp": 0.6283333333333333,
+      "avg_final_gold": 170.655,
+      "avg_final_bond": 36.06,
+      "avg_cards_picked": 10.686666666666667,
+      "avg_cards_skipped": 0.56,
+      "avg_cards_upgraded": 1.0966666666666667,
+      "avg_cards_removed": 1.0883333333333334,
+      "avg_equipment_gained": 2.1566666666666667,
+      "avg_shop_purchases": 2.9966666666666666,
+      "avg_inn_rooms": 0.9216666666666666,
+      "avg_oath_triggers": 23.033333333333335,
       "route_hp": {
-        "avg_inn_hp_before": 42.4198606271777,
-        "avg_inn_hp_after": 61.26480836236934,
-        "avg_inn_hp_ratio_before": 0.5581560608839171,
-        "avg_inn_hp_ratio_after": 0.8061158995048597,
+        "avg_inn_hp_before": 32.942424242424245,
+        "avg_inn_hp_after": 52.4969696969697,
+        "avg_inn_hp_ratio_before": 0.4334529505582137,
+        "avg_inn_hp_ratio_after": 0.6907496012759171,
         "avg_boss_hp_ratio_before_by_act": {
-          "1": 0.5685402530717036,
-          "2": 0.5443363844393593,
-          "3": 0.5566037735849056
+          "1": 0.4729398770649251,
+          "2": 0.5025380710659898,
+          "3": 0.47581792318634425
         }
       },
       "combat_by_type": {
         "combat": {
-          "count": 2958,
-          "avg_turns": 3.9077079107505073,
-          "p90_turns": 6.0,
-          "avg_hp_loss": 5.578769438810006,
-          "p90_hp_loss": 13.0,
-          "defeat_rate": 0.044286680189317106,
-          "avg_wave_count": 1.3008789722785665
+          "count": 5434,
+          "avg_turns": 3.291682002208318,
+          "p90_turns": 5.0,
+          "avg_hp_loss": 5.79573058520427,
+          "p90_hp_loss": 14.0,
+          "defeat_rate": 0.055760029444239974,
+          "avg_wave_count": 1.2830327567169673
         },
         "elite": {
-          "count": 703,
-          "avg_turns": 4.40398293029872,
-          "p90_turns": 6.0,
-          "avg_hp_loss": 6.401137980085348,
-          "p90_hp_loss": 12.0,
-          "defeat_rate": 0.032716927453769556,
+          "count": 1070,
+          "avg_turns": 3.898130841121495,
+          "p90_turns": 5.0,
+          "avg_hp_loss": 7.565420560747664,
+          "p90_hp_loss": 15.0,
+          "defeat_rate": 0.04953271028037383,
           "avg_wave_count": 1.0
         },
         "midboss": {
-          "count": 300,
-          "avg_turns": 4.803333333333334,
-          "p90_turns": 6.0,
-          "avg_hp_loss": 5.263333333333334,
-          "p90_hp_loss": 12.0,
+          "count": 600,
+          "avg_turns": 4.275,
+          "p90_turns": 5.0,
+          "avg_hp_loss": 3.265,
+          "p90_hp_loss": 9.0,
           "defeat_rate": 0.0,
           "avg_wave_count": 1.0
         },
         "boss": {
-          "count": 478,
-          "avg_turns": 5.606694560669456,
-          "p90_turns": 7.0,
-          "avg_hp_loss": 19.010460251046027,
-          "p90_hp_loss": 35.0,
-          "defeat_rate": 0.2489539748953975,
+          "count": 782,
+          "avg_turns": 4.831202046035806,
+          "p90_turns": 6.0,
+          "avg_hp_loss": 17.423273657289002,
+          "p90_hp_loss": 30.0,
+          "defeat_rate": 0.2749360613810742,
           "avg_wave_count": 1.0
         }
       },
       "combat_by_act": {
         "1": {
-          "count": 2575,
-          "avg_turns": 3.9623300970873787,
-          "p90_turns": 6.0,
-          "avg_hp_loss": 7.001941747572816,
-          "p90_hp_loss": 15.0,
-          "defeat_rate": 0.028737864077669904,
-          "avg_wave_count": 1.105242718446602
+          "count": 5227,
+          "avg_turns": 3.524775205662904,
+          "p90_turns": 5.0,
+          "avg_hp_loss": 7.5760474459537015,
+          "p90_hp_loss": 16.0,
+          "defeat_rate": 0.03883680887698489,
+          "avg_wave_count": 1.1023531662521522
         },
         "2": {
-          "count": 1244,
-          "avg_turns": 4.263665594855305,
-          "p90_turns": 7.0,
-          "avg_hp_loss": 6.026527331189711,
-          "p90_hp_loss": 15.0,
-          "defeat_rate": 0.08440514469453377,
-          "avg_wave_count": 1.3038585209003215
+          "count": 2005,
+          "avg_turns": 3.5770573566084787,
+          "p90_turns": 6.0,
+          "avg_hp_loss": 5.302743142144639,
+          "p90_hp_loss": 13.0,
+          "defeat_rate": 0.114214463840399,
+          "avg_wave_count": 1.3655860349127182
         },
         "3": {
-          "count": 620,
-          "avg_turns": 5.27258064516129,
-          "p90_turns": 8.0,
-          "avg_hp_loss": 9.904838709677419,
-          "p90_hp_loss": 23.0,
-          "defeat_rate": 0.15161290322580645,
-          "avg_wave_count": 1.3887096774193548
+          "count": 654,
+          "avg_turns": 4.2889908256880735,
+          "p90_turns": 7.0,
+          "avg_hp_loss": 7.555045871559633,
+          "p90_hp_loss": 19.0,
+          "defeat_rate": 0.21253822629969418,
+          "avg_wave_count": 1.4128440366972477
         }
       },
       "combat_by_wave_count": {
         "1": {
-          "count": 3690,
-          "avg_turns": 3.965040650406504,
-          "p90_turns": 6.0,
-          "avg_hp_loss": 6.898644986449865,
-          "p90_hp_loss": 17.0,
-          "defeat_rate": 0.054742547425474256,
+          "count": 6532,
+          "avg_turns": 3.361604409063074,
+          "p90_turns": 5.0,
+          "avg_hp_loss": 6.798071034905083,
+          "p90_hp_loss": 15.0,
+          "defeat_rate": 0.06445192896509491,
           "avg_wave_count": 1.0
         },
         "2": {
-          "count": 608,
-          "avg_turns": 4.970394736842105,
-          "p90_turns": 7.0,
-          "avg_hp_loss": 7.3519736842105265,
-          "p90_hp_loss": 14.0,
-          "defeat_rate": 0.06085526315789474,
+          "count": 1170,
+          "avg_turns": 4.477777777777778,
+          "p90_turns": 6.0,
+          "avg_hp_loss": 7.622222222222222,
+          "p90_hp_loss": 15.0,
+          "defeat_rate": 0.08376068376068375,
           "avg_wave_count": 2.0
         },
         "3": {
-          "count": 141,
-          "avg_turns": 7.964539007092198,
-          "p90_turns": 11.0,
-          "avg_hp_loss": 12.354609929078014,
-          "p90_hp_loss": 27.0,
-          "defeat_rate": 0.24113475177304963,
+          "count": 184,
+          "avg_turns": 6.543478260869565,
+          "p90_turns": 9.0,
+          "avg_hp_loss": 10.054347826086957,
+          "p90_hp_loss": 22.0,
+          "defeat_rate": 0.2826086956521739,
           "avg_wave_count": 3.0
         }
       },
       "card_stats": {
         "c_bram_cleave": {
-          "picked": 129,
-          "played": 1087,
-          "damage": 20664
+          "picked": 271,
+          "played": 1728,
+          "damage": 37557
         },
         "c_bram_hook": {
-          "picked": 129,
-          "played": 321,
-          "damage": 4024,
-          "self_damage": 642
+          "picked": 271,
+          "played": 402,
+          "damage": 5805,
+          "self_damage": 804
         },
         "c_eldric_bash": {
-          "picked": 28,
-          "played": 212,
-          "damage": 2198,
-          "block": 1072
+          "picked": 5,
+          "played": 23,
+          "damage": 229,
+          "block": 95
         },
         "c_eldric_cover": {
-          "picked": 28,
-          "played": 163,
-          "block": 983,
-          "draw": 163
-        },
-        "c_kyle_fold": {
           "picked": 5,
           "played": 25,
-          "block": 178,
+          "block": 133,
           "draw": 25
         },
+        "c_kyle_fold": {
+          "picked": 81,
+          "played": 264,
+          "block": 1957,
+          "draw": 264
+        },
         "c_kyle_loaded_cut": {
-          "picked": 5,
-          "played": 18,
-          "damage": 239,
-          "self_damage": 36
+          "picked": 81,
+          "played": 165,
+          "damage": 2860,
+          "self_damage": 330
         },
         "c_lina_broadhead": {
-          "picked": 73,
-          "played": 295,
-          "damage": 3392,
-          "mark": 311
+          "picked": 119,
+          "played": 237,
+          "damage": 3168,
+          "mark": 205
         },
         "c_lina_snare": {
-          "picked": 73,
-          "played": 314,
-          "mark": 1005
+          "picked": 119,
+          "played": 145,
+          "mark": 453
         },
         "c_noa_bad_omen": {
-          "picked": 15,
-          "played": 51,
-          "mark": 115,
-          "damage": 533
+          "picked": 32,
+          "played": 56,
+          "mark": 114,
+          "damage": 529
         },
         "c_noa_starmap": {
-          "picked": 15,
-          "played": 14,
-          "draw": 14,
-          "energy": 14
+          "picked": 32,
+          "played": 21,
+          "draw": 21,
+          "energy": 21
         },
         "c_rowan_banner": {
-          "picked": 80,
-          "played": 479,
-          "block": 2942,
-          "mark": 582,
-          "bought": 7
+          "picked": 67,
+          "played": 173,
+          "block": 1140,
+          "mark": 184,
+          "bought": 27
         },
         "c_rowan_finish": {
-          "picked": 49,
-          "played": 358,
-          "damage": 5876
+          "picked": 147,
+          "played": 455,
+          "damage": 8681
         },
         "c_rowan_pin": {
-          "picked": 129,
-          "played": 530,
-          "damage": 6125,
-          "mark": 526
+          "picked": 214,
+          "played": 379,
+          "damage": 5033,
+          "mark": 327
         },
         "c_sera_backcut": {
-          "picked": 99,
-          "played": 456,
-          "damage": 4887,
-          "draw": 456
+          "picked": 196,
+          "played": 387,
+          "damage": 4776,
+          "draw": 387
         },
         "c_sera_feint": {
-          "picked": 47,
-          "played": 597,
-          "draw": 597,
-          "mark": 708,
-          "bought": 4
+          "picked": 77,
+          "played": 445,
+          "draw": 445,
+          "mark": 476,
+          "bought": 3
         },
         "c_sera_smoke": {
-          "picked": 52,
-          "played": 83,
-          "block": 341,
-          "draw": 83
+          "picked": 119,
+          "played": 198,
+          "block": 874,
+          "draw": 198
         },
         "c_tor_bell": {
-          "picked": 29,
-          "played": 104,
-          "damage": 815
+          "picked": 52,
+          "played": 78,
+          "damage": 541
         },
         "c_tor_bulwark": {
-          "picked": 19,
-          "played": 133,
-          "block": 2160
+          "picked": 24,
+          "played": 127,
+          "block": 1961
         },
         "c_tor_rent": {
-          "picked": 48,
-          "played": 453,
-          "damage": 4428,
-          "block": 2831
+          "picked": 76,
+          "played": 339,
+          "damage": 3350,
+          "block": 1856
         },
         "p_blood_price": {
-          "offered": 486,
-          "picked": 30,
-          "played": 355,
-          "energy": 710,
-          "draw": 355,
-          "self_damage": 1065,
+          "offered": 845,
+          "picked": 37,
+          "played": 306,
+          "energy": 612,
+          "draw": 306,
+          "self_damage": 918,
           "bought": 1
         },
         "p_brace": {
-          "offered": 1036,
-          "transformed_to": 1,
-          "played": 369,
-          "block": 4837,
-          "picked": 23,
-          "bought": 42
+          "offered": 1745,
+          "picked": 29,
+          "played": 336,
+          "block": 4493,
+          "bought": 63
         },
         "p_breakthrough": {
-          "offered": 461,
-          "picked": 170,
-          "played": 976,
-          "damage": 12089,
-          "draw": 976,
-          "transformed_to": 1,
-          "upgraded": 1,
-          "bought": 5
+          "offered": 896,
+          "picked": 440,
+          "played": 1445,
+          "damage": 21716,
+          "draw": 1445,
+          "bought": 14
         },
         "p_clean_cut": {
-          "offered": 958,
-          "picked": 5,
-          "played": 119,
-          "damage": 1467,
-          "bought": 7
+          "offered": 1781,
+          "picked": 13,
+          "played": 301,
+          "damage": 3813,
+          "bought": 32
         },
         "p_contract_mark": {
-          "offered": 967,
-          "picked": 475,
-          "played": 2241,
-          "mark": 4941,
-          "draw": 2241,
-          "bought": 81
+          "offered": 1752,
+          "picked": 356,
+          "played": 757,
+          "mark": 1576,
+          "draw": 757,
+          "bought": 109
         },
         "p_desperate_stand": {
-          "offered": 185,
-          "picked": 75,
-          "played": 754,
-          "block": 13640,
-          "heal": 1322
+          "offered": 366,
+          "picked": 97,
+          "played": 658,
+          "block": 12088,
+          "heal": 1184,
+          "transformed_to": 1,
+          "upgraded": 1
         },
         "p_field_medicine": {
-          "offered": 511,
-          "picked": 42,
-          "played": 338,
-          "heal": 608,
-          "block": 3423,
-          "transformed_to": 1,
-          "upgraded": 1
+          "offered": 884,
+          "picked": 58,
+          "played": 328,
+          "heal": 598,
+          "block": 3368,
+          "bought": 3
         },
         "p_guard": {
-          "played": 4741,
-          "block": 24088,
-          "upgraded": 2
+          "played": 10244,
+          "block": 53607,
+          "upgraded": 6
         },
         "p_heavy_cut": {
-          "offered": 970,
-          "picked": 245,
-          "played": 2182,
-          "damage": 32522,
-          "bought": 67,
-          "transformed_to": 1
+          "offered": 1735,
+          "bought": 160,
+          "played": 3541,
+          "damage": 58960,
+          "picked": 893
         },
         "p_last_light": {
-          "offered": 203,
-          "picked": 42,
-          "played": 394,
-          "block": 4810,
-          "heal": 1046
+          "offered": 393,
+          "picked": 44,
+          "played": 266,
+          "block": 3301,
+          "heal": 690
         },
         "p_marked_riposte": {
-          "offered": 966,
-          "picked": 543,
-          "played": 3011,
-          "block": 18585,
-          "mark": 3674,
-          "bought": 78
+          "offered": 1727,
+          "picked": 781,
+          "played": 2626,
+          "block": 17163,
+          "mark": 2835,
+          "bought": 145
         },
         "p_oath_focus": {
-          "offered": 221,
-          "picked": 185,
-          "played": 1255,
-          "mark": 1783,
-          "power": 1255,
-          "bought": 3,
-          "transformed_to": 2
-        },
-        "p_quick_step": {
-          "offered": 1015,
-          "picked": 405,
-          "played": 3025,
-          "block": 18468,
-          "draw": 3025,
-          "bought": 67,
-          "transformed_to": 1
-        },
-        "p_risk_advance": {
-          "offered": 486,
-          "picked": 64,
-          "played": 644,
-          "draw": 1288,
-          "mark": 732,
-          "self_damage": 1288,
-          "bought": 22
-        },
-        "p_road_cleave": {
-          "offered": 1007,
-          "picked": 245,
-          "played": 2583,
-          "damage": 42166,
-          "bought": 29,
-          "transformed_to": 2,
+          "offered": 365,
+          "picked": 253,
+          "played": 772,
+          "mark": 917,
+          "power": 772,
+          "bought": 2,
+          "transformed_to": 1,
           "upgraded": 1
         },
+        "p_quick_step": {
+          "offered": 1746,
+          "picked": 365,
+          "played": 2279,
+          "block": 14553,
+          "draw": 2279,
+          "bought": 118
+        },
+        "p_risk_advance": {
+          "offered": 871,
+          "picked": 68,
+          "played": 519,
+          "draw": 1038,
+          "mark": 556,
+          "self_damage": 1038,
+          "bought": 27
+        },
+        "p_road_cleave": {
+          "offered": 1699,
+          "picked": 589,
+          "played": 3044,
+          "damage": 57619,
+          "bought": 101,
+          "transformed_to": 1
+        },
         "p_shield_line": {
-          "offered": 470,
-          "picked": 57,
-          "played": 369,
-          "block": 5220,
+          "offered": 873,
+          "picked": 101,
+          "played": 624,
+          "block": 8983,
           "transformed_to": 1,
-          "bought": 2
+          "upgraded": 1,
+          "bought": 3
         },
         "p_strike": {
-          "played": 13026,
-          "damage": 124805,
-          "removed": 398,
-          "upgraded": 385,
-          "transformed_from": 10
+          "played": 20182,
+          "damage": 197052,
+          "removed": 653,
+          "upgraded": 649,
+          "transformed_from": 4
         },
         "p_sweeping_order": {
-          "offered": 490,
-          "picked": 297,
-          "played": 2806,
-          "damage": 23214,
-          "mark": 2833,
-          "bought": 40
+          "offered": 876,
+          "picked": 849,
+          "played": 4776,
+          "damage": 47193,
+          "mark": 4319,
+          "bought": 112
         },
         "p_tactical_prep": {
-          "played": 6243,
-          "draw": 6243,
-          "mark": 6993
+          "played": 8918,
+          "draw": 8918,
+          "mark": 9236
         },
         "p_wide_swing": {
-          "offered": 989,
-          "bought": 81,
-          "played": 2221,
-          "damage": 18622,
-          "picked": 278
+          "offered": 1690,
+          "picked": 1439,
+          "played": 8110,
+          "damage": 80739,
+          "bought": 188
         }
       }
     },
     {
       "policy": "balanced",
       "enemy_profile": "current",
-      "runs": 300,
-      "win_rate": 0.3,
+      "runs": 600,
+      "win_rate": 0.12833333333333333,
       "act_reach_rate": {
         "1": 1.0,
-        "2": 0.9733333333333334,
-        "3": 0.9133333333333333
+        "2": 0.885,
+        "3": 0.7216666666666667
       },
       "boss_clear_rate": {
-        "1": 0.9733333333333334,
-        "2": 0.9133333333333333,
-        "3": 0.3
+        "1": 0.8866666666666667,
+        "2": 0.7216666666666667,
+        "3": 0.12833333333333333
       },
       "top_deaths": [
         [
-          "A3D12 Unbound Core",
-          95
-        ],
-        [
           "win",
-          90
-        ],
-        [
-          "A3D7 Room Vein",
-          24
-        ],
-        [
-          "A3D10 Core Approach",
-          18
-        ],
-        [
-          "A3D1 Inside the Wall",
-          15
-        ],
-        [
-          "A3D9 Core Echo",
-          10
-        ],
-        [
-          "A2D8 Red Receipt",
-          8
+          77
         ],
         [
           "A1D12 Gate Warlord",
-          8
+          66
+        ],
+        [
+          "A3D12 Unbound Core",
+          66
+        ],
+        [
+          "A3D7 Room Vein",
+          61
+        ],
+        [
+          "A3D10 Core Approach",
+          55
+        ],
+        [
+          "A3D9 Core Echo",
+          48
+        ],
+        [
+          "A3D6 Folded Gallery",
+          37
+        ],
+        [
+          "A2D10 Causeway Toll",
+          30
         ]
       ],
-      "avg_final_deck_size": 24.346666666666668,
-      "avg_final_hp": 5.823333333333333,
-      "avg_final_gold": 231.68666666666667,
-      "avg_final_bond": 88.33666666666667,
-      "avg_cards_picked": 8.086666666666666,
-      "avg_cards_skipped": 13.75,
-      "avg_cards_upgraded": 1.5966666666666667,
-      "avg_cards_removed": 2.5533333333333332,
-      "avg_equipment_gained": 0.24,
-      "avg_shop_purchases": 8.11,
-      "avg_inn_rooms": 1.5266666666666666,
-      "avg_oath_triggers": 109.31333333333333,
+      "avg_final_deck_size": 25.273333333333333,
+      "avg_final_hp": 3.1483333333333334,
+      "avg_final_gold": 177.77333333333334,
+      "avg_final_bond": 69.53333333333333,
+      "avg_cards_picked": 8.85,
+      "avg_cards_skipped": 9.088333333333333,
+      "avg_cards_upgraded": 1.4116666666666666,
+      "avg_cards_removed": 2.026666666666667,
+      "avg_equipment_gained": 3.6333333333333333,
+      "avg_shop_purchases": 6.946666666666666,
+      "avg_inn_rooms": 1.0383333333333333,
+      "avg_oath_triggers": 51.468333333333334,
       "route_hp": {
-        "avg_inn_hp_before": 25.205179282868524,
-        "avg_inn_hp_after": 52.11155378486056,
-        "avg_inn_hp_ratio_before": 0.33164709582721746,
-        "avg_inn_hp_ratio_after": 0.6856783392744811,
+        "avg_inn_hp_before": 22.353689567430024,
+        "avg_inn_hp_after": 43.67684478371501,
+        "avg_inn_hp_ratio_before": 0.2941274943082898,
+        "avg_inn_hp_ratio_after": 0.5746953261015133,
         "avg_boss_hp_ratio_before_by_act": {
-          "1": 0.8377631578947369,
-          "2": 0.6757856872396819,
-          "3": 0.5770981507823613
+          "1": 0.6660495459754915,
+          "2": 0.6358272362520652,
+          "3": 0.52741994847258
         }
       },
       "combat_by_type": {
         "combat": {
-          "count": 4579,
-          "avg_turns": 4.399213802140205,
-          "p90_turns": 7.0,
-          "avg_hp_loss": 2.9561039528281285,
+          "count": 8501,
+          "avg_turns": 3.702505587577932,
+          "p90_turns": 6.0,
+          "avg_hp_loss": 3.221973885425244,
           "p90_hp_loss": 10.0,
-          "defeat_rate": 0.022493994321904347,
-          "avg_wave_count": 1.3413409041275388
+          "defeat_rate": 0.044112457357957886,
+          "avg_wave_count": 1.3605458181390424
         },
         "elite": {
-          "count": 1775,
-          "avg_turns": 4.775211267605634,
-          "p90_turns": 6.0,
-          "avg_hp_loss": 3.132394366197183,
-          "p90_hp_loss": 10.0,
+          "count": 2037,
+          "avg_turns": 4.1806578301423665,
+          "p90_turns": 5.0,
+          "avg_hp_loss": 4.656848306332843,
+          "p90_hp_loss": 13.0,
           "defeat_rate": 0.0,
           "avg_wave_count": 1.0
         },
         "midboss": {
-          "count": 300,
-          "avg_turns": 5.13,
+          "count": 600,
+          "avg_turns": 4.485,
           "p90_turns": 6.0,
-          "avg_hp_loss": 1.53,
-          "p90_hp_loss": 7.0,
+          "avg_hp_loss": 2.308333333333333,
+          "p90_hp_loss": 8.0,
           "defeat_rate": 0.0,
           "avg_wave_count": 1.0
         },
         "boss": {
-          "count": 763,
-          "avg_turns": 6.5897771952817825,
-          "p90_turns": 8.0,
-          "avg_hp_loss": 19.90956749672346,
-          "p90_hp_loss": 40.0,
-          "defeat_rate": 0.1402359108781127,
+          "count": 1186,
+          "avg_turns": 5.564924114671164,
+          "p90_turns": 7.0,
+          "avg_hp_loss": 18.22175379426644,
+          "p90_hp_loss": 31.0,
+          "defeat_rate": 0.12141652613827993,
           "avg_wave_count": 1.0
         }
       },
       "combat_by_act": {
         "1": {
-          "count": 3039,
-          "avg_turns": 4.526488976637052,
+          "count": 6104,
+          "avg_turns": 3.9234927916120577,
           "p90_turns": 6.0,
-          "avg_hp_loss": 3.002632444883185,
-          "p90_hp_loss": 10.0,
-          "defeat_rate": 0.0026324448831852583,
-          "avg_wave_count": 1.1207634090161238
+          "avg_hp_loss": 4.396625163826998,
+          "p90_hp_loss": 13.0,
+          "defeat_rate": 0.011140235910878113,
+          "avg_wave_count": 1.122870249017038
         },
         "2": {
-          "count": 2366,
-          "avg_turns": 4.453085376162299,
-          "p90_turns": 7.0,
-          "avg_hp_loss": 3.9091293322062555,
-          "p90_hp_loss": 13.0,
-          "defeat_rate": 0.0076077768385460695,
-          "avg_wave_count": 1.2155536770921387
+          "count": 3837,
+          "avg_turns": 3.7941099817565807,
+          "p90_turns": 6.0,
+          "avg_hp_loss": 4.636955955173312,
+          "p90_hp_loss": 14.0,
+          "defeat_rate": 0.025540787073234296,
+          "avg_wave_count": 1.3176961167578838
         },
         "3": {
-          "count": 2012,
-          "avg_turns": 5.415009940357853,
-          "p90_turns": 9.0,
-          "avg_hp_loss": 8.137176938369782,
-          "p90_hp_loss": 22.0,
-          "defeat_rate": 0.09145129224652088,
-          "avg_wave_count": 1.3409542743538767
+          "count": 2383,
+          "avg_turns": 4.521611414183802,
+          "p90_turns": 8.0,
+          "avg_hp_loss": 6.396558959295007,
+          "p90_hp_loss": 18.0,
+          "defeat_rate": 0.14813260595887537,
+          "avg_wave_count": 1.4599244649601344
         }
       },
       "combat_by_wave_count": {
         "1": {
-          "count": 6230,
-          "avg_turns": 4.366131621187801,
+          "count": 9862,
+          "avg_turns": 3.6228959643074425,
           "p90_turns": 6.0,
-          "avg_hp_loss": 4.667897271268058,
+          "avg_hp_loss": 4.729263841005881,
           "p90_hp_loss": 15.0,
-          "defeat_rate": 0.024237560192616373,
+          "defeat_rate": 0.026972216588927195,
           "avg_wave_count": 1.0
         },
         "2": {
-          "count": 811,
-          "avg_turns": 5.648581997533909,
-          "p90_turns": 7.0,
-          "avg_hp_loss": 2.7410604192355117,
-          "p90_hp_loss": 8.0,
-          "defeat_rate": 0.014796547472256474,
+          "count": 1859,
+          "avg_turns": 4.980096826250673,
+          "p90_turns": 6.0,
+          "avg_hp_loss": 4.442711135018827,
+          "p90_hp_loss": 12.0,
+          "defeat_rate": 0.05809575040344271,
           "avg_wave_count": 2.0
         },
         "3": {
-          "count": 376,
-          "avg_turns": 9.055851063829786,
-          "p90_turns": 12.0,
-          "avg_hp_loss": 9.154255319148936,
-          "p90_hp_loss": 22.0,
-          "defeat_rate": 0.125,
+          "count": 603,
+          "avg_turns": 7.122719734660033,
+          "p90_turns": 10.0,
+          "avg_hp_loss": 8.24709784411277,
+          "p90_hp_loss": 20.0,
+          "defeat_rate": 0.24046434494195687,
           "avg_wave_count": 3.0
         }
       },
       "card_stats": {
         "c_bram_cleave": {
-          "picked": 153,
-          "played": 2651,
-          "damage": 50042
+          "picked": 315,
+          "played": 3707,
+          "damage": 80916
         },
         "c_bram_hook": {
-          "picked": 153,
-          "played": 685,
-          "damage": 9291,
-          "self_damage": 1370
+          "picked": 315,
+          "played": 724,
+          "damage": 10588,
+          "self_damage": 1448
         },
         "c_eldric_bash": {
-          "picked": 34,
-          "played": 450,
-          "damage": 5068,
-          "block": 2251
+          "picked": 9,
+          "played": 66,
+          "damage": 724,
+          "block": 307
         },
         "c_eldric_cover": {
-          "picked": 34,
-          "played": 455,
-          "block": 2733,
-          "draw": 455
+          "picked": 9,
+          "played": 71,
+          "block": 409,
+          "draw": 71
         },
         "c_kyle_fold": {
-          "picked": 4,
-          "played": 48,
-          "block": 336,
-          "draw": 48
+          "picked": 72,
+          "played": 573,
+          "block": 4382,
+          "draw": 573
         },
         "c_kyle_loaded_cut": {
-          "picked": 4,
-          "played": 18,
-          "damage": 254,
-          "self_damage": 36
+          "picked": 72,
+          "played": 257,
+          "damage": 4684,
+          "self_damage": 514
         },
         "c_lina_broadhead": {
-          "picked": 71,
-          "played": 483,
-          "damage": 5911,
-          "mark": 484
+          "picked": 146,
+          "played": 458,
+          "damage": 6491,
+          "mark": 382
         },
         "c_lina_snare": {
-          "picked": 71,
-          "played": 652,
-          "mark": 2135
+          "picked": 146,
+          "played": 354,
+          "mark": 1131
         },
         "c_noa_bad_omen": {
-          "picked": 26,
-          "played": 183,
-          "mark": 427,
-          "damage": 1585
+          "picked": 33,
+          "played": 89,
+          "mark": 185,
+          "damage": 797
         },
         "c_noa_starmap": {
-          "picked": 26,
-          "played": 54,
-          "draw": 54,
-          "energy": 54
+          "picked": 33,
+          "played": 36,
+          "draw": 36,
+          "energy": 36
         },
         "c_rowan_banner": {
-          "picked": 84,
-          "played": 1394,
-          "block": 8442,
-          "mark": 1785,
-          "bought": 29
+          "picked": 102,
+          "played": 939,
+          "block": 6225,
+          "mark": 1092,
+          "bought": 63
         },
         "c_rowan_finish": {
-          "picked": 51,
-          "played": 703,
-          "damage": 11554,
-          "bought": 1
+          "picked": 152,
+          "played": 725,
+          "damage": 13901
         },
         "c_rowan_pin": {
-          "picked": 135,
-          "played": 1000,
-          "damage": 11809,
-          "mark": 1025
+          "picked": 254,
+          "played": 782,
+          "damage": 10872,
+          "mark": 726
         },
         "c_sera_backcut": {
-          "picked": 110,
-          "played": 814,
-          "damage": 9178,
-          "draw": 814
+          "picked": 228,
+          "played": 674,
+          "damage": 8750,
+          "draw": 674
         },
         "c_sera_feint": {
-          "picked": 61,
-          "played": 1479,
-          "draw": 1479,
-          "mark": 1855,
-          "bought": 15
+          "picked": 116,
+          "played": 1355,
+          "draw": 1355,
+          "mark": 1532,
+          "bought": 21
         },
         "c_sera_smoke": {
-          "picked": 49,
-          "played": 415,
-          "block": 1686,
-          "draw": 415
+          "picked": 112,
+          "played": 711,
+          "block": 3277,
+          "draw": 711
         },
         "c_tor_bell": {
-          "picked": 42,
-          "played": 268,
-          "damage": 2273
+          "picked": 57,
+          "played": 120,
+          "damage": 968
         },
         "c_tor_bulwark": {
           "picked": 17,
-          "played": 238,
-          "block": 3827
+          "played": 179,
+          "block": 2789
         },
         "c_tor_rent": {
-          "picked": 59,
-          "played": 943,
-          "damage": 9824,
-          "block": 5683
+          "picked": 74,
+          "played": 670,
+          "damage": 7012,
+          "block": 3778
         },
         "p_blood_price": {
-          "offered": 886,
-          "bought": 6,
-          "played": 83,
-          "energy": 166,
-          "draw": 83,
-          "self_damage": 249,
-          "transformed_to": 1
-        },
-        "p_brace": {
-          "offered": 1641,
-          "bought": 100,
-          "played": 712,
-          "block": 9301,
-          "transformed_to": 4,
+          "offered": 1364,
+          "bought": 5,
+          "played": 49,
+          "energy": 98,
+          "draw": 49,
+          "self_damage": 147,
+          "transformed_to": 1,
           "upgraded": 1
         },
-        "p_breakthrough": {
-          "offered": 906,
-          "picked": 180,
-          "played": 1442,
-          "damage": 18781,
-          "draw": 1442,
-          "bought": 17,
+        "p_brace": {
+          "offered": 2798,
+          "bought": 159,
+          "played": 742,
+          "block": 10038,
           "transformed_to": 1
         },
+        "p_breakthrough": {
+          "offered": 1432,
+          "picked": 413,
+          "played": 1642,
+          "damage": 25222,
+          "draw": 1642,
+          "bought": 72,
+          "transformed_to": 2,
+          "upgraded": 1
+        },
         "p_clean_cut": {
-          "offered": 1671,
-          "bought": 32,
-          "played": 321,
-          "damage": 3956,
-          "transformed_to": 3,
-          "upgraded": 2
+          "offered": 2791,
+          "bought": 72,
+          "played": 686,
+          "damage": 8993,
+          "picked": 9,
+          "transformed_to": 3
         },
         "p_contract_mark": {
-          "offered": 1734,
-          "bought": 199,
-          "played": 1567,
-          "mark": 3622,
-          "draw": 1567,
-          "transformed_to": 3,
-          "upgraded": 3,
-          "picked": 8
+          "offered": 2849,
+          "bought": 315,
+          "played": 983,
+          "mark": 2144,
+          "draw": 983,
+          "transformed_to": 1,
+          "upgraded": 1
         },
         "p_desperate_stand": {
-          "offered": 337,
-          "picked": 89,
-          "played": 1524,
-          "block": 27452,
-          "heal": 2146,
-          "transformed_to": 2,
+          "offered": 585,
+          "picked": 105,
+          "played": 1173,
+          "block": 21678,
+          "heal": 1765,
+          "transformed_to": 3,
           "upgraded": 1
         },
         "p_field_medicine": {
-          "offered": 872,
-          "bought": 5,
-          "played": 385,
-          "heal": 582,
-          "block": 3858,
-          "picked": 22,
-          "transformed_to": 5
+          "offered": 1354,
+          "picked": 37,
+          "played": 450,
+          "heal": 650,
+          "block": 4691,
+          "bought": 4,
+          "transformed_to": 2
         },
         "p_guard": {
-          "played": 14824,
-          "block": 74569,
-          "upgraded": 6
+          "played": 25049,
+          "block": 133404,
+          "upgraded": 8
         },
         "p_heavy_cut": {
-          "offered": 1699,
-          "picked": 223,
-          "played": 4520,
-          "damage": 68591,
-          "bought": 175
+          "offered": 2805,
+          "picked": 762,
+          "played": 5875,
+          "damage": 101699,
+          "bought": 341,
+          "transformed_to": 1,
+          "upgraded": 1
         },
         "p_last_light": {
-          "offered": 342,
-          "picked": 37,
-          "played": 552,
-          "block": 6661,
-          "heal": 1102,
-          "transformed_to": 3,
-          "upgraded": 2
+          "offered": 590,
+          "transformed_to": 2,
+          "played": 503,
+          "block": 6292,
+          "heal": 1033,
+          "upgraded": 1,
+          "picked": 42
         },
         "p_marked_riposte": {
-          "offered": 1661,
-          "picked": 568,
-          "played": 9618,
-          "block": 58162,
-          "mark": 12394,
-          "bought": 198,
-          "transformed_to": 1,
-          "upgraded": 1
+          "offered": 2666,
+          "picked": 522,
+          "played": 6027,
+          "block": 39954,
+          "mark": 6885,
+          "bought": 344,
+          "transformed_to": 2
         },
         "p_oath_focus": {
-          "offered": 342,
-          "picked": 297,
-          "played": 3221,
-          "mark": 4874,
-          "power": 3221,
-          "transformed_to": 1,
-          "upgraded": 1,
-          "bought": 27
+          "offered": 581,
+          "picked": 454,
+          "played": 2284,
+          "mark": 2855,
+          "power": 2284,
+          "bought": 19
         },
         "p_quick_step": {
-          "offered": 1680,
-          "picked": 305,
-          "played": 6896,
-          "block": 41604,
-          "draw": 6896,
-          "bought": 156,
-          "transformed_to": 2,
-          "upgraded": 1
+          "offered": 2843,
+          "bought": 311,
+          "played": 5309,
+          "block": 34567,
+          "draw": 5309,
+          "picked": 306
         },
         "p_risk_advance": {
-          "offered": 864,
-          "bought": 90,
-          "played": 1187,
-          "draw": 2374,
-          "mark": 1595,
-          "self_damage": 2374,
-          "picked": 3,
-          "transformed_to": 3,
-          "upgraded": 1
+          "offered": 1424,
+          "bought": 104,
+          "played": 743,
+          "draw": 1486,
+          "mark": 876,
+          "self_damage": 1486
         },
         "p_road_cleave": {
-          "offered": 1603,
-          "picked": 210,
-          "played": 4190,
-          "damage": 70221,
-          "transformed_to": 2,
-          "bought": 96
+          "offered": 2769,
+          "picked": 575,
+          "played": 4530,
+          "damage": 86861,
+          "bought": 255,
+          "transformed_to": 1
         },
         "p_shield_line": {
-          "offered": 825,
-          "picked": 50,
-          "played": 783,
-          "block": 11004,
-          "bought": 10
+          "offered": 1338,
+          "picked": 86,
+          "played": 957,
+          "block": 13874,
+          "transformed_to": 1,
+          "bought": 11
         },
         "p_strike": {
-          "played": 17813,
-          "damage": 167259,
-          "removed": 766,
-          "upgraded": 458,
-          "transformed_from": 34
+          "played": 27696,
+          "damage": 275903,
+          "upgraded": 830,
+          "removed": 1216,
+          "transformed_from": 25
         },
         "p_sweeping_order": {
-          "offered": 865,
-          "picked": 229,
-          "played": 4076,
-          "damage": 34618,
-          "mark": 4137,
-          "bought": 102
+          "offered": 1373,
+          "picked": 739,
+          "played": 7980,
+          "damage": 79348,
+          "mark": 7592,
+          "bought": 343,
+          "transformed_to": 4,
+          "upgraded": 2
         },
         "p_tactical_prep": {
-          "played": 11302,
-          "draw": 11302,
-          "mark": 13511
+          "played": 14351,
+          "draw": 14351,
+          "mark": 15470
         },
         "p_wide_swing": {
-          "offered": 1725,
-          "bought": 202,
-          "played": 3902,
-          "damage": 34079,
-          "picked": 205,
-          "transformed_to": 3,
-          "upgraded": 2
+          "offered": 2727,
+          "picked": 1260,
+          "played": 13789,
+          "damage": 141808,
+          "bought": 369,
+          "transformed_to": 1,
+          "upgraded": 1
         }
       }
     },
     {
       "policy": "safe",
       "enemy_profile": "current",
-      "runs": 300,
-      "win_rate": 0.7833333333333333,
+      "runs": 600,
+      "win_rate": 0.135,
       "act_reach_rate": {
         "1": 1.0,
-        "2": 0.9733333333333334,
-        "3": 0.9633333333333334
+        "2": 0.915,
+        "3": 0.6733333333333333
       },
       "boss_clear_rate": {
-        "1": 0.9733333333333334,
-        "2": 0.9633333333333334,
-        "3": 0.7833333333333333
+        "1": 0.915,
+        "2": 0.6733333333333333,
+        "3": 0.135
       },
       "top_deaths": [
         [
-          "win",
-          235
-        ],
-        [
-          "A3D12 Unbound Core",
-          25
+          "A3D7 Room Vein",
+          108
         ],
         [
           "A3D10 Core Approach",
-          20
-        ],
-        [
-          "A1D12 Gate Warlord",
-          8
-        ],
-        [
-          "A3D9 Core Echo",
-          6
-        ],
-        [
-          "A3D7 Room Vein",
-          3
-        ],
-        [
-          "A2D8 Red Receipt",
-          1
+          104
         ],
         [
           "A2D4 Witness Road",
-          1
+          82
+        ],
+        [
+          "win",
+          81
+        ],
+        [
+          "A3D9 Core Echo",
+          69
+        ],
+        [
+          "A1D12 Gate Warlord",
+          50
+        ],
+        [
+          "A2D2 Broken Milestone",
+          24
+        ],
+        [
+          "A2D2 Cold Causeway",
+          23
         ]
       ],
-      "avg_final_deck_size": 19.276666666666667,
-      "avg_final_hp": 24.11,
-      "avg_final_gold": 575.2366666666667,
-      "avg_final_bond": 94.815,
-      "avg_cards_picked": 5.306666666666667,
-      "avg_cards_skipped": 11.353333333333333,
-      "avg_cards_upgraded": 2.6933333333333334,
-      "avg_cards_removed": 0.03,
-      "avg_equipment_gained": 2.5,
-      "avg_shop_purchases": 0.09,
-      "avg_inn_rooms": 3.22,
-      "avg_oath_triggers": 79.74,
+      "avg_final_deck_size": 20.91,
+      "avg_final_hp": 3.783333333333333,
+      "avg_final_gold": 428.435,
+      "avg_final_bond": 61.9975,
+      "avg_cards_picked": 7.068333333333333,
+      "avg_cards_skipped": 5.046666666666667,
+      "avg_cards_upgraded": 2.6983333333333333,
+      "avg_cards_removed": 0.016666666666666666,
+      "avg_equipment_gained": 4.3116666666666665,
+      "avg_shop_purchases": 0.045,
+      "avg_inn_rooms": 1.3816666666666666,
+      "avg_oath_triggers": 40.81166666666667,
       "route_hp": {
-        "avg_inn_hp_before": 39.572463768115945,
-        "avg_inn_hp_after": 69.64182194616977,
-        "avg_inn_hp_ratio_before": 0.5206903127383676,
-        "avg_inn_hp_ratio_after": 0.9163397624496022,
+        "avg_inn_hp_before": 26.06746987951807,
+        "avg_inn_hp_after": 60.36746987951807,
+        "avg_inn_hp_ratio_before": 0.342993024730501,
+        "avg_inn_hp_ratio_after": 0.7943088142041852,
         "avg_boss_hp_ratio_before_by_act": {
-          "1": 0.7329385964912281,
-          "2": 0.9106720087415772,
-          "3": 0.8795546558704453
+          "1": 0.6285475792988314,
+          "2": 0.8754537205081669,
+          "3": 0.7761842105263158
         }
       },
       "combat_by_type": {
         "combat": {
-          "count": 3195,
-          "avg_turns": 4.714553990610328,
+          "count": 5939,
+          "avg_turns": 4.107930628051861,
           "p90_turns": 7.0,
-          "avg_hp_loss": 3.3195618153364634,
-          "p90_hp_loss": 11.0,
-          "defeat_rate": 0.01001564945226917,
-          "avg_wave_count": 1.496713615023474
+          "avg_hp_loss": 4.1072571139922545,
+          "p90_hp_loss": 12.0,
+          "defeat_rate": 0.07476006061626536,
+          "avg_wave_count": 1.58090587641017
         },
         "elite": {
-          "count": 1535,
-          "avg_turns": 4.411726384364821,
-          "p90_turns": 6.0,
-          "avg_hp_loss": 3.521172638436482,
-          "p90_hp_loss": 11.0,
-          "defeat_rate": 0.0,
+          "count": 1175,
+          "avg_turns": 3.9948936170212765,
+          "p90_turns": 5.0,
+          "avg_hp_loss": 5.2017021276595745,
+          "p90_hp_loss": 14.0,
+          "defeat_rate": 0.000851063829787234,
           "avg_wave_count": 1.0
         },
         "midboss": {
-          "count": 300,
-          "avg_turns": 4.57,
-          "p90_turns": 6.0,
-          "avg_hp_loss": 1.6933333333333334,
-          "p90_hp_loss": 7.0,
+          "count": 600,
+          "avg_turns": 4.135,
+          "p90_turns": 5.0,
+          "avg_hp_loss": 2.066666666666667,
+          "p90_hp_loss": 9.0,
           "defeat_rate": 0.0,
           "avg_wave_count": 1.0
         },
         "boss": {
-          "count": 849,
-          "avg_turns": 5.987043580683157,
+          "count": 1105,
+          "avg_turns": 5.386425339366516,
           "p90_turns": 7.0,
-          "avg_hp_loss": 21.722025912838635,
-          "p90_hp_loss": 47.0,
-          "defeat_rate": 0.038869257950530034,
+          "avg_hp_loss": 20.029864253393665,
+          "p90_hp_loss": 34.0,
+          "defeat_rate": 0.06425339366515836,
           "avg_wave_count": 1.0
         }
       },
       "combat_by_act": {
         "1": {
-          "count": 2331,
-          "avg_turns": 4.138567138567138,
-          "p90_turns": 6.0,
-          "avg_hp_loss": 3.782067782067782,
-          "p90_hp_loss": 13.0,
-          "defeat_rate": 0.003432003432003432,
-          "avg_wave_count": 1.0008580008580008
+          "count": 4833,
+          "avg_turns": 3.701220773846472,
+          "p90_turns": 5.0,
+          "avg_hp_loss": 4.861783571280778,
+          "p90_hp_loss": 15.0,
+          "defeat_rate": 0.010552451893234015,
+          "avg_wave_count": 1.0242085661080074
         },
         "2": {
-          "count": 1609,
-          "avg_turns": 5.215040397762586,
+          "count": 2272,
+          "avg_turns": 4.550616197183099,
           "p90_turns": 7.0,
-          "avg_hp_loss": 4.942200124300808,
-          "p90_hp_loss": 16.0,
-          "defeat_rate": 0.0018645121193287756,
-          "avg_wave_count": 1.5282784338098199
+          "avg_hp_loss": 7.07262323943662,
+          "p90_hp_loss": 20.0,
+          "defeat_rate": 0.06338028169014084,
+          "avg_wave_count": 1.7064260563380282
         },
         "3": {
-          "count": 1939,
-          "avg_turns": 5.2867457452295,
-          "p90_turns": 7.0,
-          "avg_hp_loss": 9.382671480144404,
-          "p90_hp_loss": 32.0,
-          "defeat_rate": 0.02784940691077875,
-          "avg_wave_count": 1.3790613718411553
+          "count": 1714,
+          "avg_turns": 5.424154025670945,
+          "p90_turns": 9.0,
+          "avg_hp_loss": 8.350058343057176,
+          "p90_hp_loss": 20.0,
+          "defeat_rate": 0.18728121353558927,
+          "avg_wave_count": 2.0081680280046674
         }
       },
       "combat_by_wave_count": {
         "1": {
-          "count": 4658,
-          "avg_turns": 4.344783168741949,
-          "p90_turns": 6.0,
-          "avg_hp_loss": 6.125161013310434,
-          "p90_hp_loss": 20.0,
-          "defeat_rate": 0.0072992700729927005,
+          "count": 6303,
+          "avg_turns": 3.6706330318895763,
+          "p90_turns": 5.0,
+          "avg_hp_loss": 5.934951610344281,
+          "p90_hp_loss": 19.0,
+          "defeat_rate": 0.01776931619863557,
           "avg_wave_count": 1.0
         },
         "2": {
-          "count": 855,
-          "avg_turns": 5.922807017543859,
-          "p90_turns": 7.0,
-          "avg_hp_loss": 3.5228070175438595,
-          "p90_hp_loss": 11.0,
-          "defeat_rate": 0.00935672514619883,
+          "count": 1582,
+          "avg_turns": 5.010113780025285,
+          "p90_turns": 6.0,
+          "avg_hp_loss": 5.084702907711757,
+          "p90_hp_loss": 13.0,
+          "defeat_rate": 0.12010113780025285,
           "avg_wave_count": 2.0
         },
         "3": {
-          "count": 366,
-          "avg_turns": 8.16120218579235,
+          "count": 934,
+          "avg_turns": 6.918629550321199,
           "p90_turns": 10.0,
-          "avg_hp_loss": 9.33879781420765,
-          "p90_hp_loss": 26.0,
-          "defeat_rate": 0.06284153005464481,
+          "avg_hp_loss": 9.021413276231263,
+          "p90_hp_loss": 20.0,
+          "defeat_rate": 0.2291220556745182,
           "avg_wave_count": 3.0
         }
       },
       "card_stats": {
         "c_bram_cleave": {
-          "picked": 160,
-          "played": 2816,
-          "damage": 54132
+          "picked": 312,
+          "played": 3144,
+          "damage": 68563
         },
         "c_bram_hook": {
-          "picked": 160,
-          "played": 562,
-          "damage": 7588,
-          "self_damage": 1124
+          "picked": 312,
+          "played": 726,
+          "damage": 10480,
+          "self_damage": 1452
         },
         "c_eldric_bash": {
-          "picked": 41,
-          "played": 604,
-          "damage": 6246,
-          "block": 3358
+          "picked": 62,
+          "played": 446,
+          "damage": 4407,
+          "block": 2124
         },
         "c_eldric_cover": {
-          "picked": 41,
-          "played": 502,
-          "block": 3302,
-          "draw": 502
+          "picked": 62,
+          "played": 543,
+          "block": 3143,
+          "draw": 543
         },
-        "c_isol_mercy": {
-          "picked": 10,
-          "played": 64,
-          "heal": 220,
-          "draw": 64
+        "c_kyle_fold": {
+          "picked": 44,
+          "played": 240,
+          "block": 1842,
+          "draw": 240
         },
-        "c_isol_witness": {
-          "picked": 10,
-          "played": 118,
-          "mark": 162,
-          "block": 870
+        "c_kyle_loaded_cut": {
+          "picked": 44,
+          "played": 154,
+          "damage": 2607,
+          "self_damage": 308
         },
         "c_lina_broadhead": {
-          "picked": 60,
-          "played": 530,
-          "damage": 6324,
-          "mark": 570
+          "picked": 158,
+          "played": 438,
+          "damage": 5856,
+          "mark": 392
         },
         "c_lina_snare": {
-          "picked": 60,
-          "played": 543,
-          "mark": 1746
-        },
-        "c_maren_patch": {
-          "picked": 9,
-          "played": 64,
-          "heal": 163,
-          "block": 278
-        },
-        "c_maren_salve": {
-          "picked": 4,
-          "played": 5,
-          "heal": 17
-        },
-        "c_maren_trade": {
-          "picked": 5,
-          "played": 3,
-          "self_damage": 6,
-          "draw": 6
+          "picked": 158,
+          "played": 153,
+          "mark": 479
         },
         "c_noa_bad_omen": {
-          "picked": 9,
-          "played": 71,
-          "mark": 168,
-          "damage": 609
+          "picked": 16,
+          "played": 50,
+          "mark": 105,
+          "damage": 408
         },
         "c_noa_starmap": {
-          "picked": 9,
-          "played": 17,
-          "draw": 17,
-          "energy": 17
+          "picked": 16,
+          "played": 15,
+          "draw": 15,
+          "energy": 15
         },
         "c_rowan_banner": {
-          "picked": 87,
-          "played": 1190,
-          "block": 7686,
-          "mark": 1522
+          "picked": 90,
+          "played": 457,
+          "block": 3086,
+          "mark": 499
         },
         "c_rowan_finish": {
-          "picked": 38,
-          "played": 589,
-          "damage": 9355
+          "picked": 155,
+          "played": 608,
+          "damage": 11232
         },
         "c_rowan_pin": {
-          "picked": 125,
-          "played": 1082,
-          "damage": 12384,
-          "mark": 1171
+          "picked": 245,
+          "played": 812,
+          "damage": 11182,
+          "mark": 740
         },
         "c_sera_backcut": {
-          "picked": 77,
-          "played": 654,
-          "damage": 7469,
-          "draw": 654
+          "picked": 203,
+          "played": 636,
+          "damage": 8002,
+          "draw": 636
         },
         "c_sera_feint": {
-          "picked": 40,
-          "played": 823,
-          "draw": 823,
-          "mark": 1119
+          "picked": 108,
+          "played": 994,
+          "draw": 994,
+          "mark": 1088
         },
         "c_sera_smoke": {
-          "picked": 37,
-          "played": 301,
-          "block": 1306,
-          "draw": 301
+          "picked": 95,
+          "played": 555,
+          "block": 2629,
+          "draw": 555
         },
         "c_tor_bell": {
-          "picked": 66,
-          "played": 451,
-          "damage": 3534
+          "picked": 77,
+          "played": 92,
+          "damage": 777
         },
         "c_tor_bulwark": {
-          "picked": 35,
-          "played": 349,
-          "block": 5737
+          "picked": 32,
+          "played": 292,
+          "block": 4570
         },
         "c_tor_rent": {
-          "picked": 101,
-          "played": 1424,
-          "damage": 13596,
-          "block": 9049
+          "picked": 109,
+          "played": 928,
+          "damage": 8991,
+          "block": 5306
         },
         "p_blood_price": {
-          "offered": 650
+          "offered": 929
         },
         "p_brace": {
-          "offered": 1293,
+          "offered": 1845,
           "bought": 1,
-          "played": 1,
-          "block": 13
+          "played": 3,
+          "block": 41
         },
         "p_breakthrough": {
-          "offered": 603,
-          "picked": 155,
-          "played": 1515,
-          "damage": 18934,
-          "draw": 1515
+          "offered": 920,
+          "picked": 404,
+          "played": 1605,
+          "damage": 24346,
+          "draw": 1605,
+          "bought": 2
         },
         "p_clean_cut": {
-          "offered": 1272
+          "offered": 1909,
+          "picked": 2,
+          "played": 32,
+          "damage": 396
         },
         "p_contract_mark": {
-          "offered": 1322,
-          "picked": 14,
-          "played": 157,
-          "mark": 338,
-          "draw": 157,
+          "offered": 1883,
+          "picked": 8,
+          "played": 20,
+          "mark": 41,
+          "draw": 20,
           "bought": 1
         },
         "p_desperate_stand": {
-          "offered": 296,
-          "picked": 112,
-          "played": 1445,
-          "block": 26523,
-          "heal": 2124
+          "offered": 381,
+          "picked": 89,
+          "played": 899,
+          "block": 16677,
+          "heal": 1447
         },
         "p_field_medicine": {
-          "offered": 652,
-          "bought": 1,
-          "played": 4,
-          "heal": 7,
-          "block": 40
+          "offered": 918
         },
         "p_guard": {
-          "played": 13765,
-          "block": 72679,
-          "upgraded": 14
+          "played": 22038,
+          "block": 119582,
+          "upgraded": 52
         },
         "p_heavy_cut": {
-          "offered": 1250,
-          "picked": 139,
-          "played": 2128,
-          "damage": 31080,
-          "bought": 3
-        },
-        "p_last_light": {
-          "offered": 283,
-          "picked": 24,
-          "played": 307,
-          "block": 3763,
-          "heal": 654
-        },
-        "p_marked_riposte": {
-          "offered": 1331,
-          "picked": 14,
-          "played": 259,
-          "block": 1654,
-          "mark": 328,
-          "bought": 2
-        },
-        "p_oath_focus": {
-          "offered": 290,
-          "picked": 255,
-          "played": 2689,
-          "mark": 4286,
-          "power": 2689
-        },
-        "p_quick_step": {
-          "offered": 1232,
-          "picked": 282,
-          "played": 4317,
-          "block": 27317,
-          "draw": 4317,
-          "bought": 3
-        },
-        "p_risk_advance": {
-          "offered": 631,
-          "picked": 4,
-          "played": 109,
-          "draw": 218,
-          "mark": 122,
-          "self_damage": 218,
+          "offered": 1891,
+          "picked": 407,
+          "played": 3023,
+          "damage": 50551,
           "bought": 1
         },
+        "p_last_light": {
+          "offered": 382,
+          "picked": 32,
+          "played": 329,
+          "block": 4119,
+          "heal": 746
+        },
+        "p_marked_riposte": {
+          "offered": 1892,
+          "picked": 11,
+          "played": 74,
+          "block": 494,
+          "mark": 76,
+          "bought": 1
+        },
+        "p_oath_focus": {
+          "offered": 420,
+          "picked": 249,
+          "played": 959,
+          "mark": 1214,
+          "power": 959
+        },
+        "p_quick_step": {
+          "offered": 1790,
+          "picked": 274,
+          "played": 2897,
+          "block": 19087,
+          "draw": 2897,
+          "bought": 1
+        },
+        "p_risk_advance": {
+          "offered": 947,
+          "picked": 3,
+          "played": 26,
+          "draw": 52,
+          "mark": 26,
+          "self_damage": 52
+        },
         "p_road_cleave": {
-          "offered": 1280,
-          "picked": 214,
-          "played": 3250,
-          "damage": 52754
+          "offered": 1913,
+          "picked": 572,
+          "played": 3540,
+          "damage": 67048,
+          "bought": 4
         },
         "p_shield_line": {
-          "offered": 640,
-          "bought": 1,
-          "played": 1,
-          "block": 14
+          "offered": 947
         },
         "p_strike": {
-          "played": 22803,
-          "damage": 236465,
-          "upgraded": 794,
-          "removed": 9
+          "played": 28164,
+          "damage": 293508,
+          "upgraded": 1567,
+          "removed": 10
         },
         "p_sweeping_order": {
-          "offered": 677,
-          "picked": 226,
-          "played": 3378,
-          "damage": 29093,
-          "mark": 3554,
+          "offered": 933,
+          "picked": 804,
+          "played": 5698,
+          "damage": 57754,
+          "mark": 5246,
           "bought": 2
         },
         "p_tactical_prep": {
-          "played": 9958,
-          "draw": 9958,
-          "mark": 11952
+          "played": 12047,
+          "draw": 12047,
+          "mark": 12626
         },
         "p_wide_swing": {
-          "offered": 1292,
-          "picked": 153,
-          "played": 2257,
-          "damage": 18802,
-          "bought": 1
+          "offered": 1907,
+          "picked": 1386,
+          "played": 10173,
+          "damage": 103718,
+          "bought": 4
         }
       }
     },
     {
       "policy": "greedy",
       "enemy_profile": "current",
-      "runs": 300,
-      "win_rate": 0.21,
+      "runs": 600,
+      "win_rate": 0.11,
       "act_reach_rate": {
         "1": 1.0,
-        "2": 0.9533333333333334,
-        "3": 0.7466666666666667
+        "2": 0.9316666666666666,
+        "3": 0.7216666666666667
       },
       "boss_clear_rate": {
-        "1": 0.9566666666666667,
-        "2": 0.7466666666666667,
-        "3": 0.21
+        "1": 0.9316666666666666,
+        "2": 0.7233333333333334,
+        "3": 0.11
       },
       "top_deaths": [
         [
-          "win",
-          63
+          "A3D7 Room Vein",
+          74
         ],
         [
-          "A3D12 Unbound Core",
-          59
+          "win",
+          66
         ],
         [
           "A3D10 Core Approach",
-          34
-        ],
-        [
-          "A3D1 Inside the Wall",
-          21
+          63
         ],
         [
           "A3D9 Core Echo",
-          18
+          51
         ],
         [
-          "A2D12 Oathless Regent",
-          16
-        ],
-        [
-          "A2D8 Red Receipt",
-          15
+          "A2D10 Causeway Toll",
+          42
         ],
         [
           "A1D12 Gate Warlord",
-          14
+          41
+        ],
+        [
+          "A3D12 Unbound Core",
+          40
+        ],
+        [
+          "A3D6 Folded Gallery",
+          33
         ]
       ],
-      "avg_final_deck_size": 24.64666666666667,
-      "avg_final_hp": 3.6433333333333335,
-      "avg_final_gold": 728.3166666666667,
-      "avg_final_bond": 80.39,
-      "avg_cards_picked": 10.51,
-      "avg_cards_skipped": 12.483333333333333,
-      "avg_cards_upgraded": 1.1133333333333333,
-      "avg_cards_removed": 0.2966666666666667,
-      "avg_equipment_gained": 0.12666666666666668,
-      "avg_shop_purchases": 0.89,
-      "avg_inn_rooms": 1.2533333333333334,
-      "avg_oath_triggers": 107.16333333333333,
+      "avg_final_deck_size": 23.785,
+      "avg_final_hp": 3.0316666666666667,
+      "avg_final_gold": 167.16,
+      "avg_final_bond": 68.79083333333334,
+      "avg_cards_picked": 7.535,
+      "avg_cards_skipped": 10.671666666666667,
+      "avg_cards_upgraded": 1.31,
+      "avg_cards_removed": 1.8983333333333334,
+      "avg_equipment_gained": 3.3533333333333335,
+      "avg_shop_purchases": 6.413333333333333,
+      "avg_inn_rooms": 1.635,
+      "avg_oath_triggers": 51.75333333333333,
       "route_hp": {
-        "avg_inn_hp_before": 17.81648936170213,
-        "avg_inn_hp_after": 55.38563829787234,
-        "avg_inn_hp_ratio_before": 0.2344274916013438,
-        "avg_inn_hp_ratio_after": 0.7287583986562151,
+        "avg_inn_hp_before": 27.41651865008881,
+        "avg_inn_hp_after": 51.815275310834814,
+        "avg_inn_hp_ratio_before": 0.36074366644853695,
+        "avg_inn_hp_ratio_after": 0.681779938300458,
         "avg_boss_hp_ratio_before_by_act": {
-          "1": 0.7894736842105263,
-          "2": 0.5533991228070175,
-          "3": 0.5767903364969802
+          "1": 0.6934649122807017,
+          "2": 0.7021295013850416,
+          "3": 0.6387785501489573
         }
       },
       "combat_by_type": {
         "combat": {
-          "count": 5183,
-          "avg_turns": 4.331854138529809,
-          "p90_turns": 7.0,
-          "avg_hp_loss": 3.297125217055759,
+          "count": 8851,
+          "avg_turns": 3.669189922042707,
+          "p90_turns": 6.0,
+          "avg_hp_loss": 3.621737656761948,
           "p90_hp_loss": 11.0,
-          "defeat_rate": 0.027590198726606213,
-          "avg_wave_count": 1.356550260466911
+          "defeat_rate": 0.04790419161676647,
+          "avg_wave_count": 1.3595074002937522
         },
         "elite": {
-          "count": 1558,
-          "avg_turns": 4.657252888318357,
-          "p90_turns": 6.0,
-          "avg_hp_loss": 3.7413350449293965,
-          "p90_hp_loss": 11.0,
+          "count": 1897,
+          "avg_turns": 4.141802846599894,
+          "p90_turns": 5.0,
+          "avg_hp_loss": 6.187137585661571,
+          "p90_hp_loss": 15.0,
           "defeat_rate": 0.0,
           "avg_wave_count": 1.0
         },
         "midboss": {
-          "count": 300,
-          "avg_turns": 5.033333333333333,
+          "count": 600,
+          "avg_turns": 4.435,
           "p90_turns": 6.0,
-          "avg_hp_loss": 1.83,
-          "p90_hp_loss": 7.0,
+          "avg_hp_loss": 2.925,
+          "p90_hp_loss": 9.0,
           "defeat_rate": 0.0,
           "avg_wave_count": 1.0
         },
         "boss": {
-          "count": 662,
-          "avg_turns": 6.362537764350453,
-          "p90_turns": 8.0,
-          "avg_hp_loss": 20.182779456193355,
-          "p90_hp_loss": 38.0,
-          "defeat_rate": 0.13293051359516617,
+          "count": 1162,
+          "avg_turns": 5.690189328743545,
+          "p90_turns": 7.0,
+          "avg_hp_loss": 21.890705679862307,
+          "p90_hp_loss": 37.0,
+          "defeat_rate": 0.08864027538726334,
           "avg_wave_count": 1.0
         }
       },
       "combat_by_act": {
         "1": {
-          "count": 3300,
-          "avg_turns": 4.313030303030303,
-          "p90_turns": 6.0,
-          "avg_hp_loss": 3.435151515151515,
-          "p90_hp_loss": 10.0,
-          "defeat_rate": 0.00393939393939394,
-          "avg_wave_count": 1.0909090909090908
+          "count": 6406,
+          "avg_turns": 3.7797377458632533,
+          "p90_turns": 5.0,
+          "avg_hp_loss": 4.965188885419919,
+          "p90_hp_loss": 15.0,
+          "defeat_rate": 0.006400249765844521,
+          "avg_wave_count": 1.1091164533250077
         },
         "2": {
-          "count": 2651,
-          "avg_turns": 4.6035458317616,
+          "count": 3847,
+          "avg_turns": 3.9040811021575252,
           "p90_turns": 7.0,
-          "avg_hp_loss": 4.816295737457563,
-          "p90_hp_loss": 15.0,
-          "defeat_rate": 0.022255752546208978,
-          "avg_wave_count": 1.3477932855526216
+          "avg_hp_loss": 6.0460098778268785,
+          "p90_hp_loss": 18.0,
+          "defeat_rate": 0.03223290876007279,
+          "avg_wave_count": 1.3556017676111256
         },
         "3": {
-          "count": 1752,
-          "avg_turns": 5.132990867579909,
+          "count": 2257,
+          "avg_turns": 4.59636685866194,
           "p90_turns": 8.0,
-          "avg_hp_loss": 7.262557077625571,
-          "p90_hp_loss": 21.0,
-          "defeat_rate": 0.09075342465753425,
-          "avg_wave_count": 1.3573059360730593
+          "avg_hp_loss": 7.053167922020381,
+          "p90_hp_loss": 18.0,
+          "defeat_rate": 0.16038989809481613,
+          "avg_wave_count": 1.4940186087727072
         }
       },
       "combat_by_wave_count": {
         "1": {
-          "count": 6314,
-          "avg_turns": 4.211910041178334,
-          "p90_turns": 6.0,
-          "avg_hp_loss": 4.797751029458347,
-          "p90_hp_loss": 15.0,
-          "defeat_rate": 0.0220145707950586,
+          "count": 10014,
+          "avg_turns": 3.5681046534851206,
+          "p90_turns": 5.0,
+          "avg_hp_loss": 5.438985420411424,
+          "p90_hp_loss": 17.0,
+          "defeat_rate": 0.023167565408428202,
           "avg_wave_count": 1.0
         },
         "2": {
-          "count": 930,
-          "avg_turns": 5.303225806451613,
-          "p90_turns": 7.0,
-          "avg_hp_loss": 3.0827956989247314,
-          "p90_hp_loss": 9.0,
-          "defeat_rate": 0.04086021505376344,
+          "count": 1810,
+          "avg_turns": 4.9817679558011045,
+          "p90_turns": 6.0,
+          "avg_hp_loss": 5.698895027624309,
+          "p90_hp_loss": 14.0,
+          "defeat_rate": 0.06464088397790055,
           "avg_wave_count": 2.0
         },
         "3": {
-          "count": 459,
-          "avg_turns": 8.505446623093682,
-          "p90_turns": 11.0,
-          "avg_hp_loss": 7.991285403050109,
-          "p90_hp_loss": 22.0,
-          "defeat_rate": 0.11764705882352941,
+          "count": 686,
+          "avg_turns": 7.081632653061225,
+          "p90_turns": 10.0,
+          "avg_hp_loss": 9.043731778425656,
+          "p90_hp_loss": 19.0,
+          "defeat_rate": 0.2594752186588921,
           "avg_wave_count": 3.0
         }
       },
       "card_stats": {
         "c_bram_cleave": {
-          "picked": 137,
-          "played": 2187,
-          "damage": 41194
+          "picked": 304,
+          "played": 3843,
+          "damage": 82291
         },
         "c_bram_hook": {
-          "picked": 137,
-          "played": 597,
-          "damage": 7798,
-          "self_damage": 1194
+          "picked": 304,
+          "played": 615,
+          "damage": 8893,
+          "self_damage": 1230
         },
         "c_eldric_bash": {
-          "picked": 41,
-          "played": 671,
-          "damage": 6751,
-          "block": 3364
+          "picked": 9,
+          "played": 55,
+          "damage": 548,
+          "block": 248
         },
         "c_eldric_cover": {
-          "picked": 41,
-          "played": 573,
-          "block": 3445,
-          "draw": 573
+          "picked": 9,
+          "played": 67,
+          "block": 369,
+          "draw": 67
         },
         "c_kyle_fold": {
-          "picked": 8,
-          "played": 80,
-          "block": 560,
-          "draw": 80
+          "picked": 83,
+          "played": 684,
+          "block": 5228,
+          "draw": 684
         },
         "c_kyle_loaded_cut": {
-          "picked": 8,
-          "played": 55,
-          "damage": 827,
-          "self_damage": 110
+          "picked": 83,
+          "played": 275,
+          "damage": 4716,
+          "self_damage": 550
         },
         "c_lina_broadhead": {
-          "picked": 80,
-          "played": 709,
-          "damage": 8520,
-          "mark": 778
+          "picked": 152,
+          "played": 465,
+          "damage": 6222,
+          "mark": 417
         },
         "c_lina_snare": {
-          "picked": 80,
-          "played": 771,
-          "mark": 2571
+          "picked": 152,
+          "played": 318,
+          "mark": 985
         },
         "c_noa_bad_omen": {
-          "picked": 20,
-          "played": 101,
-          "mark": 226,
-          "damage": 829
+          "picked": 35,
+          "played": 90,
+          "mark": 188,
+          "damage": 885
         },
         "c_noa_starmap": {
-          "picked": 20,
-          "played": 23,
-          "draw": 23,
-          "energy": 23
+          "picked": 35,
+          "played": 43,
+          "draw": 43,
+          "energy": 43
         },
         "c_rowan_banner": {
-          "bought": 8,
-          "played": 1268,
-          "block": 7630,
-          "mark": 1666,
-          "picked": 98
+          "bought": 70,
+          "played": 920,
+          "block": 6157,
+          "mark": 1030,
+          "picked": 94
         },
         "c_rowan_finish": {
-          "picked": 35,
-          "played": 500,
-          "damage": 8131
-        },
-        "c_rowan_pin": {
-          "picked": 133,
-          "played": 1031,
-          "damage": 11955,
-          "mark": 1120
-        },
-        "c_sera_backcut": {
-          "picked": 109,
-          "played": 842,
-          "damage": 9395,
-          "draw": 842
-        },
-        "c_sera_feint": {
-          "picked": 57,
-          "played": 1152,
-          "draw": 1152,
-          "mark": 1494
-        },
-        "c_sera_smoke": {
-          "picked": 52,
-          "played": 367,
-          "block": 1477,
-          "draw": 367
-        },
-        "c_tor_bell": {
-          "picked": 44,
-          "played": 306,
-          "damage": 2428
-        },
-        "c_tor_bulwark": {
-          "picked": 14,
-          "played": 183,
-          "block": 2931
-        },
-        "c_tor_rent": {
-          "picked": 58,
-          "played": 905,
-          "damage": 8811,
-          "block": 5448
-        },
-        "p_blood_price": {
-          "offered": 877,
-          "picked": 23,
-          "played": 425,
-          "energy": 850,
-          "draw": 425,
-          "self_damage": 1275
-        },
-        "p_brace": {
-          "offered": 1729,
-          "picked": 22,
-          "played": 344,
-          "block": 4472,
-          "bought": 9,
-          "transformed_to": 1,
-          "upgraded": 1
-        },
-        "p_breakthrough": {
-          "offered": 908,
-          "picked": 202,
-          "played": 1604,
-          "damage": 20144,
-          "draw": 1604
-        },
-        "p_clean_cut": {
-          "offered": 1730,
-          "picked": 4,
-          "played": 82,
-          "damage": 827
-        },
-        "p_contract_mark": {
-          "offered": 1772,
-          "picked": 255,
-          "played": 2852,
-          "mark": 6706,
-          "draw": 2852,
-          "bought": 25
-        },
-        "p_desperate_stand": {
-          "offered": 355,
-          "picked": 92,
-          "played": 1392,
-          "block": 25069,
-          "heal": 2078
-        },
-        "p_field_medicine": {
-          "offered": 920,
-          "picked": 38,
-          "played": 561,
-          "heal": 794,
-          "block": 5616
-        },
-        "p_guard": {
-          "played": 13652,
-          "block": 68387
-        },
-        "p_heavy_cut": {
-          "offered": 1805,
-          "picked": 310,
-          "played": 4738,
-          "damage": 70526,
-          "bought": 22
-        },
-        "p_last_light": {
-          "offered": 403,
-          "picked": 49,
-          "played": 775,
-          "block": 9312,
-          "heal": 1704
-        },
-        "p_marked_riposte": {
-          "offered": 1729,
-          "picked": 355,
-          "played": 5739,
-          "block": 34516,
-          "mark": 7450,
-          "bought": 17
-        },
-        "p_oath_focus": {
-          "offered": 377,
-          "picked": 334,
-          "played": 3648,
-          "mark": 5320,
-          "power": 3648,
-          "bought": 6
-        },
-        "p_quick_step": {
-          "offered": 1839,
-          "picked": 497,
-          "played": 7609,
-          "block": 45767,
-          "draw": 7609,
-          "bought": 24
-        },
-        "p_risk_advance": {
-          "offered": 868,
-          "picked": 80,
-          "played": 1547,
-          "draw": 3094,
-          "mark": 1820,
-          "self_damage": 3094,
-          "bought": 13
-        },
-        "p_road_cleave": {
-          "offered": 1789,
-          "picked": 260,
-          "played": 4279,
-          "damage": 71245,
-          "bought": 4
-        },
-        "p_shield_line": {
-          "offered": 935,
-          "picked": 54,
-          "played": 765,
-          "block": 10710,
+          "picked": 155,
+          "played": 715,
+          "damage": 13563,
           "bought": 1
         },
+        "c_rowan_pin": {
+          "picked": 249,
+          "played": 736,
+          "damage": 10085,
+          "mark": 686
+        },
+        "c_sera_backcut": {
+          "picked": 220,
+          "played": 624,
+          "damage": 8164,
+          "draw": 624
+        },
+        "c_sera_feint": {
+          "picked": 107,
+          "played": 1248,
+          "draw": 1248,
+          "mark": 1341,
+          "bought": 15
+        },
+        "c_sera_smoke": {
+          "picked": 113,
+          "played": 823,
+          "block": 3791,
+          "draw": 823
+        },
+        "c_tor_bell": {
+          "picked": 76,
+          "played": 143,
+          "damage": 1087
+        },
+        "c_tor_bulwark": {
+          "picked": 31,
+          "played": 338,
+          "block": 5319
+        },
+        "c_tor_rent": {
+          "picked": 107,
+          "played": 895,
+          "damage": 8933,
+          "block": 5022
+        },
+        "p_blood_price": {
+          "offered": 1404,
+          "transformed_to": 3,
+          "upgraded": 1,
+          "played": 25,
+          "energy": 50,
+          "draw": 25,
+          "self_damage": 75,
+          "bought": 2
+        },
+        "p_brace": {
+          "offered": 2890,
+          "bought": 162,
+          "played": 720,
+          "block": 9896
+        },
+        "p_breakthrough": {
+          "offered": 1345,
+          "picked": 450,
+          "played": 1824,
+          "damage": 27289,
+          "draw": 1824,
+          "bought": 70,
+          "transformed_to": 1
+        },
+        "p_clean_cut": {
+          "offered": 2848,
+          "bought": 53,
+          "played": 281,
+          "damage": 3722,
+          "picked": 1
+        },
+        "p_contract_mark": {
+          "offered": 2826,
+          "bought": 289,
+          "played": 862,
+          "mark": 1827,
+          "draw": 862,
+          "transformed_to": 1,
+          "picked": 2
+        },
+        "p_desperate_stand": {
+          "offered": 575,
+          "picked": 83,
+          "played": 1019,
+          "block": 18908,
+          "heal": 1570,
+          "transformed_to": 3
+        },
+        "p_field_medicine": {
+          "offered": 1404,
+          "bought": 3,
+          "played": 22,
+          "heal": 33,
+          "block": 235,
+          "transformed_to": 1
+        },
+        "p_guard": {
+          "played": 27456,
+          "block": 147219,
+          "upgraded": 5
+        },
+        "p_heavy_cut": {
+          "offered": 2790,
+          "picked": 470,
+          "played": 4532,
+          "damage": 76624,
+          "bought": 317,
+          "transformed_to": 2,
+          "upgraded": 1
+        },
+        "p_last_light": {
+          "offered": 577,
+          "picked": 46,
+          "played": 504,
+          "block": 6282,
+          "heal": 1095,
+          "transformed_to": 2,
+          "upgraded": 1
+        },
+        "p_marked_riposte": {
+          "offered": 2811,
+          "bought": 320,
+          "played": 1774,
+          "block": 11964,
+          "mark": 1984,
+          "picked": 5
+        },
+        "p_oath_focus": {
+          "offered": 588,
+          "picked": 229,
+          "played": 1687,
+          "mark": 2038,
+          "power": 1687,
+          "bought": 19,
+          "transformed_to": 2
+        },
+        "p_quick_step": {
+          "offered": 2769,
+          "picked": 332,
+          "played": 5658,
+          "block": 37258,
+          "draw": 5658,
+          "bought": 235,
+          "transformed_to": 3
+        },
+        "p_risk_advance": {
+          "offered": 1434,
+          "bought": 119,
+          "played": 892,
+          "draw": 1784,
+          "mark": 959,
+          "self_damage": 1784,
+          "picked": 1
+        },
+        "p_road_cleave": {
+          "offered": 2844,
+          "picked": 521,
+          "played": 3987,
+          "damage": 75356,
+          "bought": 204
+        },
+        "p_shield_line": {
+          "bought": 7,
+          "played": 30,
+          "block": 450,
+          "offered": 1433
+        },
         "p_strike": {
-          "played": 21128,
-          "damage": 202539,
-          "removed": 89,
-          "upgraded": 333,
-          "transformed_from": 1
+          "played": 30143,
+          "damage": 295085,
+          "removed": 1139,
+          "upgraded": 778,
+          "transformed_from": 19
         },
         "p_sweeping_order": {
-          "offered": 883,
-          "bought": 7,
-          "played": 4505,
-          "damage": 36937,
-          "mark": 4728,
-          "picked": 302
+          "bought": 317,
+          "offered": 1419,
+          "played": 9712,
+          "damage": 93391,
+          "mark": 9030,
+          "picked": 890
         },
         "p_tactical_prep": {
-          "played": 10700,
-          "draw": 10700,
-          "mark": 12873
+          "played": 14885,
+          "draw": 14885,
+          "mark": 15732
         },
         "p_wide_swing": {
-          "offered": 1775,
-          "picked": 276,
-          "played": 3962,
-          "damage": 33825,
-          "bought": 22
+          "offered": 2815,
+          "picked": 1491,
+          "played": 14831,
+          "damage": 147436,
+          "bought": 368,
+          "transformed_to": 1
         }
       }
     }

@@ -5,7 +5,7 @@
       "id": "rowan",
       "name": "Rowan",
       "role": "Marked spear vanguard",
-      "base_attack": 5,
+      "base_attack": 6,
       "portrait_asset_id": "companion_rowan_portrait",
       "sprite_asset_id": "companion_rowan_idle",
       "oath_tactics": [
@@ -18,7 +18,7 @@
       "id": "sera",
       "name": "Sera",
       "role": "Knife scout and tempo finisher",
-      "base_attack": 4,
+      "base_attack": 5,
       "portrait_asset_id": "companion_sera_portrait",
       "sprite_asset_id": "companion_sera_idle",
       "oath_tactics": [
@@ -31,7 +31,7 @@
       "id": "eldric",
       "name": "Eldric",
       "role": "Old shield bearer",
-      "base_attack": 3,
+      "base_attack": 2,
       "portrait_asset_id": "companion_eldric_portrait",
       "sprite_asset_id": "companion_eldric_idle",
       "oath_tactics": [
@@ -44,7 +44,7 @@
       "id": "bram",
       "name": "Bram",
       "role": "Blood-price brawler",
-      "base_attack": 6,
+      "base_attack": 7,
       "portrait_asset_id": "companion_bram_portrait",
       "sprite_asset_id": "companion_rowan_idle",
       "oath_tactics": [
@@ -57,7 +57,7 @@
       "id": "maren",
       "name": "Maren",
       "role": "Road medic with a price",
-      "base_attack": 2,
+      "base_attack": 1,
       "portrait_asset_id": "companion_maren_portrait",
       "sprite_asset_id": "companion_eldric_idle",
       "oath_tactics": [
@@ -70,7 +70,7 @@
       "id": "tor",
       "name": "Tor",
       "role": "Contract breaker in iron plates",
-      "base_attack": 4,
+      "base_attack": 3,
       "portrait_asset_id": "companion_tor_portrait",
       "sprite_asset_id": "companion_eldric_idle",
       "oath_tactics": [
@@ -83,7 +83,7 @@
       "id": "lina",
       "name": "Lina",
       "role": "Poacher guide with green-string traps",
-      "base_attack": 4,
+      "base_attack": 5,
       "portrait_asset_id": "companion_lina_portrait",
       "sprite_asset_id": "companion_sera_idle",
       "oath_tactics": [
@@ -109,7 +109,7 @@
       "id": "isol",
       "name": "Isol",
       "role": "Lantern bearer and oath witness",
-      "base_attack": 2,
+      "base_attack": 1,
       "portrait_asset_id": "companion_isol_portrait",
       "sprite_asset_id": "companion_eldric_idle",
       "oath_tactics": [
@@ -122,7 +122,7 @@
       "id": "kyle",
       "name": "Kyle",
       "role": "Road gambler and bad-odds quartermaster",
-      "base_attack": 3,
+      "base_attack": 4,
       "portrait_asset_id": "companion_kyle_portrait",
       "sprite_asset_id": "companion_rowan_idle",
       "oath_tactics": [

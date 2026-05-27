@@ -108,10 +108,14 @@ func end_player_turn() -> Array[String]:
 func _start_player_turn(logs: Array[String]) -> void:
 	RunState.combat.turn_index += 1
 	RunState.combat.player_block = 0
-	RunState.combat.energy = RunState.combat.max_energy
+	var energy_penalty: int = maxi(RunState.combat.energy_reduction_next_turn, 0)
+	RunState.combat.energy = maxi(RunState.combat.max_energy - energy_penalty, 0)
+	RunState.combat.energy_reduction_next_turn = 0
 	RunState.combat.cards_played_this_turn = 0
 	var drawn: Array[Dictionary] = RunState.deck.draw_cards(int(DataRegistry.get_balance("combat.draw_per_turn", 6)))
 	logs.append("Turn %d started. Drew %d cards." % [RunState.combat.turn_index, drawn.size()])
+	if energy_penalty > 0:
+		logs.append("Enemy disruption reduced energy by %d." % energy_penalty)
 	logs.append_array(companion_combat.apply_bond_start_bonuses())
 	if RunState.combat.healing_reduction_turns > 0:
 		RunState.combat.healing_reduction_turns -= 1
@@ -140,6 +144,7 @@ func _update_outcome(logs: Array[String]) -> void:
 		if gold_gain > 0:
 			RunState.gold += gold_gain
 			logs.append("Gained %d gold." % gold_gain)
+		logs.append_array(_grant_elite_equipment_reward(node_type))
 		logs.append_array(bond_system.award_for_victory(node_type))
 		RunTelemetry.end_combat("victory", RunState.combat.turn_index)
 	elif RunState.current_hp <= 0:
@@ -168,6 +173,31 @@ func _advance_wave(logs: Array[String]) -> bool:
 		", ".join(PackedStringArray(enemy_names)),
 	])
 	return true
+
+
+func _grant_elite_equipment_reward(node_type: String) -> Array[String]:
+	var logs: Array[String] = []
+	if node_type != "elite":
+		return logs
+	var config: Dictionary = DataRegistry.get_balance("rewards.elite_equipment_reward", {})
+	if not bool(config.get("enabled", false)):
+		return logs
+	var rarities: Array = config.get("rarities", [])
+	var pool: Array[Dictionary] = []
+	for item in DataRegistry.get_all_equipment():
+		if typeof(item) != TYPE_DICTIONARY:
+			continue
+		if not rarities.is_empty() and not rarities.has(String(item.get("rarity", ""))):
+			continue
+		pool.append(item)
+	if pool.is_empty():
+		return logs
+	var item: Dictionary = RngService.pick(pool, {})
+	var instance := RunState.equipment.add_equipment(String(item.get("id", "")))
+	if instance.is_empty():
+		return logs
+	logs.append("Elite spoils: gained %s." % item.get("name", "equipment"))
+	return logs
 
 
 func _spawn_enemy_wave(enemy_ids: Array, logs: Array[String]) -> Array[String]:

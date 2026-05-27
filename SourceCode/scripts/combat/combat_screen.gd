@@ -460,7 +460,7 @@ func _incoming_attack_damage() -> int:
 			continue
 		var enemy_dict: Dictionary = enemy
 		var intent: Dictionary = enemy_dict.get("intent", {})
-		if not (String(intent.get("type", "")) in ["attack", "attack_block", "attack_healing_down"]):
+		if not (String(intent.get("type", "")) in ["attack", "attack_block", "attack_healing_down", "attack_energy_down"]):
 			continue
 		var damage := int(intent.get("damage", 0))
 		if reduction_remaining > 0:
@@ -534,18 +534,24 @@ func _make_enemy_panel(enemy: Dictionary, enemy_index: int) -> Control:
 	elif intent_type == "attack_block":
 		intent_kind = "ATK"
 		intent_text = "%d/+%d" % [int(intent.get("damage", 0)), int(intent.get("block", 0))]
-	elif intent_type == "attack_healing_down":
-		intent_kind = "ATK"
-		intent_text = "%d/-%d%%" % [int(intent.get("damage", 0)), int(intent.get("percent", 50))]
+		elif intent_type == "attack_healing_down":
+			intent_kind = "ATK"
+			intent_text = "%d/-%d%%" % [int(intent.get("damage", 0)), int(intent.get("percent", 50))]
+		elif intent_type == "attack_energy_down":
+			intent_kind = "ATK"
+			intent_text = "%d/-%dE" % [int(intent.get("damage", 0)), int(intent.get("amount", 1))]
 	elif intent_type == "block":
 		intent_kind = "BLK"
 		intent_text = "+%d" % int(intent.get("block", 0))
 	elif intent_type == "guard_all":
 		intent_kind = "BLK"
 		intent_text = "all +%d" % int(intent.get("block", 0))
-	elif intent_type == "healing_down":
-		intent_kind = "HEX"
-		intent_text = "-%d%%" % int(intent.get("percent", 50))
+		elif intent_type == "healing_down":
+			intent_kind = "HEX"
+			intent_text = "-%d%%" % int(intent.get("percent", 50))
+		elif intent_type == "energy_down":
+			intent_kind = "HEX"
+			intent_text = "-%dE" % int(intent.get("amount", 1))
 	elif intent_type == "buff_attack":
 		intent_kind = "PWR"
 		intent_text = "+%d ATK" % int(intent.get("amount", 0))
@@ -1423,13 +1429,13 @@ func _bar_style(color: Color) -> StyleBoxFlat:
 func _intent_style(intent_type: String) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
 	match intent_type:
-		"attack", "attack_block", "attack_healing_down":
+			"attack", "attack_block", "attack_healing_down", "attack_energy_down":
 			style.bg_color = Color(0.28, 0.08, 0.06, 0.92)
 			style.border_color = UIStyleScript.RED
 		"block", "guard_all":
 			style.bg_color = Color(0.07, 0.17, 0.15, 0.92)
 			style.border_color = UIStyleScript.GREEN
-		"healing_down":
+			"healing_down", "energy_down":
 			style.bg_color = Color(0.17, 0.11, 0.24, 0.92)
 			style.border_color = Color(0.48, 0.32, 0.62, 1.0)
 		"buff_attack":
@@ -1460,11 +1466,11 @@ func _intent_icon_asset_id(intent_type: String, defeated: bool = false) -> Strin
 	if defeated:
 		return "icon_health"
 	match intent_type:
-		"attack", "attack_block", "attack_healing_down":
+			"attack", "attack_block", "attack_healing_down", "attack_energy_down":
 			return "icon_weapon_slot"
 		"block", "guard_all":
 			return "icon_block"
-		"healing_down":
+			"healing_down", "energy_down":
 			return "icon_healing_down"
 		"buff_attack":
 			return "icon_weapon_slot"

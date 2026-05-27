@@ -11,7 +11,7 @@
       {"enemy_ids": ["enemy_act2_receipt_hound"]},
       {"enemy_ids": ["enemy_act2_heal_censor_scholar"]}
     ]},
-    {"depth": 2, "lane": 2, "type": "inn", "label": "Warm Cellar"},
+    {"depth": 2, "lane": 2, "type": "combat", "label": "Cold Causeway", "enemy_id": "enemy_act2_receipt_hound"},
 
     {"depth": 3, "lane": 0, "type": "combat", "label": "Censor Ruin", "enemy_id": "enemy_act2_heal_censor_scholar"},
     {"depth": 3, "lane": 1, "type": "event", "label": "Black Witness"},
@@ -35,7 +35,10 @@
     {"depth": 7, "lane": 2, "type": "combat", "label": "Censor Court", "enemy_id": "enemy_act2_heal_censor_scholar"},
 
     {"depth": 8, "lane": 0, "type": "shop", "label": "Ash Counter"},
-    {"depth": 8, "lane": 1, "type": "combat", "label": "Red Receipt", "enemy_ids": ["enemy_act2_oath_burned_mercenary", "enemy_act2_oath_burned_mercenary"]},
+    {"depth": 8, "lane": 1, "type": "combat", "label": "Red Receipt", "waves": [
+      {"enemy_ids": ["enemy_act2_oath_burned_mercenary"]},
+      {"enemy_ids": ["enemy_act2_receipt_hound"]}
+    ]},
     {"depth": 8, "lane": 2, "type": "inn", "label": "Warm Cellar"},
 
     {"depth": 9, "lane": 0, "type": "combat", "label": "Censor Ruin", "waves": [
